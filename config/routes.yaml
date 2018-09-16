@@ -4,4 +4,9 @@ api:
 
 registration:
   path: /register
-  controller: App\Controller\RegistrationController:register
+  defaults: { _controller: App\Controller\RegistrationController:register }
+
+app.swagger_ui:
+  path: /api/doc
+  methods: GET
+  defaults: { _controller: nelmio_api_doc.controller.swagger_ui }

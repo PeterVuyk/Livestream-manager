@@ -4,16 +4,19 @@ security:
             algorithm: bcrypt
     providers:
         in_memory: { memory: ~ }
+        our_db_provider:
+            entity:
+                class: App\Entity\User
     firewalls:
         dev:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
             anonymous: true
-
-            # activate different ways to authenticate
-
+#            pattern: ^/api(?!/doc$)
+            pattern: ^/
             http_basic: true
+            provider: our_db_provider
             # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
 
             # form_login: true
@@ -22,5 +25,8 @@ security:
     # Easy way to control access for large sections of your site
     # Note: Only the *first* access control that matches will be used
     access_control:
-         - { path: ^/admin, roles: ROLE_ADMIN }
-        # - { path: ^/profile, roles: ROLE_USER }
+    - { path: ^/api, roles: ROLE_USER }
+    - { path: /api/doc, roles: ROLE_USER }
+    - { path: ^/register, roles: ROLE_USER }
+    - { path: /.*, roles: ROLE_USER }
+    # - { path: ^/profile, roles: ROLE_USER }

@@ -1,3 +1,4 @@
-index:
-  path: /livestream/start
-  controller: App\Controller\Api\LivestreamController:startLivestream
+livestream.start:
+    path: /livestream/start
+    controller: App\Controller\Api\LivestreamController:startLivestream
+    methods: [POST]
