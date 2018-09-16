@@ -7,3 +7,13 @@
 ###< symfony/framework-bundle ###
 
 .idea/
+/tests/_reports
+
+###> symfony/phpunit-bridge ###
+.phpunit
+/phpunit.xml
+###< symfony/phpunit-bridge ###
+
+###> phpunit/phpunit ###
+/phpunit.xml
+###< phpunit/phpunit ###

@@ -1,4 +1,3 @@
 index:
   path: /livestream/start
   controller: App\Controller\Api\LivestreamController:startLivestream
-

@@ -1,0 +1,66 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Controller;
+
+use App\Entity\User;
+use App\Form\UserType;
+use App\Service\UserService;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\ORMException;
+use Symfony\Component\Form\FormFactoryInterface;
+use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Session;
+
+class RegistrationController extends Controller
+{
+    /** @var FormFactoryInterface */
+    private $formFactory;
+
+    /** @var UserService */
+    private $userService;
+
+    /**
+     * RegistrationController constructor.
+     * @param \Twig_Environment $twig
+     * @param FormFactoryInterface $formFactory
+     * @param UserService $userService
+     */
+    public function __construct(
+        \Twig_Environment $twig,
+        FormFactoryInterface $formFactory,
+        UserService $userService
+    ) {
+        parent::__construct($twig);
+        $this->formFactory = $formFactory;
+        $this->userService = $userService;
+    }
+
+    /**
+     * @param Request $request
+     * @return RedirectResponse|Response
+     */
+    public function register(Request $request)
+    {
+        $form = $this->formFactory->create(UserType::class, $user = new User());
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            /** @var Session $session */
+            $session = $request->getSession();
+            try {
+                $this->userService->createUser($user);
+            } catch (ORMException | OptimisticLockException $exception) {
+                $session->getFlashBag()->add(self::ERROR_MESSAGE, 'Could not save new user.');
+                return new RedirectResponse($request->getUri());
+            }
+            $session->getFlashBag()->add(self::SUCCESS_MESSAGE, 'User successfully created.');
+            return new RedirectResponse($request->getUri());
+        }
+        return $this->render(
+            'registration/register.html.twig',
+            array('form' => $form->createView())
+        );
+    }
+}
