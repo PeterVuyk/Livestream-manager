@@ -15,7 +15,7 @@ class UserRepository extends EntityRepository implements UserLoaderInterface
 {
     /**
      * @param string $username
-     * @return mixed|null|UserInterface
+     * @return null|UserInterface
      * @throws NonUniqueResultException
      */
     public function loadUserByUsername($username)

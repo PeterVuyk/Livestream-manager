@@ -28,6 +28,7 @@
         <whitelist>
             <directory>src</directory>
             <exclude>
+                <directory>src/Exception</directory>
                 <directory>src/Form</directory>
                 <directory>src/Migrations</directory>
                 <file>src/Kernel.php</file>
