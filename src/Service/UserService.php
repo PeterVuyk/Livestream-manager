@@ -39,4 +39,12 @@ class UserService
         $user->setPassword($password);
         $this->userRepository->save($user);
     }
+
+    /**
+     * @return User[]
+     */
+    public function getUsers()
+    {
+        return $this->userRepository->getAllUsers();
+    }
 }

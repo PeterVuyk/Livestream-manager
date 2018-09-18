@@ -3,8 +3,12 @@ api:
   resource: "routes_api.yaml"
 
 registration:
-  path: /register
+  path: /admin/registration
   defaults: { _controller: App\Controller\RegistrationController:register }
+
+user_list:
+  path: /admin/users
+  defaults: { _controller: App\Controller\UserManagementController:usersList }
 
 app.swagger_ui:
   path: /api/doc

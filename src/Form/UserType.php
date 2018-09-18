@@ -32,7 +32,13 @@ class UserType extends AbstractType
                     'first_options'  => ['label' => 'registration_form.label_password'],
                     'second_options' => ['label' => 'registration_form.label_repeat_password'],
                 ])
-            ->add('submitButton', SubmitType::class, ['label' => 'registration_form.submit_button']);
+            ->add(
+                'submitButton',
+                SubmitType::class, [
+                    'label' => 'registration_form.submit_button',
+                    'attr' => ['class' => 'btn btn-secondary'],
+                ]
+            );
     }
 
     /**

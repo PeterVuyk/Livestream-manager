@@ -59,7 +59,7 @@ class RegistrationController extends Controller
             return new RedirectResponse($request->getUri());
         }
         return $this->render(
-            'registration/register.html.twig',
+            'user/registration/register.html.twig',
             array('form' => $form->createView())
         );
     }

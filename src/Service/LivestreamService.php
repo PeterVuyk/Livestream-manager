@@ -6,6 +6,7 @@ namespace App\Service;
 use App\Exception\FailedStartingLivestreamException;
 use App\Exception\FailedStoppingLivestreamException;
 
+//TODO: Once we know what a livestream starts/stops, we should divide the class in multiple classes.
 class LivestreamService
 {
     /**

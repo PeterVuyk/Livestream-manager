@@ -4,3 +4,9 @@ registration_form:
   label_password: Password:
   label_repeat_password: Repeat password:
   submit_button: Register
+users_list:
+  column_id: "#"
+  column_username: Username
+  column_email: Email
+  column_active: Active
+  registration_button: Add user

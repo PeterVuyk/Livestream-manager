@@ -38,4 +38,12 @@ class UserRepository extends EntityRepository implements UserLoaderInterface
         $this->getEntityManager()->persist($user);
         $this->getEntityManager()->flush();
     }
+
+    /**
+     * @return User[]
+     */
+    public function getAllUsers()
+    {
+        return $this->findAll();
+    }
 }
