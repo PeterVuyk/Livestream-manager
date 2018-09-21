@@ -32,8 +32,8 @@ class UserTest extends TestCase
     public function testIsActive()
     {
         $user = new User();
-        $user->setIsActive(true);
-        $this->assertSame(true, $user->getIsActive());
+        $user->setActive(true);
+        $this->assertSame(true, $user->isActive());
     }
 
     public function testPassword()
@@ -80,7 +80,7 @@ class UserTest extends TestCase
         $user = new User();
         $user->setEmail('some@mail.nl');
         $user->setId(3);
-        $user->setIsActive(true);
+        $user->setActive(true);
         $user->setPassword('hash');
         $user->setPlainPassword('plain-password');
         $user->setRoles('ROLE_USER');

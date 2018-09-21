@@ -5,6 +5,7 @@ namespace App\Tests\App\Repository;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -16,6 +17,7 @@ use Doctrine\ORM\UnitOfWork;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Doctrine\ORM\QueryBuilder;
+use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class UserRepositoryTest extends TestCase
 {
@@ -25,14 +27,14 @@ class UserRepositoryTest extends TestCase
     /** @var MockObject|EntityManager */
     private $entityManager;
 
-    /** @var MockObject|ClassMetadata */
-    private $classMetaData;
-
     public function setUp()
     {
-        $entityManager = $this->entityManager = $this->createMock(EntityManager::class);
-        $classMetaData = $this->classMetaData = $this->createMock(ClassMetadata::class);
-        $this->userRepository = new UserRepository($entityManager, $classMetaData);
+        $classMetaData = $this->createMock(ClassMetadata::class);
+        $this->entityManager = $this->createMock(EntityManager::class);
+        $this->entityManager->expects($this->once())->method('getClassMetadata')->willReturn($classMetaData);
+        $registryInterface = $this->createMock(RegistryInterface::class);
+        $registryInterface->expects($this->once())->method('getManagerForClass')->willReturn($this->entityManager);
+        $this->userRepository = new UserRepository($registryInterface);
     }
 
     /**
@@ -47,6 +49,7 @@ class UserRepositoryTest extends TestCase
         $queryBuilderMock->expects($this->once())->method('select')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->once())->method('from')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->once())->method('where')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects($this->once())->method('andWhere')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->exactly(2))->method('setParameter')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->once())->method('getQuery')->willReturn($queryMock);
         $this->entityManager->expects($this->once())->method('createQueryBuilder')->willReturn($queryBuilderMock);
@@ -65,16 +68,5 @@ class UserRepositoryTest extends TestCase
         $this->entityManager->expects($this->once())->method('flush');
         $this->userRepository->save(new User());
         $this->addToAssertionCount(1);
-    }
-
-    public function testGetAllUsers()
-    {
-        $entityPerister = $this->createMock(EntityPersister::class);
-        $entityPerister->expects($this->once())->method('loadAll')->willReturn([new User()]);
-        $unitOfWorkMock = $this->createMock(UnitOfWork::class);
-        $unitOfWorkMock->expects($this->once())->method('getEntityPersister')->willReturn($entityPerister);
-        $this->entityManager->expects($this->once())->method('getUnitOfWork')->willReturn($unitOfWorkMock);
-
-        $this->assertInstanceOf(User::class, $this->userRepository->getAllUsers()[0]);
     }
 }

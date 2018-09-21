@@ -53,4 +53,16 @@ class UserServiceTest extends TestCase
         $this->userRepository->expects($this->once())->method('save')->willThrowException(new ORMException());
         $this->userService->createUser(new User());
     }
+
+    public function testGetAllUsers()
+    {
+        $this->userRepository->expects($this->once())->method('findAll')->willReturn([new User()]);
+        $this->assertInstanceOf(User::class, $this->userService->getAllUsers()[0]);
+    }
+
+    public function testGetUserById()
+    {
+        $this->userRepository->expects($this->once())->method('findOneBy')->willReturn(new User());
+        $this->assertInstanceOf(User::class, $this->userService->getUserById(33));
+    }
 }

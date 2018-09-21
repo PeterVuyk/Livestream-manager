@@ -39,7 +39,6 @@ class User implements UserInterface, \Serializable
     private $email;
 
     /**
-     * @Assert\NotBlank()
      * @Assert\Length(max=4096)
      */
     private $plainPassword;
@@ -116,7 +115,7 @@ class User implements UserInterface, \Serializable
     /**
      * @return bool
      */
-    public function getIsActive()
+    public function isActive()
     {
         return $this->isActive;
     }
@@ -124,7 +123,7 @@ class User implements UserInterface, \Serializable
     /**
      * @param bool $isActive
      */
-    public function setIsActive(bool $isActive): void
+    public function setActive(bool $isActive): void
     {
         $this->isActive = $isActive;
     }

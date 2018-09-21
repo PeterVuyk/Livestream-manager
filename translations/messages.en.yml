@@ -10,3 +10,8 @@ users_list:
   column_email: Email
   column_active: Active
   registration_button: Add user
+user_details:
+  label_email: Email:
+  label_username: Username:
+  label_is_active: Active
+  submit_button: Update

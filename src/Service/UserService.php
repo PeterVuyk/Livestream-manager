@@ -41,10 +41,29 @@ class UserService
     }
 
     /**
+     * @param User $user
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function updateUser(User $user)
+    {
+        $this->userRepository->save($user);
+    }
+
+    /**
+     * @param int $userId
+     * @return null|object
+     */
+    public function getUserById(int $userId)
+    {
+        return $this->userRepository->findOneBy(['id' => $userId]);
+    }
+
+    /**
      * @return User[]
      */
-    public function getUsers()
+    public function getAllUsers()
     {
-        return $this->userRepository->getAllUsers();
+        return $this->userRepository->findAll();
     }
 }
