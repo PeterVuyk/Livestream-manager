@@ -1,0 +1,12 @@
+version: '3'
+
+services:
+  web:
+    ports:
+    - 8080:80
+  db:
+    ports:
+    - 3306:3306
+  php:
+    ports:
+    - 9000:9000

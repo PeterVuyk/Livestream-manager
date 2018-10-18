@@ -7,7 +7,7 @@ class FailedStoppingLivestreamException extends \Exception
 {
     private const PI_CAM_MESSAGE = 'Could not stop pi cam.';
 
-    private function __construct(string $reason, \Throwable $previous = null)
+    public function __construct(string $reason, \Throwable $previous = null)
     {
         parent::__construct($reason, 0, $previous);
     }

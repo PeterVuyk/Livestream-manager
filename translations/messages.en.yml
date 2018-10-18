@@ -1,17 +1,14 @@
-registration_form:
-  label_username: Username:
-  label_email: Email:
-  label_password: Password:
-  label_repeat_password: Repeat password:
-  submit_button: Register
-users_list:
-  column_id: "#"
-  column_username: Username
-  column_email: Email
-  column_active: Active
-  registration_button: Add user
-user_details:
-  label_email: Email:
-  label_username: Username:
-  label_is_active: Active
-  submit_button: Update
+registration_form.label_username: 'Username:'
+registration_form.label_email: 'Email:'
+registration_form.label_password: 'Password:'
+registration_form.label_repeat_password: 'Repeat password:'
+registration_form.submit_button: Register
+users_list.column_id: '#'
+users_list.column_username: Username
+users_list.column_email: Email
+users_list.column_active: Active
+users_list.registration_button: 'Add user'
+user_details.label_email: 'Email:'
+user_details.label_username: 'Username:'
+user_details.label_is_active: Active
+user_details.submit_button: Update

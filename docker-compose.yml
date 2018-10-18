@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  php:
+    build:
+      context: docker-data/build/php
+      dockerfile: Dockerfile
+      args:
+        LIVESTREAM_USER: ${LIVESTREAM_USER}
+    container_name: livestream-php
+    depends_on:
+    - db
+    volumes:
+    - ./:/var/www/livestream:cached
+    - ./docker-data/logs:/var/log
+  web:
+    build: docker-data/build/nginx
+    container_name: livestream-nginx
+    restart: always
+    ports:
+    - 8080:80
+    depends_on:
+    - php
+    - db
+    volumes:
+    - ./:/var/www/livestream:cached
+    - ./docker-data/logs:/var/log/nginx
+  db:
+    image: mysql/mysql-server:5.7
+    container_name: livestream-mysql
+    env_file:
+      - .env
+    environment:
+    - MYSQL_DATABASE=${DATABASE_NAME}
+    - MYSQL_USER=${DATABASE_USER}
+    - MYSQL_PASSWORD=${DATABASE_PASSWORD}
+    - MYSQL_ROOT_PASSWORD=${DATABASE_PASSWORD}
+    volumes:
+    - database:/var/lib/mysql
+  yarn:
+    build: docker-data/build/yarn
+    container_name: livestream-yarn
+    volumes:
+    - ./:/usr/src/app
+    tty: true
+
+volumes:
+  database:

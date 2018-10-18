@@ -7,6 +7,9 @@
 
 .idea/
 /tests/_reports
+docker-data/logs/*
+!docker-data/logs/.gitkeep
+
 
 ###> symfony/phpunit-bridge ###
 .phpunit
