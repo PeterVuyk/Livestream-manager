@@ -1,24 +1,48 @@
 {% extends "base.html.twig" %}
-{% block body %}
+{% set active_page = 'users' %}
+{% block title %}{{ 'user.list.title'|trans }}{% endblock title %}
+{% block pageTitle %}{{ 'user.list.title'|trans }}{% endblock pageTitle %}
+
+{% block content %}
     <table class="table table-hover">
         <thead>
         <tr>
-            <th scope="col">{% trans %}users_list.column_id{% endtrans %}</th>
+            <th scope="col"></th>
             <th scope="col">{% trans %}users_list.column_username{% endtrans %}</th>
             <th scope="col">{% trans %}users_list.column_email{% endtrans %}</th>
             <th scope="col">{% trans %}users_list.column_active{% endtrans %}</th>
+            <th scope="col">{% trans %}user_list.column_action{% endtrans %}</th>
         </tr>
         </thead>
         <tbody>
         {% for user in users %}
-            <tr>
-                <th scope="row">{{ user.id }}</th>
+            <tr {% if user.isActive == false %}class="text-muted" {% endif %}>
+                <td>
+                    <a href="{{ path('jmose_command_scheduler_action_toggle', {'userId': user.id}) }}" >
+                        {% if user.isActive == true %}
+                            <span class="text-success glyphicon glyphicon-off"></span> <span class="sr-only">&nbsp;</span>
+                        {% else %}
+                            <span class="text-danger glyphicon glyphicon-off"></span> <span class="sr-only">&nbsp;</span>
+                        {% endif %}
+                    </a>
+                </td>
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
                 <td>{{ user.isActive }}</td>
+                <td>
+                    <a href="{{ path('user_details', {'userId': user.id}) }}" >
+                        <span class="text-info glyphicon glyphicon-pencil"></span>
+                    </a>
+
+                    <a href="#" data-toggle="modal" data-target="#js-delete-user-modal">
+                        <span class="text-danger glyphicon glyphicon-trash"></span>
+                    </a>
+                    {{ include('components/modal/user/deleteModal.html.twig', {'userId': user.id}) }}
+
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-    <a href="registration" class="btn btn-secondary">{% trans %}users_list.registration_button{% endtrans %}</a>
-{% endblock %}
+    <a href="{{ path('registration') }}" class="btn btn-primary btn-lg pull-right" role="button">{{ 'users_list.registration_button'|trans }}</a>
+{% endblock content %}

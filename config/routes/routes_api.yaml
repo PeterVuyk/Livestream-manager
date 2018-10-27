@@ -12,3 +12,8 @@ livestream.status:
     path: /livestream/status
     controller: App\Controller\Api\LivestreamController:getStatusLivestream
     methods: [GET]
+
+Livestream.monitor:
+    path: /livestream/monitor
+    controller: JMoseCommandSchedulerBundle:List:monitor
+    methods: [GET]

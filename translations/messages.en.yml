@@ -1,3 +1,12 @@
+navigation.home: Home
+navigation.recurring_schedule: 'Recurring schedule'
+navigation.onetime_schedule: 'Onetime schedule'
+navigation.users: Users
+navigation.register: Register
+user.list.title: 'Authorized users'
+admin.list.title: 'Admin page'
+user.details.title: 'User details'
+user.registration.title: 'Register user'
 registration_form.label_username: 'Username:'
 registration_form.label_email: 'Email:'
 registration_form.label_password: 'Password:'
@@ -7,8 +16,13 @@ users_list.column_id: '#'
 users_list.column_username: Username
 users_list.column_email: Email
 users_list.column_active: Active
+user_list.column_action: Actions
 users_list.registration_button: 'Add user'
 user_details.label_email: 'Email:'
 user_details.label_username: 'Username:'
 user_details.label_is_active: Active
 user_details.submit_button: Update
+action.delete.title: 'Delete user'
+confirm.delete: 'Are you sure to delete this user?'
+action.delete: Delete
+action.cancel: Cancel

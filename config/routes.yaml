@@ -1,6 +1,11 @@
 api:
   prefix: /api/v1
-  resource: "routes_api.yaml"
+  resource: "routes/routes_api.yaml"
+
+admin_page:
+  path: /admin
+  defaults: { _controller: App\Controller\HomepageController:admin }
+  methods: [GET]
 
 registration:
   path: /admin/registration

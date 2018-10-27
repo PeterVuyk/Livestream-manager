@@ -38,8 +38,11 @@ services:
     volumes:
     - database:/var/lib/mysql
   yarn:
-    build: docker-data/build/yarn
-    container_name: livestream-yarn
+    build:
+      context: docker-data/build/yarn
+      dockerfile: Dockerfile
+      args:
+        LIVESTREAM_USER: ${LIVESTREAM_USER}
     volumes:
     - ./:/usr/src/app
     tty: true

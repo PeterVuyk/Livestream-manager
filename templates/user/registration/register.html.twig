@@ -1,5 +1,10 @@
 {% extends "base.html.twig" %}
-{% block body %}
-    {% include 'flash.html.twig' %}
-    {{ form(form) }}
-{% endblock %}
+{% set active_page = 'registration' %}
+{% block title %}{{ 'user.registration.title'|trans }}{% endblock title %}
+{% block pageTitle %}{{ 'user.registration.title'|trans }}{% endblock pageTitle %}
+
+{% block content %}
+    <div class="col-lg-6 col-sm-12">
+        {{ form(form) }}
+    </div>
+{% endblock content %}

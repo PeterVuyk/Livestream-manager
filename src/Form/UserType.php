@@ -41,7 +41,7 @@ class UserType extends AbstractType
                 'submitButton',
                 SubmitType::class, [
                     'label' => 'registration_form.submit_button',
-                    'attr' => ['class' => 'btn btn-secondary'],
+                    'attr' => ['class' => 'btn btn-success btn-lg pull-right'],
                 ]
             );
     }

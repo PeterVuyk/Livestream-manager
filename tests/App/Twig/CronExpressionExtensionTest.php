@@ -1,0 +1,33 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Tests\App\Twig;
+
+use App\Twig\CronExpressionExtension;
+use PHPUnit\Framework\TestCase;
+
+class CronExpressionExtensionTest extends TestCase
+{
+    /** @var CronExpressionExtension */
+    private $cronExpressionExtension;
+
+    public function setUp()
+    {
+        $this->cronExpressionExtension = new CronExpressionExtension();
+    }
+
+    public function testGetFunctions()
+    {
+        $this->assertInstanceOf(\Twig_SimpleFunction::class, $this->cronExpressionExtension->getFunctions()[0]);
+    }
+
+    public function testCronExpression()
+    {
+        $this->assertSame('Sat Oct 27, 0:00:00', $this->cronExpressionExtension->cronExpression('* * * * 6'));
+    }
+
+    public function testGetName()
+    {
+        $this->assertSame(CronExpressionExtension::CRON_EXPRESSION, $this->cronExpressionExtension->getName());
+    }
+}

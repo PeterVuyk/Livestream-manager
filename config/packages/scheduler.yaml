@@ -1,0 +1,23 @@
+jmose_command_scheduler:
+
+    # Scheduler will write output files here. set false to disable it.
+    log_path: "%kernel.logs_dir%"
+    send_ok: false
+
+    # Add namespace you don't want to see its Command in the scheduler.
+    excluded_command_namespaces:
+        - _global
+        - scheduler
+        - server
+        - container
+        - config
+        - generate
+        - init
+        - router
+        - doctrine
+        - debug
+        - assets
+        - security
+        - translation
+        - lint
+#        - cache

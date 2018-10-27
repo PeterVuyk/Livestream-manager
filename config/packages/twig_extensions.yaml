@@ -1,0 +1,10 @@
+services:
+    _defaults:
+        public: false
+        autowire: true
+        autoconfigure: true
+
+    App\Twig\CronExpressionExtension:
+        public: false
+        tags:
+        - { name: 'twig.extension' }

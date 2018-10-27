@@ -1,0 +1,44 @@
+{% extends "base.html.twig" %}
+{% trans_default_domain 'JMoseCommandScheduler' %}
+{% set active_page = 'recurring_schedule' %}
+{% block title %}{% trans %}recurring_scheduler.new.title{% endtrans %}{% endblock title %}
+{% block pageTitle %}{% trans %}recurring_scheduler.new.title{% endtrans %}{% endblock pageTitle %}
+
+{% block content %}
+
+    {% set styleConfiguration = {'class': 'form-control'} %}
+    <div class="col-lg-6 col-sm-12">
+        {{ form_start( scheduledCommandForm, {'action': path('jmose_command_scheduler_detail_save')} ) }}
+
+        {# Form's fields #}
+        {{ form_row( scheduledCommandForm.id ) }}
+        {{ form_row( scheduledCommandForm.name, {'attr': styleConfiguration|merge({'placeholder': 'name'}) } ) }}
+        {{ form_row( scheduledCommandForm.command, {'attr': styleConfiguration } ) }}
+        {{ form_row( scheduledCommandForm.arguments, {'attr': styleConfiguration|merge({'placeholder': '--argument1=foo --bar'}) } ) }}
+        {{ form_row( scheduledCommandForm.cronExpression, {'attr': styleConfiguration|merge({'placeholder': '*/10 * * * *'}) } ) }}
+        {{ form_row( scheduledCommandForm.logFile, {'attr': styleConfiguration|merge({'placeholder': 'myFile.log'}) } ) }}
+        {{ form_row( scheduledCommandForm.priority, {'attr': styleConfiguration } ) }}
+        <div>
+            {{ form_widget( scheduledCommandForm.executeImmediately ) }}
+            {{ form_label( scheduledCommandForm.executeImmediately ) }}
+        </div>
+        <div>
+            {{ form_widget( scheduledCommandForm.disabled ) }}
+            {{ form_label( scheduledCommandForm.disabled ) }}
+        </div>
+
+        {# Form's actions #}
+        <div class="row">
+            <a href="{{ path('jmose_command_scheduler_list') }}" class="btn btn-default btn-lg" role="button">Cancel</a>
+            {{ form_widget( scheduledCommandForm.save, {'attr': {'class': 'btn btn-success btn-lg pull-right'} } ) }}
+        </div>
+        {{ form_end( scheduledCommandForm ) }}
+    </div>
+    <div class="text-right col-lg-6 col-sm-12">
+        <br />
+        <img class="img-responsive img-rounded img" alt="{% trans %}recurring_scheduler.detail.image.cron_expression{% endtrans %}" src="{{ asset('build/images/cron-expression.3cbb9aae.png') }}">
+        <a href="https://www.freeformatter.com/cron-expression-generator-quartz.html" target="_blank">
+            {% trans %}recurring_scheduler.detail.link.generate_expression{% endtrans %} <span class="glyphicon glyphicon-log-out"></span>
+        </a>
+    </div>
+{% endblock content %}
