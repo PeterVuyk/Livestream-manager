@@ -1,5 +1,5 @@
 {% trans_default_domain 'JMoseCommandScheduler' %}
-<div class="modal" id="js-unlock-scheduled-modal" tabindex="-1" role="dialog">
+<div class="modal" id="js-unlock-scheduled-modal-{{ command.id }}" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -12,7 +12,7 @@
                 <p>{% trans %}confirm.unlock{% endtrans %}</p>
             </div>
             <div class="modal-footer">
-                <button onclick="location.href='{{ path('jmose_command_scheduler_action_unlock', {'id': id}) }}'"
+                <button onclick="location.href='{{ path('jmose_command_scheduler_action_unlock', {'id': command.id}) }}'"
                         type="button" class="btn btn-primary">{% trans %}action.unlock{% endtrans %}</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans %}action.cancel{% endtrans %}</button>
             </div>

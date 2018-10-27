@@ -44,31 +44,30 @@
                 <td>{{ command.priority }}</td>
                 <td style="min-width: 90px;">
                     {% if command.locked == true %}
-                        <a href="#" data-toggle="modal" data-target="#js-unlock-scheduled-modal" >
+                        <a href="#js-unlock-scheduled-modal-{{ command.id }}" data-toggle="modal">
                             <span class="text-muted glyphicon glyphicon-lock"></span> <span class="sr-only">{{ "action.unlock"|trans }}</span>
                         </a>
-                    {{ include('components/modal/recurringScheduler/unlockModal.html.twig', {'id': command.id}) }}
+                    {{ include('components/modal/recurringScheduler/unlockModal.html.twig') }}
 
                     {% endif %}
                     <a href="{{ path('jmose_command_scheduler_detail_edit', {'scheduledCommandId': command.id}) }}" >
                         <span class="text-info glyphicon glyphicon-pencil"></span> <span class="sr-only">{{ "action.edit"|trans }}</span>
                     </a>
 
-                    <a href="#" data-toggle="modal" data-target="#js-delete-scheduled-modal">
+                    <a href="#js-delete-scheduled-modal-{{ command.id }}" data-toggle="modal">
                         <span class="text-danger glyphicon glyphicon-trash"></span>
                     </a>
-                    {{ include('components/modal/recurringScheduler/deleteModal.html.twig', {'id': command.id}) }}
+                    {{ include('components/modal/recurringScheduler/deleteModal.html.twig') }}
 
-                    <a href="#" data-toggle="modal" data-target="#js-execute-scheduled-modal">
+                    <a href="#js-execute-scheduled-modal-{{ command.id }}" data-toggle="modal">
                         <span class="text-{% if command.executeImmediately == true %}muted{% else %}success{% endif %} glyphicon glyphicon-play"></span>
                     </a>
-                    {{ include('components/modal/recurringScheduler/executeModal.html.twig', {'id': command.id}) }}
+                    {{ include('components/modal/recurringScheduler/executeModal.html.twig') }}
                 </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
     </div>
-
     <a href="{{ path('jmose_command_scheduler_detail_new') }}" class="btn btn-primary btn-lg pull-right" role="button">{{ "action.recurring_new"|trans }}</a>
 {% endblock content %}

@@ -1,4 +1,4 @@
-<div class="modal" id="js-delete-user-modal" tabindex="-1" role="dialog">
+<div class="modal" id="js-delete-user-modal-{{ user.id }}" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -11,7 +11,7 @@
                 <p>{% trans %}confirm.delete{% endtrans %}</p>
             </div>
             <div class="modal-footer">
-                <button onclick="location.href='{{ path('registration', {'userId': userId}) }}'"
+                <button onclick="location.href='{{ path('user_delete', {'userId': user.id}) }}'"
                         type="button" class="btn btn-primary">{% trans %}action.delete{% endtrans %}</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans %}action.cancel{% endtrans %}</button>
             </div>

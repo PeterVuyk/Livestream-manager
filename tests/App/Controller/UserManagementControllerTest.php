@@ -5,6 +5,7 @@ namespace App\Tests\App\Controller;
 
 use App\Controller\UserManagementController;
 use App\Entity\User;
+use App\Exception\UserNotFoundException;
 use App\Service\UserService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -45,6 +46,70 @@ class UserManagementControllerTest extends TestCase
             $this->formFactoryMock,
             $this->routerMock
         );
+    }
+
+    public function testToggleDisablingUserFailed()
+    {
+        $flashBagInterfaceMock = $this->createMock(FlashBagInterface::class);
+        $flashBagInterfaceMock->expects($this->once())->method('add');
+        $sessionMock = $this->createMock(Session::class);
+        $sessionMock->expects($this->once())->method('getFlashBag')->willReturn($flashBagInterfaceMock);
+        $request = new Request();
+        $request->setSession($sessionMock);
+
+        $exception = UserNotFoundException::couldNotToggleDisablingUser(3);
+        $this->userServiceMock->expects($this->once())->method('toggleDisablingUser')->willThrowException($exception);
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $result = $this->userManagementController->toggleDisablingUser(3, $request);
+        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+    }
+
+    public function testToggleDisablingUserSuccess()
+    {
+        $flashBagInterfaceMock = $this->createMock(FlashBagInterface::class);
+        $sessionMock = $this->createMock(Session::class);
+        $sessionMock->expects($this->never())->method('getFlashBag')->willReturn($flashBagInterfaceMock);
+        $request = new Request();
+        $request->setSession($sessionMock);
+
+        $this->userServiceMock->expects($this->once())->method('toggleDisablingUser');
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $result = $this->userManagementController->toggleDisablingUser(3, $request);
+        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+    }
+
+    public function testDeleteUserFailed()
+    {
+        $flashBagInterfaceMock = $this->createMock(FlashBagInterface::class);
+        $flashBagInterfaceMock->expects($this->once())->method('add');
+        $sessionMock = $this->createMock(Session::class);
+        $sessionMock->expects($this->once())->method('getFlashBag')->willReturn($flashBagInterfaceMock);
+        $request = new Request();
+        $request->setSession($sessionMock);
+
+        $exception = UserNotFoundException::couldNotRemoveUser(3);
+        $this->userServiceMock->expects($this->once())->method('removeUser')->willThrowException($exception);
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $result = $this->userManagementController->deleteUser(3, $request);
+        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+    }
+
+    public function testDeleteUserSuccess()
+    {
+        $flashBagInterfaceMock = $this->createMock(FlashBagInterface::class);
+        $sessionMock = $this->createMock(Session::class);
+        $sessionMock->expects($this->never())->method('getFlashBag')->willReturn($flashBagInterfaceMock);
+        $request = new Request();
+        $request->setSession($sessionMock);
+
+        $this->userServiceMock->expects($this->once())->method('removeUser');
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $result = $this->userManagementController->deleteUser(3, $request);
+        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
     }
 
     public function testUsersList()

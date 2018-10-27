@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\User;
+use App\Exception\UserNotFoundException;
 use App\Repository\UserRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -33,7 +34,7 @@ class UserService
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function createUser(User $user)
+    public function createUser(User $user): void
     {
         $password = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
         $user->setPassword($password);
@@ -41,20 +42,51 @@ class UserService
     }
 
     /**
+     * @param int $userId
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws UserNotFoundException
+     */
+    public function removeUser(int $userId): void
+    {
+        $user = $this->getUserById($userId);
+        if (!$user instanceof User) {
+            throw UserNotFoundException::couldNotRemoveUser($userId);
+        }
+        $this->userRepository->remove($user);
+    }
+
+    /**
+     * @param int $userId
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws UserNotFoundException
+     */
+    public function toggleDisablingUser(int $userId)
+    {
+        $user = $this->getUserById($userId);
+        if (!$user instanceof User) {
+            throw UserNotFoundException::couldNotToggleDisablingUser($userId);
+        }
+        $user->setActive(!$user->isActive());
+        $this->updateUser($user);
+    }
+
+    /**
      * @param User $user
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function updateUser(User $user)
+    public function updateUser(User $user): void
     {
         $this->userRepository->save($user);
     }
 
     /**
      * @param int $userId
-     * @return null|object
+     * @return null|object|User
      */
-    public function getUserById(int $userId)
+    public function getUserById(int $userId): ?User
     {
         return $this->userRepository->findOneBy(['id' => $userId]);
     }
@@ -62,7 +94,7 @@ class UserService
     /**
      * @return User[]
      */
-    public function getAllUsers()
+    public function getAllUsers(): ?array
     {
         return $this->userRepository->findAll();
     }

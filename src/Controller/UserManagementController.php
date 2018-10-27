@@ -58,6 +58,41 @@ class UserManagementController extends Controller
     /**
      * @param int $userId
      * @param Request $request
+     * @return RedirectResponse
+     */
+    public function deleteUser(int $userId, Request $request)
+    {
+        try {
+            $this->userService->removeUser($userId);
+        } catch (\Exception $exception) {
+            /** @var Session $session */
+            $session = $request->getSession();
+            $session->getFlashBag()->add(self::ERROR_MESSAGE, 'Could not remove user.');
+        }
+        return new RedirectResponse($this->router->generate('user_list'));
+    }
+
+    /**
+     * @param int $userId
+     * @param Request $request
+     * @return RedirectResponse
+     */
+    public function toggleDisablingUser(int $userId, Request $request)
+    {
+        try {
+            $this->userService->toggleDisablingUser($userId);
+        } catch (\Exception $exception) {
+            /** @var Session $session */
+            $session = $request->getSession();
+            $session->getFlashBag()->add(self::ERROR_MESSAGE, 'Unable to toggle the disable status from the user.');
+        }
+
+        return new RedirectResponse($this->router->generate('user_list'));
+    }
+
+    /**
+     * @param int $userId
+     * @param Request $request
      * @return RedirectResponse|Response
      */
     public function userDetails(int $userId, Request $request)

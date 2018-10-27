@@ -28,7 +28,7 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
      * @return null|UserInterface
      * @throws NonUniqueResultException
      */
-    public function loadUserByUsername($username)
+    public function loadUserByUsername($username): ?User
     {
         return $this->createQueryBuilder('u')
             ->where('u.username = :username OR u.email = :email')
@@ -44,9 +44,20 @@ class UserRepository extends ServiceEntityRepository implements UserLoaderInterf
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function save(User $user)
+    public function save(User $user): void
     {
         $this->getEntityManager()->persist($user);
+        $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @param User $user
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function remove(User $user): void
+    {
+        $this->getEntityManager()->remove($user);
         $this->getEntityManager()->flush();
     }
 }

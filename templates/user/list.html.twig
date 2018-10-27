@@ -10,7 +10,6 @@
             <th scope="col"></th>
             <th scope="col">{% trans %}users_list.column_username{% endtrans %}</th>
             <th scope="col">{% trans %}users_list.column_email{% endtrans %}</th>
-            <th scope="col">{% trans %}users_list.column_active{% endtrans %}</th>
             <th scope="col">{% trans %}user_list.column_action{% endtrans %}</th>
         </tr>
         </thead>
@@ -18,7 +17,7 @@
         {% for user in users %}
             <tr {% if user.isActive == false %}class="text-muted" {% endif %}>
                 <td>
-                    <a href="{{ path('jmose_command_scheduler_action_toggle', {'userId': user.id}) }}" >
+                    <a href="{{ path('user_toggle_disabling', {'userId': user.id}) }}" >
                         {% if user.isActive == true %}
                             <span class="text-success glyphicon glyphicon-off"></span> <span class="sr-only">&nbsp;</span>
                         {% else %}
@@ -28,17 +27,15 @@
                 </td>
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
-                <td>{{ user.isActive }}</td>
                 <td>
                     <a href="{{ path('user_details', {'userId': user.id}) }}" >
                         <span class="text-info glyphicon glyphicon-pencil"></span>
                     </a>
 
-                    <a href="#" data-toggle="modal" data-target="#js-delete-user-modal">
+                    <a href="#js-delete-user-modal-{{ user.id }}" data-toggle="modal" data-url="{{ path('user_delete', {'userId': user.id}) }}">
                         <span class="text-danger glyphicon glyphicon-trash"></span>
                     </a>
-                    {{ include('components/modal/user/deleteModal.html.twig', {'userId': user.id}) }}
-
+                    {{ include('components/modal/user/deleteModal.html.twig') }}
                 </td>
             </tr>
         {% endfor %}

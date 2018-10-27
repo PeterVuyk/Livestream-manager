@@ -12,8 +12,6 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Doctrine\ORM\Persisters\Entity\EntityPersister;
-use Doctrine\ORM\UnitOfWork;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Doctrine\ORM\QueryBuilder;
@@ -67,6 +65,18 @@ class UserRepositoryTest extends TestCase
         $this->entityManager->expects($this->once())->method('persist');
         $this->entityManager->expects($this->once())->method('flush');
         $this->userRepository->save(new User());
+        $this->addToAssertionCount(1);
+    }
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function testRemove()
+    {
+        $this->entityManager->expects($this->once())->method('remove');
+        $this->entityManager->expects($this->once())->method('flush');
+        $this->userRepository->remove(new User());
         $this->addToAssertionCount(1);
     }
 }

@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Routing\RouterInterface;
 
 class RegistrationController extends Controller
 {
@@ -22,20 +23,26 @@ class RegistrationController extends Controller
     /** @var UserService */
     private $userService;
 
+    /** @var RouterInterface */
+    private $router;
+
     /**
      * RegistrationController constructor.
      * @param \Twig_Environment $twig
      * @param FormFactoryInterface $formFactory
      * @param UserService $userService
+     * @param RouterInterface $router
      */
     public function __construct(
         \Twig_Environment $twig,
         FormFactoryInterface $formFactory,
-        UserService $userService
+        UserService $userService,
+        RouterInterface $router
     ) {
         parent::__construct($twig);
         $this->formFactory = $formFactory;
         $this->userService = $userService;
+        $this->router = $router;
     }
 
     /**
@@ -56,7 +63,7 @@ class RegistrationController extends Controller
                 return new RedirectResponse($request->getUri());
             }
             $session->getFlashBag()->add(self::SUCCESS_MESSAGE, 'User successfully created.');
-            return new RedirectResponse($request->getUri());
+            return new RedirectResponse($this->router->generate('user_list'));
         }
         return $this->render(
             'user/registration/register.html.twig',

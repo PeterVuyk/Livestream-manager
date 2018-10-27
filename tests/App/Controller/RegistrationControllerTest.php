@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
+use Symfony\Component\Routing\RouterInterface;
 
 class RegistrationControllerTest extends TestCase
 {
@@ -26,6 +27,9 @@ class RegistrationControllerTest extends TestCase
     /** @var MockObject|UserService */
     private $userService;
 
+    /** @var MockObject|RouterInterface */
+    private $router;
+
     /** @var RegistrationController */
     private $registrationController;
 
@@ -34,7 +38,8 @@ class RegistrationControllerTest extends TestCase
         $twigMock = $this->twigMock = $this->createMock(\Twig_Environment::class);
         $formFactoryMock = $this->formFactory = $this->createMock(FormFactoryInterface::class);
         $userService = $this->userService = $this->createMock(UserService::class);
-        $this->registrationController = new RegistrationController($twigMock, $formFactoryMock, $userService);
+        $router = $this->router = $this->createMock(RouterInterface::class);
+        $this->registrationController = new RegistrationController($twigMock, $formFactoryMock, $userService, $router);
     }
 
     public function testRegisterOpenPage()
@@ -67,6 +72,8 @@ class RegistrationControllerTest extends TestCase
         $sessionMock = $this->createMock(Session::class);
         $sessionMock->method('getFlashBag')->willReturn($flashBagMock);
         ($request = new Request())->setSession($sessionMock);
+
+        $this->router->expects($this->once())->method('generate')->willReturn('url');
 
         $response = $this->registrationController->register($request);
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());

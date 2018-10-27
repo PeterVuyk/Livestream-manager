@@ -1,5 +1,5 @@
 {% trans_default_domain 'JMoseCommandScheduler' %}
-<div class="modal" id="js-delete-scheduled-modal" tabindex="-1" role="dialog">
+<div class="modal" id="js-delete-scheduled-modal-{{ command.id }}" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -12,7 +12,7 @@
                 <p>{% trans %}confirm.delete{% endtrans %}</p>
             </div>
             <div class="modal-footer">
-                <button onclick="location.href='{{ path('jmose_command_scheduler_action_remove', {'id': id}) }}'"
+                <button onclick="location.href='{{ path('jmose_command_scheduler_action_remove', {'id': command.id}) }}'"
                         type="button" class="btn btn-primary">{% trans %}action.delete{% endtrans %}</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans %}action.cancel{% endtrans %}</button>
             </div>
