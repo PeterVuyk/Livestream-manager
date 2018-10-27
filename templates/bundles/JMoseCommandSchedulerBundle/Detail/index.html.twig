@@ -14,7 +14,7 @@
         {{ form_row( scheduledCommandForm.id ) }}
         {{ form_row( scheduledCommandForm.name, {'attr': styleConfiguration|merge({'placeholder': 'name'}) } ) }}
         {{ form_row( scheduledCommandForm.command, {'attr': styleConfiguration } ) }}
-        {{ form_row( scheduledCommandForm.arguments, {'attr': styleConfiguration|merge({'placeholder': '--argument1=foo --bar'}) } ) }}
+        {{ form_row( scheduledCommandForm.arguments, {'attr': styleConfiguration|merge({'placeholder': '90'}) } ) }}
         {{ form_row( scheduledCommandForm.cronExpression, {'attr': styleConfiguration|merge({'placeholder': '*/10 * * * *'}) } ) }}
         {{ form_row( scheduledCommandForm.logFile, {'attr': styleConfiguration|merge({'placeholder': 'myFile.log'}) } ) }}
         {{ form_row( scheduledCommandForm.priority, {'attr': styleConfiguration } ) }}
@@ -34,11 +34,18 @@
         </div>
         {{ form_end( scheduledCommandForm ) }}
     </div>
-    <div class="text-right col-lg-6 col-sm-12">
+    <div class="col-lg-6 col-sm-12">
         <br />
         <img class="img-responsive img-rounded img" alt="{% trans %}recurring_scheduler.detail.image.cron_expression{% endtrans %}" src="{{ asset('build/images/cron-expression.3cbb9aae.png') }}">
-        <a href="https://www.freeformatter.com/cron-expression-generator-quartz.html" target="_blank">
+        <p class="text-right">
+            <a href="https://www.freeformatter.com/cron-expression-generator-quartz.html" target="_blank">
             {% trans %}recurring_scheduler.detail.link.generate_expression{% endtrans %} <span class="glyphicon glyphicon-log-out"></span>
-        </a>
+            </a>
+        </p>
+        <div class="container">
+            <dl class="dl-horizontal">
+                {{ 'recurring_scheduler.detail.arguments_explained'|trans|raw }}
+            </dl>
+        </div>
     </div>
 {% endblock content %}

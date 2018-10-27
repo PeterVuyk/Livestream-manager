@@ -39,7 +39,7 @@
                 <td>{{ command.cronExpression }}</td>
                 <td>{{ command.logFile }}</td>
                 <td>{% if command.disabled == true %}&nbsp;-&nbsp;{% else %}{{ cronExpression('* * * * 6') }}{% endif %}</td>
-                <td>{{ command.lastExecution|date("D M j, G:i:s") }}</td>
+                <td>{{ command.lastExecution|date("D M j, G:i:s", "Europe/Amsterdam") }}</td>
                 <td>{{ command.lastReturnCode }}</td>
                 <td>{{ command.priority }}</td>
                 <td style="min-width: 90px;">

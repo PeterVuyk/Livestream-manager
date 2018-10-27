@@ -23,3 +23,7 @@ action.execute: Execute
 action.execute.title: 'Execute schedule'
 confirm.execute: 'Are you sure to execute the schedule?'
 action.recurring_new: 'Add stream'
+recurring_scheduler.detail.arguments_explained: '<dt>stream:start</dt>
+<dd>An argument is optional, add a whole number in minutes how long the livestream should run. If no argument is given the camera will remain on</dd>
+<dt>stream:stop</dt>
+<dd>No arguments required</dd>'
