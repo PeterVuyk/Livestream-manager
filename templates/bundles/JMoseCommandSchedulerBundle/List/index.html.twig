@@ -38,7 +38,15 @@
                 <td>{{ command.command }} {{ command.arguments }}</td>
                 <td>{{ command.cronExpression }}</td>
                 <td>{{ command.logFile }}</td>
-                <td>{% if command.disabled == true %}&nbsp;-&nbsp;{% else %}{{ cronExpression('* * * * 6') }}{% endif %}</td>
+                <td>
+                    {% if command.disabled == true %}
+                        &nbsp;-&nbsp;
+                    {% elseif command.executeImmediately == true %}
+                        {% trans %}recurring_scheduler.list.execution_next_run{% endtrans %}
+                    {% else %}
+                        {{ cronExpression(command.cronExpression)|date("D M j, G:i:s", "Europe/Amsterdam") }}
+                    {% endif %}
+                </td>
                 <td>{{ command.lastExecution|date("D M j, G:i:s", "Europe/Amsterdam") }}</td>
                 <td>{{ command.lastReturnCode }}</td>
                 <td>{{ command.priority }}</td>

@@ -24,10 +24,10 @@ class CronExpressionExtension extends AbstractExtension
      * @param string $expression
      * @return string
      */
-    public function cronExpression(string $expression): string
+    public function cronExpression(string $expression): \DateTime
     {
         $cron = CronExpression::factory($expression);
-        return $cron->getNextRunDate()->format('D M j, G:i:s');
+        return $cron->getNextRunDate();
     }
 
     /**

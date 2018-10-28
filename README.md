@@ -18,31 +18,46 @@ Below procedure that tell you how to get a development environment running.
 
         cp .env.dist .env
 
-3. Build and run the docker containers in the background.
+3. Run the build file to; install the dependencies, setup the database, setup the service with docker, add the required command for the recurring schedule to crontab.
 
-        docker-compose up -d --build
+        sh build.sh
 
-4. Install php dependencies.
+## Usage
 
-        docker-compose exec php composer install
+Once the installation is complete, you can view the application by URL `localhost:8080`.
 
-5. Install node module dependencies & build/compile JS files through Webpack.
+Let's take a look at the docker images we have.
 
-        docker-compose exec yarn /bin/bash -c "cd /usr/src/app && yarn install && yarn build"
+- `db`: This is the MySQL database container, the database itself is persistent and not stored in the container.
+- `php`: This is the php7.2-FPM container which the application volume is mounted.
+- `web`: This is the NGINX webserver container in which application volume is mounted too.
+- `yarn`: This is the yarn container which is used for the frontend dependencies.
 
-6. Create the database.
+```bash
+$ docker-compose ps
+      Name                    Command                 State                     Ports              
+---------------------------------------------------------------------------------------------------
+livestream-mysql   /entrypoint.sh mysqld           Up (healthy)   0.0.0.0:3306->3306/tcp, 33060/tcp
+livestream-nginx   nginx                           Up             443/tcp, 0.0.0.0:8080->80/tcp    
+livestream-php     docker-php-entrypoint php-fpm   Up             0.0.0.0:9000->9000/tcp           
+livestream-yarn    node                            Up                                              
+```
 
-        docker-compose exec php bin/console doctrine:database:create
+TODO: add a view images with a short description about usage.
 
-7. Run the database migrations to setup the database tables.
+Go to `localhost:8080/admin` page for the full user manual.
 
-        docker-compose exec php bin/console doctrine:migrations:migrate
+## Useful commands
 
-8. Extract an update the translation content.
-
-        docker-compose exec php bin/console translation:update --dump-messages --force en
-
-You are done, you can view the application on the URL: `localhost:8080`.
+    # Stop all running Docker containers
+    $ docker-compose down
+    
+    # With the following commands you can enter each docker container.
+    # Replace <servicename> with 'yarn', 'php', 'web' or 'db':
+    $ docker-compose exec <servicename> bash
+    
+    # MySQL commands
+    $ docker-compose exec db /bin/bash -c "mysql -u<username> -p<password>"
 
 ## TODO: Running the tests
 

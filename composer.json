@@ -9,7 +9,6 @@
         "ext-json": "*",
         "doctrine/doctrine-migrations-bundle": "^1.3",
         "doctrine/orm": "^2.6",
-        "dragonmantank/cron-expression": "^2.2",
         "jmose/command-scheduler-bundle": "^2.0",
         "nelmio/api-doc-bundle": "^3.3",
         "symfony/asset": "*",

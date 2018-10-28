@@ -23,7 +23,7 @@ class CronExpressionExtensionTest extends TestCase
 
     public function testCronExpression()
     {
-        $this->assertSame('Sat Oct 27, 0:00:00', $this->cronExpressionExtension->cronExpression('* * * * 6'));
+        $this->assertInstanceOf(\DateTime::class, $this->cronExpressionExtension->cronExpression('* * * * 6'));
     }
 
     public function testGetName()
