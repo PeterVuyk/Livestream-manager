@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-WORKING_DIRECTORY=$(pwd);
-
 # Build and run the docker containers in the background.
 docker-compose up -d --build
 

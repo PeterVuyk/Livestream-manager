@@ -2,7 +2,9 @@ navigation.home: Home
 navigation.recurring_schedule: 'Recurring schedule'
 navigation.onetime_schedule: 'Onetime schedule'
 navigation.users: Users
-navigation.register: Register
+navigation.user_list: 'Authorized users'
+navigation.register: 'Register user'
+navigation.account_name: 'Account: '
 user.list.title: 'Authorized users'
 admin.list.title: 'Admin page'
 user.details.title: 'User details'
