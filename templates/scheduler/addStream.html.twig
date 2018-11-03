@@ -1,0 +1,42 @@
+{% extends "base.html.twig" %}
+{% block title %}{% trans %}recurring_scheduler.new.title{% endtrans %}{% endblock title %}
+{% block pageTitle %}{% trans %}recurring_scheduler.new.title{% endtrans %}{% endblock pageTitle %}
+
+{% block content %}
+    {% set styleConfiguration = {'class': 'form-control'} %}
+    <div class="col-lg-6 col-sm-12">
+        {{ form_start(form) }}
+        {{ form_row(form.id) }}
+        {{ form_row(form.name, {'attr': styleConfiguration|merge({'placeholder': 'name'}) }) }}
+        {{ form_row(form.command, {'attr': styleConfiguration } ) }}
+        {{ form_row(form.cronExpression, {'attr': styleConfiguration|merge({'placeholder': '*/10 * * * *'}) }) }}
+        {{ form_row(form.priority, {'attr': styleConfiguration } ) }}
+        <div>
+            {{ form_widget(form.runWithNextExecution) }}
+            {{ form_label(form.runWithNextExecution) }}
+        </div>
+        <div>
+            {{ form_widget( form.disabled ) }}
+            {{ form_label( form.disabled) }}
+        </div>
+        <div class="row">
+            <a href="{{ path('scheduler_list') }}" class="btn btn-default btn-lg" role="button">Cancel</a>
+            {{ form_widget(form.save, {'attr': {'class': 'btn btn-success btn-lg pull-right'} }) }}
+        </div>
+        {{ form_end(form) }}
+    </div>
+    <div class="col-lg-6 col-sm-12">
+        <br />
+        <img class="img-responsive img-rounded img" alt="{% trans %}recurring_scheduler.detail.image.cron_expression{% endtrans %}" src="{{ asset('build/images/cron-expression.3cbb9aae.png') }}">
+        <p class="text-right">
+            <a href="https://www.freeformatter.com/cron-expression-generator-quartz.html" target="_blank">
+            {% trans %}recurring_scheduler.detail.link.generate_expression{% endtrans %} <span class="glyphicon glyphicon-log-out"></span>
+            </a>
+        </p>
+        <div class="container">
+            <dl class="dl-horizontal">
+                {{ 'recurring_scheduler.detail.arguments_explained'|trans|raw }}
+            </dl>
+        </div>
+    </div>
+{% endblock content %}

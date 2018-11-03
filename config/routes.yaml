@@ -2,6 +2,15 @@ api:
   prefix: /api/v1
   resource: "routes/routes_api.yaml"
 
+user:
+  prefix: /
+  resource: "routes/user.yaml"
+
+home_page:
+  path: /
+  defaults: { _controller: App\Controller\HomepageController:home }
+  methods: [GET]
+
 admin_page:
   path: /admin
   defaults: { _controller: App\Controller\HomepageController:admin }
@@ -12,27 +21,22 @@ registration:
   defaults: { _controller: App\Controller\RegistrationController:register }
   methods: [GET, POST]
 
-user_list:
-  path: /admin/users
-  defaults: { _controller: App\Controller\UserManagementController:usersList }
-  methods: [GET]
-
-user_details:
-  path: /admin/details/{userId}
-  defaults: { _controller: App\Controller\UserManagementController:userDetails }
-  methods: [GET, POST]
-
-user_toggle_disabling:
-  path: /admin/users/disable/{userId}
-  defaults: { _controller: App\Controller\UserManagementController:toggleDisablingUser }
-  methods: [GET]
-
-user_delete:
-  path: /admin/users/delete/{userId}
-  defaults: { _controller: App\Controller\UserManagementController:deleteUser }
-  methods: [GET]
-
 app.swagger_ui:
   path: /api/doc
   methods: GET
   defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
+
+scheduler_list:
+  path: /admin/schedule/list
+  defaults: { _controller: App\Controller\RecurringSchedulerController:list }
+  methods: [GET]
+
+scheduler_create:
+  path: /admin/schedule/details/create-stream
+  defaults: { _controller: App\Controller\RecurringSchedulerController:createStream }
+  methods: [GET, POST]
+
+scheduler_edit:
+  path: /admin/schedule/details/edit-stream/{scheduleId}
+  defaults: { _controller: App\Controller\RecurringSchedulerController:editStream }
+  methods: [GET, POST]

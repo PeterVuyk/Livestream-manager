@@ -5,7 +5,6 @@ namespace App\Tests\App\Repository;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;

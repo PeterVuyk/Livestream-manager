@@ -1,0 +1,24 @@
+user_logout:
+  path: /logout
+  defaults: { _controller: App\Controller\UserAuthenticationController:logout }
+  methods: [GET]
+
+user_list:
+  path: /admin/users
+  defaults: { _controller: App\Controller\UserManagementController:usersList }
+  methods: [GET]
+
+user_details:
+  path: /admin/details/{userId}
+  defaults: { _controller: App\Controller\UserManagementController:userDetails }
+  methods: [GET, POST]
+
+user_toggle_disabling:
+  path: /admin/users/disable/{userId}
+  defaults: { _controller: App\Controller\UserManagementController:toggleDisablingUser }
+  methods: [GET]
+
+user_delete:
+  path: /admin/users/delete/{userId}
+  defaults: { _controller: App\Controller\UserManagementController:deleteUser }
+  methods: [GET]

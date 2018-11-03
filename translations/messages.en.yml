@@ -1,14 +1,18 @@
-navigation.home: Home
+navigation.admin_home: Admin
 navigation.recurring_schedule: 'Recurring schedule'
 navigation.onetime_schedule: 'Onetime schedule'
 navigation.users: Users
 navigation.user_list: 'Authorized users'
 navigation.register: 'Register user'
-navigation.account_name: 'Account: '
+navigation.account_name: 'Logged in - '
+navigation.personal_details: 'My details'
+navigation.sign_out: 'Sign out'
+navigation.login_path: 'Login'
 user.list.title: 'Authorized users'
 admin.list.title: 'Admin page'
 user.details.title: 'User details'
 user.registration.title: 'Register user'
+home.list.title: 'Homepage'
 registration_form.label_username: 'Username:'
 registration_form.label_email: 'Email:'
 registration_form.label_password: 'Password:'
@@ -28,3 +32,36 @@ action.delete.title: 'Delete user'
 confirm.delete: 'Are you sure to delete this user?'
 action.delete: Delete
 action.cancel: Cancel
+
+recurring_scheduler.detail.save: 'save'
+recurring_scheduler.detail.disabled: 'disable'
+recurring_scheduler.detail.priority: 'Priority'
+recurring_scheduler.detail.cronExpression: 'Cron expression'
+recurring_scheduler.detail.command: 'Command'
+recurring_scheduler.detail.name: 'Name'
+recurring_scheduler.detail.run_with_next_execution: 'Run with next execution'
+recurring_scheduler.detail.link.generate_expression: 'Generate expression'
+recurring_scheduler.detail.image.cron_expression: 'Cron expression explained'
+recurring_scheduler.new.title: 'Add new schedule'
+recurring_scheduler.list.detail.last_execution_failed: 'Failed'
+recurring_scheduler.list.detail.last_execution_success: 'Success'
+recurring_scheduler.list.title: 'Recurring streams'
+recurring_scheduler.list.detail.name: Name
+recurring_scheduler.list.detail.command: Command
+recurring_scheduler.list.detail.cronExpression: 'Cron expression'
+recurring_scheduler.list.detail.lastExecution: 'Last run'
+recurring_scheduler.list.detail.nextExecution: 'Next run'
+recurring_scheduler.list.detail.lastReturnSuccessful: 'Last run successful'
+recurring_scheduler.list.detail.priority: Priority
+recurring_scheduler.list.detail.actions: Actions
+recurring_scheduler.list.execution_next_run: 'Next execution'
+action.unlock: Unlock
+confirm.unlock: 'Are you sure to unlock the schedule?'
+action.unlock.title: 'Unlock schedule'
+action.edit: 'Edit schedule'
+action.execute: Execute
+action.execute.title: 'Execute schedule'
+confirm.execute: 'Are you sure to execute the schedule?'
+action.recurring_new: 'Add stream'
+flash.execute: 'Command will be done with the next execution'
+recurring_scheduler.detail.arguments_explained: '<dt>stream:start</dt> <dd>An argument is optional, add a whole number in minutes how long the livestream should run. If no argument is given the camera will remain on</dd> <dt>stream:stop</dt> <dd>No arguments required</dd>'

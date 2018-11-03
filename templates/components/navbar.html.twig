@@ -2,10 +2,12 @@
     <div class="container">
         <ul class="nav navbar-nav">
             <li class="{% if active_page is defined and active_page == 'admin_home' %}active{% endif %}">
-                <a href="{{ path('admin_page') }}">{{ 'navigation.home'|trans }}</a>
+                <a href="{{ path('admin_page') }}">{{ 'navigation.admin_home'|trans }}</a>
             </li>
             <li class="dropdown {% if active_page is defined and active_page == 'users' %}active{% endif %}">
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">{{ 'navigation.users'|trans }}&nbsp;<span class="caret"></span></a>
+                <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                    {{ 'navigation.users'|trans }}&nbsp;<span class="caret"></span>
+                </a>
                 <ul class="dropdown-menu">
                     <li><a href="{{ path('user_list') }}">{{ 'navigation.user_list'|trans }}</a></li>
                     <li><a href="{{ path('registration') }}">{{ 'navigation.register'|trans }}</a></li>
@@ -18,14 +20,30 @@
                 <a href="#">{{ 'navigation.onetime_schedule'|trans }}</a>
             </li>
         </ul>
-        {% if app.user is defined and not null %}
-            <ul class="nav navbar-nav navbar-right">
+        <ul class="nav navbar-nav navbar-right">
+            {% if app.user is null %}
                 <li>
-                    <a href="{{ path('user_details', {userId: app.user.id}) }}">
-                        {{ 'navigation.account_name'|trans }}{{ app.user.username }}
-                    </a>
+                    <a href="{{ path('admin_page') }}">{{ 'navigation.login_path'|trans }}</a>
                 </li>
-            </ul>
-        {% endif %}
+            {% else %}
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
+                        {{ 'navigation.account_name'|trans }}{{ app.user.username }}&nbsp;<span class="caret"></span>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li>
+                            <a href="{{ path('user_details', {userId: app.user.id}) }}">
+                                {{ 'navigation.personal_details'|trans }}
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ path('user_logout') }}">
+                                {{ 'navigation.sign_out'|trans }}
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+            {% endif %}
+        </ul>
     </div>
 </div>

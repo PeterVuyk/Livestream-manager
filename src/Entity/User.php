@@ -17,6 +17,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
 class User implements UserInterface, \Serializable
 {
     /**
+     * @var int
      * @ORM\Column(type="integer")
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="AUTO")
@@ -24,31 +25,37 @@ class User implements UserInterface, \Serializable
     private $id;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=25, unique=true)
      */
     private $username;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=64)
      */
     private $password;
 
     /**
+     * @var string
      * @ORM\Column(type="string", length=254, unique=true)
      */
     private $email;
 
     /**
+     * @var string
      * @Assert\Length(max=4096)
      */
     private $plainPassword;
 
     /**
+     * @var bool
      * @ORM\Column(name="is_active", type="boolean")
      */
     private $isActive;
 
     /**
+     * @var array
      * @ORM\Column(type="array")
      */
     private $roles;

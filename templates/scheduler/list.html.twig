@@ -1,0 +1,79 @@
+{% extends "base.html.twig" %}
+{% set active_page = 'recurring_schedule' %}
+{% block title %}{{ 'recurring_scheduler.list.title'|trans }}{% endblock title %}
+{% block pageTitle %}{{ 'recurring_scheduler.list.title'|trans }}{% endblock pageTitle %}
+
+{% block content %}
+    <div class="table-responsive table-stripped">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>{{ "recurring_scheduler.list.detail.name"|trans }}</th>
+                <th>{{ "recurring_scheduler.list.detail.command"|trans }}</th>
+                <th>{{ "recurring_scheduler.list.detail.cronExpression"|trans }}</th>
+                <th>{{ "recurring_scheduler.list.detail.nextExecution"|trans }}</th>
+                <th>{{ "recurring_scheduler.list.detail.lastExecution"|trans }}</th>
+                <th>{{ "recurring_scheduler.list.detail.lastReturnSuccessful"|trans }}</th>
+                <th>{{ "recurring_scheduler.list.detail.priority"|trans }}</th>
+                <th>{{ "recurring_scheduler.list.detail.actions"|trans }}</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% for scheduledItem in scheduledItems %}
+            <tr {% if scheduledItem.disabled == true %}class="text-muted" {% endif %}>
+                <td>
+                    <a href="{{ path('jmose_command_scheduler_action_toggle', {'id': scheduledItem.id}) }}" >
+                    {% if scheduledItem.disabled == true %}
+                        <span class="text-danger glyphicon glyphicon-off"></span> <span class="sr-only">&nbsp;</span>
+                    {% else %}
+                        <span class="text-success glyphicon glyphicon-off"></span> <span class="sr-only">&nbsp;</span>
+                    {% endif %}
+                    </a>
+                </td>
+                <td>{{ scheduledItem.name }}</td>
+                <td>{{ scheduledItem.command }}</td>
+                <td>{{ scheduledItem.cronExpression }}</td>
+                <td>
+                    {% if scheduledItem.disabled == true %}
+                        &nbsp;-&nbsp;
+                    {% elseif scheduledItem.runWithNextExecution == true %}
+                        {% trans %}recurring_scheduler.list.execution_next_run{% endtrans %}
+                    {% else %}
+                        {{ cronExpression(scheduledItem.cronExpression)|date("D M j, G:i:s", "Europe/Amsterdam") }}
+                    {% endif %}
+                </td>
+                <td>{% if scheduledItem.lastExecution is null %}-{% else %}{{ scheduledItem.lastExecution|date("D M j, G:i:s", "Europe/Amsterdam") }}{% endif %}</td>
+                <td>
+                    {% if scheduledItem.lastExecution is null %}
+                        -
+                    {% elseif scheduledItem.lastExecution == true %}
+                        {{ 'recurring_scheduler.list.detail.last_execution_success'|trans }}
+                    {% else %}
+                        {{ 'recurring_scheduler.list.detail.last_execution_failed'|trans }}
+                    {% endif %}
+                </td>
+                <td>{{ scheduledItem.priority }}</td>
+                <td style="min-width: 90px;">
+                    <a href="{{ path('scheduler_edit', {'scheduleId': scheduledItem.id}) }}" >
+                        <span class="text-info glyphicon glyphicon-pencil"></span> <span class="sr-only">{{ "action.edit"|trans }}</span>
+                    </a>
+
+                    <a href="#js-delete-scheduled-modal-{{ scheduledItem.id }}" data-toggle="modal">
+                        <span class="text-danger glyphicon glyphicon-trash"></span>
+                    </a>
+                    {{ include('components/modal/recurringScheduler/deleteModal.html.twig') }}
+
+                    <a href="#js-execute-scheduled-modal-{{ scheduledItem.id }}" data-toggle="modal">
+                        <span class="text-{% if scheduledItem.runWithNextExecution == true %}muted{% else %}success{% endif %} glyphicon glyphicon-play"></span>
+                    </a>
+                    {{ include('components/modal/recurringScheduler/executeModal.html.twig') }}
+                </td>
+            </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    </div>
+    <a href="{{ path('scheduler_create') }}" class="btn btn-primary btn-lg pull-right" role="button">{{ "action.recurring_new"|trans }}</a>
+{% endblock content %}
