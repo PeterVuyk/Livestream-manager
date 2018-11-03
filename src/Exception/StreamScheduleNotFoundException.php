@@ -7,6 +7,10 @@ class StreamScheduleNotFoundException extends \Exception
 {
     private const TOGGLE_DISABLING_STREAM_SCHEDULE_MESSAGE =
         'Stream schedule not found with id: %s. Could not toggle disabling recurring schedule';
+    private const NEXT_EXECUTION_MESSAGE =
+        'Stream schedule not found with id: %s. Could not execute scheduler with next run';
+    private const REMOVE_SCHEDULE_MESSAGE =
+        'Stream schedule not found with id: %s. Could not remove schedule';
 
     public function __construct(string $reason, \Throwable $previous = null)
     {
@@ -16,5 +20,15 @@ class StreamScheduleNotFoundException extends \Exception
     public static function couldNotDisableSchedule(string $scheduleId)
     {
         return new self(sprintf(self::TOGGLE_DISABLING_STREAM_SCHEDULE_MESSAGE, $scheduleId));
+    }
+
+    public static function couldNotRunWithNextExecution(string $scheduleId)
+    {
+        return new self(sprintf(self::NEXT_EXECUTION_MESSAGE, $scheduleId));
+    }
+
+    public static function couldNotRemoveSchedule(string $scheduleId)
+    {
+        return new self(sprintf(self::REMOVE_SCHEDULE_MESSAGE, $scheduleId));
     }
 }

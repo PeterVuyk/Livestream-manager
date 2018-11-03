@@ -41,4 +41,14 @@ class StreamScheduleRepositoryTest extends TestCase
         $this->entityManager->expects($this->once())->method('flush');
         $this->streamScheduleRepository->save(new StreamSchedule());
     }
+
+    /**
+     * @throws ORMException
+     */
+    public function testRemove()
+    {
+        $this->entityManager->expects($this->once())->method('remove');
+        $this->entityManager->expects($this->once())->method('flush');
+        $this->streamScheduleRepository->remove(new StreamSchedule());
+    }
 }

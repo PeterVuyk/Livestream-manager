@@ -45,3 +45,13 @@ scheduler_toggle_disabling:
   path: /admin/schedule/details/disable/{scheduleId}
   defaults: { _controller: App\Controller\RecurringSchedulerController:toggleDisablingSchedule }
   methods: [GET]
+
+scheduler_execution:
+  path: /admin/schedule/details/execution/{scheduleId}
+  defaults: { _controller: App\Controller\RecurringSchedulerController:executeScheduleWithNextExecution }
+  methods: [GET]
+
+scheduler_remove:
+  path: /admin/schedule/details/remove/{scheduleId}
+  defaults: { _controller: App\Controller\RecurringSchedulerController:removeSchedule }
+  methods: [GET]

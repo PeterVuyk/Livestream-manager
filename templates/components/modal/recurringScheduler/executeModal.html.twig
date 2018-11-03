@@ -12,7 +12,7 @@
                 <p>{% trans %}confirm.execute{% endtrans %}</p>
             </div>
             <div class="modal-footer">
-                <button onclick="location.href='{{ path('jmose_command_scheduler_action_execute', {'id': scheduledItem.id}) }}'"
+                <button onclick="location.href='{{ path('scheduler_execution', {'scheduleId': scheduledItem.id}) }}'"
                         type="button" class="btn btn-primary">{% trans %}action.execute{% endtrans %}</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans %}action.cancel{% endtrans %}</button>
             </div>

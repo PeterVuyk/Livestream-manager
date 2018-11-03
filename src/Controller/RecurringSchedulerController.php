@@ -128,4 +128,32 @@ class RecurringSchedulerController extends Controller
         }
         return new RedirectResponse($this->router->generate('scheduler_list'));
     }
+
+    /**
+     * @param string $scheduleId
+     * @return RedirectResponse
+     */
+    public function executeScheduleWithNextExecution(string $scheduleId)
+    {
+        try {
+            $this->schedulerService->executeScheduleWithNextExecution($scheduleId);
+        } catch (\Exception $exception) {
+            $this->flashBag->add(self::ERROR_MESSAGE, 'Could not toggle schedule with next execution.');
+        }
+        return new RedirectResponse($this->router->generate('scheduler_list'));
+    }
+
+    /**
+     * @param string $scheduleId
+     * @return RedirectResponse
+     */
+    public function removeSchedule(string $scheduleId)
+    {
+        try {
+            $this->schedulerService->removeSchedule($scheduleId);
+        } catch (\Exception $exception) {
+            $this->flashBag->add(self::ERROR_MESSAGE, 'Could not remove schedule.');
+        }
+        return new RedirectResponse($this->router->generate('scheduler_list'));
+    }
 }

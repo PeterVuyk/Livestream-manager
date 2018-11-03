@@ -30,4 +30,14 @@ class StreamScheduleRepository extends ServiceEntityRepository
         $this->getEntityManager()->persist($streamSchedule);
         $this->getEntityManager()->flush();
     }
+
+    /**
+     * @param StreamSchedule $streamSchedule
+     * @throws ORMException
+     */
+    public function remove(StreamSchedule $streamSchedule)
+    {
+        $this->getEntityManager()->remove($streamSchedule);
+        $this->getEntityManager()->flush();
+    }
 }

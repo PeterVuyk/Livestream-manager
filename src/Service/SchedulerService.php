@@ -65,4 +65,34 @@ class SchedulerService
         $streamSchedule->setDisabled(!$streamSchedule->getDisabled());
         $this->saveStream($streamSchedule);
     }
+
+    /**
+     * @param string $scheduleId
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws StreamScheduleNotFoundException
+     */
+    public function executeScheduleWithNextExecution(string $scheduleId): void
+    {
+        $streamSchedule = $this->getScheduleById($scheduleId);
+        if (!$streamSchedule instanceof StreamSchedule) {
+            throw StreamScheduleNotFoundException::couldNotRunWithNextExecution($scheduleId);
+        }
+        $streamSchedule->setRunWithNextExecution(true);
+        $this->saveStream($streamSchedule);
+    }
+
+    /**
+     * @param string $scheduleId
+     * @throws StreamScheduleNotFoundException
+     * @throws ORMException
+     */
+    public function removeSchedule(string $scheduleId): void
+    {
+        $streamSchedule = $this->getScheduleById($scheduleId);
+        if (!$streamSchedule instanceof StreamSchedule) {
+            throw StreamScheduleNotFoundException::couldNotRemoveSchedule($scheduleId);
+        }
+        $this->streamScheduleRepository->remove($streamSchedule);
+    }
 }

@@ -14,7 +14,6 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 
 class RecurringSchedulerControllerTest extends TestCase
@@ -200,6 +199,51 @@ class RecurringSchedulerControllerTest extends TestCase
         $this->flashBagMock->expects($this->once())->method('add');
 
         $result = $this->recurringSchedulerController->toggleDisablingSchedule('id');
+        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+    }
+
+    public function testExecuteScheduleWithNextExecutionSuccess()
+    {
+        $this->schedulerServiceMock->expects($this->once())->method('executeScheduleWithNextExecution');
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $result = $this->recurringSchedulerController->executeScheduleWithNextExecution('id');
+        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+    }
+
+    public function testExecuteScheduleWithNextExecutionFailed()
+    {
+        $this->schedulerServiceMock->expects($this->once())
+            ->method('executeScheduleWithNextExecution')
+            ->willThrowException(new StreamScheduleNotFoundException('id'));
+
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $this->flashBagMock->expects($this->once())->method('add');
+
+        $result = $this->recurringSchedulerController->executeScheduleWithNextExecution('id');
+        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+    }
+
+    public function testRemoveScheduleSuccess()
+    {
+        $this->schedulerServiceMock->expects($this->once())->method('removeSchedule');
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $result = $this->recurringSchedulerController->removeSchedule('id');
+        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+    }
+
+    public function testRemoveScheduleFailed()
+    {
+        $this->schedulerServiceMock->expects($this->once())
+            ->method('removeSchedule')
+            ->willThrowException(new StreamScheduleNotFoundException('id'));
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $this->flashBagMock->expects($this->once())->method('add');
+
+        $result = $this->recurringSchedulerController->removeSchedule('id');
         $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
     }
 }

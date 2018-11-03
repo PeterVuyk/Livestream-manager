@@ -74,4 +74,36 @@ class SchedulerServiceTest extends TestCase
         $this->scheduleService->toggleDisablingSchedule('id');
         $this->addToAssertionCount(1);
     }
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws StreamScheduleNotFoundException
+     */
+    public function testToggleScheduleWithNextExecution()
+    {
+        $streamSchedule = new StreamSchedule();
+        $streamSchedule->setDisabled(false);
+        $this->streamScheduleRepository->expects($this->once())
+            ->method('findOneBy')
+            ->willReturn($streamSchedule);
+        $this->streamScheduleRepository->expects($this->once())->method('save');
+
+        $this->scheduleService->executeScheduleWithNextExecution('id');
+        $this->addToAssertionCount(1);
+    }
+
+    /**
+     * @throws ORMException
+     * @throws StreamScheduleNotFoundException
+     */
+    public function testRemoveSchedule()
+    {
+        $this->streamScheduleRepository->expects($this->once())
+            ->method('getScheduleById')
+            ->willReturn(new StreamSchedule());
+
+        $this->scheduleService->removeSchedule('id');
+        $this->addToAssertionCount(1);
+    }
 }
