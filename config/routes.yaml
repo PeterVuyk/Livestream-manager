@@ -40,3 +40,8 @@ scheduler_edit:
   path: /admin/schedule/details/edit-stream/{scheduleId}
   defaults: { _controller: App\Controller\RecurringSchedulerController:editStream }
   methods: [GET, POST]
+
+scheduler_toggle_disabling:
+  path: /admin/schedule/details/disable/{scheduleId}
+  defaults: { _controller: App\Controller\RecurringSchedulerController:toggleDisablingSchedule }
+  methods: [GET]

@@ -5,6 +5,7 @@ namespace App\Tests\App\Controller;
 
 use App\Controller\RecurringSchedulerController;
 use App\Entity\StreamSchedule;
+use App\Exception\StreamScheduleNotFoundException;
 use App\Service\SchedulerService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -33,17 +34,22 @@ class RecurringSchedulerControllerTest extends TestCase
     /** @var RouterInterface|MockObject */
     private $routerMock;
 
+    /** @var FlashBagInterface|MockObject */
+    private $flashBagMock;
+
     public function setUp()
     {
         $this->twigMock = $this->createMock(\Twig_Environment::class);
         $this->schedulerServiceMock = $this->createMock(SchedulerService::class);
         $this->formFactoryMock = $this->createMock(FormFactoryInterface::class);
-        $this->routerMock= $this->createMock(RouterInterface::class);
+        $this->routerMock = $this->createMock(RouterInterface::class);
+        $this->flashBagMock = $this->createMock(FlashBagInterface::class);
         $this->recurringSchedulerController = new RecurringSchedulerController(
             $this->schedulerServiceMock,
             $this->twigMock,
             $this->formFactoryMock,
-            $this->routerMock
+            $this->routerMock,
+            $this->flashBagMock
         );
     }
 
@@ -77,17 +83,13 @@ class RecurringSchedulerControllerTest extends TestCase
         $formInterfaceMock->expects($this->once())->method('getData')->willReturn(new StreamSchedule());
         $this->formFactoryMock->expects($this->once())->method('create')->willReturn($formInterfaceMock);
 
-        $flashBagMock = $this->createMock(FlashBagInterface::class);
-        $flashBagMock->expects($this->once())->method('add');
-        $sessionMock = $this->createMock(Session::class);
-        $sessionMock->method('getFlashBag')->willReturn($flashBagMock);
-        ($request = new Request())->setSession($sessionMock);
+        $this->flashBagMock->expects($this->once())->method('add');
 
         $this->schedulerServiceMock->expects($this->once())->method('saveStream');
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
-        $result = $this->recurringSchedulerController->createStream($request);
+        $result = $this->recurringSchedulerController->createStream(new Request());
         $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
     }
 
@@ -100,11 +102,7 @@ class RecurringSchedulerControllerTest extends TestCase
         $formInterfaceMock->expects($this->once())->method('getData')->willReturn(new StreamSchedule());
         $this->formFactoryMock->expects($this->once())->method('create')->willReturn($formInterfaceMock);
 
-        $flashBagMock = $this->createMock(FlashBagInterface::class);
-        $flashBagMock->expects($this->once())->method('add');
-        $sessionMock = $this->createMock(Session::class);
-        $sessionMock->method('getFlashBag')->willReturn($flashBagMock);
-        ($request = new Request())->setSession($sessionMock);
+        $this->flashBagMock->expects($this->once())->method('add');
 
         $this->schedulerServiceMock->expects($this->once())
             ->method('saveStream')
@@ -112,7 +110,7 @@ class RecurringSchedulerControllerTest extends TestCase
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
-        $result = $this->recurringSchedulerController->createStream($request);
+        $result = $this->recurringSchedulerController->createStream(new Request());
         $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
     }
 
@@ -128,13 +126,11 @@ class RecurringSchedulerControllerTest extends TestCase
             ->method('getScheduleById')
             ->willReturn(new StreamSchedule());
 
-        $sessionMock = $this->createMock(Session::class);
-        $sessionMock->expects($this->never())->method('getFlashBag');
-        ($request = new Request())->setSession($sessionMock);
+        $this->flashBagMock->expects($this->never())->method('add');
 
         $this->twigMock = $this->createMock(\Twig_Environment::class);
 
-        $result = $this->recurringSchedulerController->editStream('id', $request);
+        $result = $this->recurringSchedulerController->editStream('id', new Request());
         $this->assertSame(Response::HTTP_OK, $result->getStatusCode());
     }
 
@@ -152,15 +148,11 @@ class RecurringSchedulerControllerTest extends TestCase
             ->willReturn(new StreamSchedule());
         $this->schedulerServiceMock->expects($this->once())->method('saveStream');
 
-        $flashBagMock = $this->createMock(FlashBagInterface::class);
-        $flashBagMock->expects($this->once())->method('add');
-        $sessionMock = $this->createMock(Session::class);
-        $sessionMock->method('getFlashBag')->willReturn($flashBagMock);
-        ($request = new Request())->setSession($sessionMock);
+        $this->flashBagMock->expects($this->once())->method('add');
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
-        $result = $this->recurringSchedulerController->editStream('id', $request);
+        $result = $this->recurringSchedulerController->editStream('id', new Request());
         $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
     }
 
@@ -180,15 +172,34 @@ class RecurringSchedulerControllerTest extends TestCase
             ->method('saveStream')
             ->willThrowException(New \Exception());
 
-        $flashBagMock = $this->createMock(FlashBagInterface::class);
-        $flashBagMock->expects($this->once())->method('add');
-        $sessionMock = $this->createMock(Session::class);
-        $sessionMock->method('getFlashBag')->willReturn($flashBagMock);
-        ($request = new Request())->setSession($sessionMock);
+        $this->flashBagMock->expects($this->once())->method('add');
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
-        $result = $this->recurringSchedulerController->editStream('id', $request);
+        $result = $this->recurringSchedulerController->editStream('id', new Request());
+        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+    }
+
+    public function testToggleDisablingScheduleSuccess()
+    {
+        $this->schedulerServiceMock->expects($this->once())->method('toggleDisablingSchedule');
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $result = $this->recurringSchedulerController->toggleDisablingSchedule('id');
+        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+    }
+
+    public function testToggleDisablingScheduleFailed()
+    {
+        $this->schedulerServiceMock->expects($this->once())
+            ->method('toggleDisablingSchedule')
+            ->willThrowException(new StreamScheduleNotFoundException('id'));
+
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $this->flashBagMock->expects($this->once())->method('add');
+
+        $result = $this->recurringSchedulerController->toggleDisablingSchedule('id');
         $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
     }
 }

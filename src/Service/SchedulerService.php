@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\StreamSchedule;
+use App\Exception\StreamScheduleNotFoundException;
 use App\Repository\StreamScheduleRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -47,5 +48,21 @@ class SchedulerService
     public function getScheduleById(string $id): ?StreamSchedule
     {
         return $this->streamScheduleRepository->findOneBy(['id' => $id]);
+    }
+
+    /**
+     * @param string $scheduleId
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @throws StreamScheduleNotFoundException
+     */
+    public function toggleDisablingSchedule(string $scheduleId): void
+    {
+        $streamSchedule = $this->getScheduleById($scheduleId);
+        if (!$streamSchedule instanceof StreamSchedule) {
+            throw StreamScheduleNotFoundException::couldNotDisableSchedule($scheduleId);
+        }
+        $streamSchedule->setDisabled(!$streamSchedule->getDisabled());
+        $this->saveStream($streamSchedule);
     }
 }

@@ -24,7 +24,7 @@
         {% for scheduledItem in scheduledItems %}
             <tr {% if scheduledItem.disabled == true %}class="text-muted" {% endif %}>
                 <td>
-                    <a href="{{ path('jmose_command_scheduler_action_toggle', {'id': scheduledItem.id}) }}" >
+                    <a href="{{ path('scheduler_toggle_disabling', {'scheduleId': scheduledItem.id}) }}" >
                     {% if scheduledItem.disabled == true %}
                         <span class="text-danger glyphicon glyphicon-off"></span> <span class="sr-only">&nbsp;</span>
                     {% else %}
