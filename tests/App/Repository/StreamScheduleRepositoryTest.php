@@ -5,6 +5,8 @@ namespace App\Tests\App\Repository;
 
 use App\Entity\StreamSchedule;
 use App\Repository\StreamScheduleRepository;
+use Doctrine\ORM\Persisters\Entity\EntityPersister;
+use Doctrine\ORM\UnitOfWork;
 use PHPUnit\Framework\TestCase;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -50,5 +52,17 @@ class StreamScheduleRepositoryTest extends TestCase
         $this->entityManager->expects($this->once())->method('remove');
         $this->entityManager->expects($this->once())->method('flush');
         $this->streamScheduleRepository->remove(new StreamSchedule());
+    }
+
+    public function testFindActiveCommands()
+    {
+        $entityPersisterMock = $this->createMock(EntityPersister::class);
+        $entityPersisterMock->expects($this->once())->method('loadAll')->willReturn([new StreamSchedule()]);
+        $unitOfWorkMock = $this->createMock(UnitOfWork::class);
+        $unitOfWorkMock->expects($this->once())->method('getEntityPersister')->willReturn($entityPersisterMock);
+        $this->entityManager->expects($this->once())->method('getUnitOfWork')->willReturn($unitOfWorkMock);
+
+        $streamSchedules = $this->streamScheduleRepository->findActiveCommands();
+        $this->assertInstanceOf(StreamSchedule::class, $streamSchedules[0]);
     }
 }

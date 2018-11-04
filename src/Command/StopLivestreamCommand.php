@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class StopLivestreamCommand extends Command
 {
-    const COMMAND_START_STREAM = 'stream:stop';
+    const COMMAND_STOP_STREAM = 'stream:stop';
 
     /** @var StopStreamService */
     private $stopStreamService;
@@ -28,7 +28,7 @@ class StopLivestreamCommand extends Command
     protected function configure()
     {
         $this
-            ->setName(self::COMMAND_START_STREAM)
+            ->setName(self::COMMAND_STOP_STREAM)
             ->setDescription('Start the livestream.');
     }
 

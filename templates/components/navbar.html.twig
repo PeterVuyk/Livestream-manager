@@ -14,7 +14,7 @@
                 </ul>
             </li>
             <li class="{% if active_page is defined and active_page == 'recurring_schedule' %}active{% endif %}">
-                <a href="{{ path('jmose_command_scheduler_list') }}">{{ 'navigation.recurring_schedule'|trans }}</a>
+                <a href="{{ path('scheduler_list') }}">{{ 'navigation.recurring_schedule'|trans }}</a>
             </li>
             <li class="{% if active_page is defined and active_page == 'onetime_schedule' %}active{% endif %}">
                 <a href="#">{{ 'navigation.onetime_schedule'|trans }}</a>

@@ -25,7 +25,7 @@ class StreamScheduleRepository extends ServiceEntityRepository
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function save(StreamSchedule $streamSchedule)
+    public function save(StreamSchedule $streamSchedule): void
     {
         $this->getEntityManager()->persist($streamSchedule);
         $this->getEntityManager()->flush();
@@ -35,9 +35,17 @@ class StreamScheduleRepository extends ServiceEntityRepository
      * @param StreamSchedule $streamSchedule
      * @throws ORMException
      */
-    public function remove(StreamSchedule $streamSchedule)
+    public function remove(StreamSchedule $streamSchedule): void
     {
         $this->getEntityManager()->remove($streamSchedule);
         $this->getEntityManager()->flush();
+    }
+
+    /**
+     * @return StreamSchedule[]
+     */
+    public function findActiveCommands(): array
+    {
+        return $this->findBy(['disabled' => false, 'wrecked' => false, 'priority' => 'DESC']);
     }
 }

@@ -24,6 +24,7 @@ class StreamScheduleType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('id', HiddenType::class, ['empty_data' => Uuid::uuid4()]);
+        $builder->add('wrecked', HiddenType::class, ['empty_data' => false]);
 
         $builder->add(
             'name',

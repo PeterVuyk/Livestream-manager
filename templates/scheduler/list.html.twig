@@ -56,6 +56,12 @@
                 </td>
                 <td>{{ scheduledItem.priority }}</td>
                 <td style="min-width: 90px;">
+                    {% if scheduledItem.wrecked == true %}
+                        <a href="#">
+                            <span class="glyphicon glyphicon-exclamation-sign"></span>
+                        </a>
+                    {% endif %}
+
                     <a href="{{ path('scheduler_edit', {'scheduleId': scheduledItem.id}) }}" >
                         <span class="text-info glyphicon glyphicon-pencil"></span> <span class="sr-only">{{ "action.edit"|trans }}</span>
                     </a>

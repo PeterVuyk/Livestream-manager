@@ -73,4 +73,11 @@ class StreamScheduleTest extends TestCase
         $streamSchedule->setDisabled(false);
         $this->assertSame(false, $streamSchedule->getDisabled());
     }
+
+    public function testWrecked()
+    {
+        $streamSchedule = new StreamSchedule();
+        $streamSchedule->setWrecked(false);
+        $this->assertSame(false, $streamSchedule->isWrecked());
+    }
 }

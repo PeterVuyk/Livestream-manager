@@ -70,6 +70,12 @@ class StreamSchedule
     private $disabled;
 
     /**
+     * @var bool|null
+     * @ORM\Column(name="wrecked", type="boolean")
+     */
+    private $wrecked;
+
+    /**
      * @return null|string
      */
     public function getId(): ?string
@@ -211,5 +217,21 @@ class StreamSchedule
     public function setDisabled(?bool $disabled): void
     {
         $this->disabled = $disabled;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function getWrecked(): ?bool
+    {
+        return $this->wrecked;
+    }
+
+    /**
+     * @param bool|null $wrecked
+     */
+    public function setWrecked(?bool $wrecked): void
+    {
+        $this->wrecked = $wrecked;
     }
 }

@@ -1,3 +1,29 @@
-jmose_command_scheduler:
-    resource: "@JMoseCommandSchedulerBundle/Resources/config/routing.yml"
-    prefix:   /admin
+scheduler_list:
+  path: /list
+  defaults: { _controller: App\Controller\RecurringSchedulerController:list }
+  methods: [GET]
+
+scheduler_create:
+  path: /details/create-stream
+  defaults: { _controller: App\Controller\RecurringSchedulerController:createStream }
+  methods: [GET, POST]
+
+scheduler_edit:
+  path: /details/edit-stream/{scheduleId}
+  defaults: { _controller: App\Controller\RecurringSchedulerController:editStream }
+  methods: [GET, POST]
+
+scheduler_toggle_disabling:
+  path: /details/disable/{scheduleId}
+  defaults: { _controller: App\Controller\RecurringSchedulerController:toggleDisablingSchedule }
+  methods: [GET]
+
+scheduler_execution:
+  path: /details/execution/{scheduleId}
+  defaults: { _controller: App\Controller\RecurringSchedulerController:executeScheduleWithNextExecution }
+  methods: [GET]
+
+scheduler_remove:
+  path: /details/remove/{scheduleId}
+  defaults: { _controller: App\Controller\RecurringSchedulerController:removeSchedule }
+  methods: [GET]

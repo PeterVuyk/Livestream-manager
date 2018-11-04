@@ -8,14 +8,14 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20181101200641 extends AbstractMigration
+final class Version20181103181109 extends AbstractMigration
 {
     public function up(Schema $schema) : void
     {
         // this up() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('CREATE TABLE stream_schedule (id CHAR(36) NOT NULL COMMENT \'(DC2Type:guid)\', name VARCHAR(50) NOT NULL, command VARCHAR(50) NOT NULL, cron_expression VARCHAR(50) NOT NULL, last_execution DATETIME DEFAULT NULL, last_run_successful TINYINT(1) DEFAULT NULL, priority INT NOT NULL, run_with_next_execution TINYINT(1) NOT NULL, disabled TINYINT(1) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('DROP TABLE ScheduledCommand');
     }
 
     public function down(Schema $schema) : void
@@ -23,6 +23,6 @@ final class Version20181101200641 extends AbstractMigration
         // this down() migration is auto-generated, please modify it to your needs
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
 
-        $this->addSql('DROP TABLE stream_schedule');
+        $this->addSql('CREATE TABLE ScheduledCommand (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(100) NOT NULL COLLATE utf8mb4_unicode_ci, command VARCHAR(100) NOT NULL COLLATE utf8mb4_unicode_ci, arguments VARCHAR(250) DEFAULT NULL COLLATE utf8mb4_unicode_ci, cronExpression VARCHAR(100) DEFAULT NULL COLLATE utf8mb4_unicode_ci, lastExecution DATETIME NOT NULL, lastReturnCode INT DEFAULT NULL, logFile VARCHAR(100) DEFAULT NULL COLLATE utf8mb4_unicode_ci, priority INT NOT NULL, executeImmediately TINYINT(1) NOT NULL, disabled TINYINT(1) NOT NULL, locked TINYINT(1) NOT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB');
     }
 }

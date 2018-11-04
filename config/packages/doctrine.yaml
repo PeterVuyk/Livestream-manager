@@ -17,7 +17,6 @@ doctrine:
             default:
                 connection: livestream
                 mappings:
-                    JMoseCommandSchedulerBundle: ~
                     App:
                         is_bundle: false
                         type: annotation
