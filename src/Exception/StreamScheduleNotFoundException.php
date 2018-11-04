@@ -11,6 +11,8 @@ class StreamScheduleNotFoundException extends \Exception
         'Stream schedule not found with id: %s. Could not execute scheduler with next run';
     private const REMOVE_SCHEDULE_MESSAGE =
         'Stream schedule not found with id: %s. Could not remove schedule';
+    private const UNWRECK_SCHEDULE_MESSAGE =
+        'Stream schedule not found with id: %s. Could not unwreck schedule';
 
     public function __construct(string $reason, \Throwable $previous = null)
     {
@@ -30,5 +32,10 @@ class StreamScheduleNotFoundException extends \Exception
     public static function couldNotRemoveSchedule(string $scheduleId)
     {
         return new self(sprintf(self::REMOVE_SCHEDULE_MESSAGE, $scheduleId));
+    }
+
+    public static function couldNotUnwreckSchedule(string $scheduleId)
+    {
+        return new self(sprintf(self::UNWRECK_SCHEDULE_MESSAGE, $scheduleId));
     }
 }

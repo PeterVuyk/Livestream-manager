@@ -100,10 +100,25 @@ class SchedulerServiceTest extends TestCase
     public function testRemoveSchedule()
     {
         $this->streamScheduleRepository->expects($this->once())
-            ->method('getScheduleById')
+            ->method('findOneBy')
             ->willReturn(new StreamSchedule());
 
         $this->scheduleService->removeSchedule('id');
+        $this->addToAssertionCount(1);
+    }
+
+    /**
+     * @throws ORMException
+     * @throws StreamScheduleNotFoundException
+     */
+    public function testUnwreckSchedule()
+    {
+        $this->streamScheduleRepository->expects($this->once())
+            ->method('findOneBy')
+            ->willReturn(new StreamSchedule());
+        $this->streamScheduleRepository->expects($this->once())->method('save');
+
+        $this->scheduleService->unwreckSchedule('id');
         $this->addToAssertionCount(1);
     }
 }

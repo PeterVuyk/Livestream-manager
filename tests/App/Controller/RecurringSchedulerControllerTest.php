@@ -246,4 +246,28 @@ class RecurringSchedulerControllerTest extends TestCase
         $result = $this->recurringSchedulerController->removeSchedule('id');
         $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
     }
+
+    public function testUnwreckScheduleSuccess()
+    {
+        $this->schedulerServiceMock->expects($this->once())->method('unwreckSchedule');
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $this->flashBagMock->expects($this->never())->method('add');
+
+        $result = $this->recurringSchedulerController->unwreckSchedule('id');
+        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+    }
+
+    public function testUnwreckScheduleFailed()
+    {
+        $this->schedulerServiceMock->expects($this->once())
+            ->method('unwreckSchedule')
+            ->willThrowException(new StreamScheduleNotFoundException('id'));
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $this->flashBagMock->expects($this->once())->method('add');
+
+        $result = $this->recurringSchedulerController->unwreckSchedule('id');
+        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+    }
 }

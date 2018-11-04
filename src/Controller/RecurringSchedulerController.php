@@ -156,4 +156,18 @@ class RecurringSchedulerController extends Controller
         }
         return new RedirectResponse($this->router->generate('scheduler_list'));
     }
+
+    /**
+     * @param string $scheduleId
+     * @return RedirectResponse
+     */
+    public function unwreckSchedule(string $scheduleId)
+    {
+        try {
+            $this->schedulerService->unwreckSchedule($scheduleId);
+        } catch (\Exception $exception) {
+            $this->flashBag->add(self::ERROR_MESSAGE, 'Could not activate broken schedule.');
+        }
+        return new RedirectResponse($this->router->generate('scheduler_list'));
+    }
 }

@@ -22,7 +22,7 @@
 
         <tbody>
         {% for scheduledItem in scheduledItems %}
-            <tr {% if scheduledItem.disabled == true %}class="text-muted" {% endif %}>
+            <tr class="{% if scheduledItem.disabled == true %}text-muted{% elseif scheduledItem.wrecked %}text-danger{% endif %}">
                 <td>
                     <a href="{{ path('scheduler_toggle_disabling', {'scheduleId': scheduledItem.id}) }}" >
                     {% if scheduledItem.disabled == true %}
@@ -57,9 +57,10 @@
                 <td>{{ scheduledItem.priority }}</td>
                 <td style="min-width: 90px;">
                     {% if scheduledItem.wrecked == true %}
-                        <a href="#">
+                        <a href="#js-wrecked-scheduled-modal-{{ scheduledItem.id }}" data-toggle="modal">
                             <span class="glyphicon glyphicon-exclamation-sign"></span>
                         </a>
+                        {{ include('scheduler/modal/wreckedModal.html.twig') }}
                     {% endif %}
 
                     <a href="{{ path('scheduler_edit', {'scheduleId': scheduledItem.id}) }}" >
@@ -69,12 +70,12 @@
                     <a href="#js-delete-scheduled-modal-{{ scheduledItem.id }}" data-toggle="modal">
                         <span class="text-danger glyphicon glyphicon-trash"></span>
                     </a>
-                    {{ include('components/modal/recurringScheduler/deleteModal.html.twig') }}
+                    {{ include('scheduler/modal/deleteModal.html.twig') }}
 
                     <a href="#js-execute-scheduled-modal-{{ scheduledItem.id }}" data-toggle="modal">
                         <span class="text-{% if scheduledItem.runWithNextExecution == true %}muted{% else %}success{% endif %} glyphicon glyphicon-play"></span>
                     </a>
-                    {{ include('components/modal/recurringScheduler/executeModal.html.twig') }}
+                    {{ include('scheduler/modal/executeModal.html.twig') }}
                 </td>
             </tr>
         {% endfor %}

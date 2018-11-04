@@ -95,4 +95,19 @@ class SchedulerService
         }
         $this->streamScheduleRepository->remove($streamSchedule);
     }
+
+    /**
+     * @param string $scheduleId
+     * @throws StreamScheduleNotFoundException
+     * @throws ORMException
+     */
+    public function unwreckSchedule(string $scheduleId): void
+    {
+        $streamSchedule = $this->getScheduleById($scheduleId);
+        if (!$streamSchedule instanceof StreamSchedule) {
+            throw StreamScheduleNotFoundException::couldNotUnwreckSchedule($scheduleId);
+        }
+        $streamSchedule->setWrecked(false);
+        $this->streamScheduleRepository->save($streamSchedule);
+    }
 }

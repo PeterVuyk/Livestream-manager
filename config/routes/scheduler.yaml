@@ -27,3 +27,8 @@ scheduler_remove:
   path: /details/remove/{scheduleId}
   defaults: { _controller: App\Controller\RecurringSchedulerController:removeSchedule }
   methods: [GET]
+
+scheduler_unwreck:
+  path: /details/unwreck/{scheduleId}
+  defaults: { _controller: App\Controller\RecurringSchedulerController:unwreckSchedule }
+  methods: [GET]

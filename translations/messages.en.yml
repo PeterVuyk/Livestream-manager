@@ -32,7 +32,6 @@ action.delete.title: 'Delete user'
 confirm.delete: 'Are you sure to delete this user?'
 action.delete: Delete
 action.cancel: Cancel
-
 recurring_scheduler.detail.save: 'save'
 recurring_scheduler.detail.disabled: 'disable'
 recurring_scheduler.detail.priority: 'Priority'
@@ -55,10 +54,10 @@ recurring_scheduler.list.detail.lastReturnSuccessful: 'Last run successful'
 recurring_scheduler.list.detail.priority: Priority
 recurring_scheduler.list.detail.actions: Actions
 recurring_scheduler.list.execution_next_run: 'Next execution'
-action.unlock: Unlock
-confirm.unlock: 'Are you sure to unlock the schedule?'
-action.unlock.title: 'Unlock schedule'
 action.edit: 'Edit schedule'
+action.unwreck: Activate
+action.wrecked.title: 'Broken schedule'
+confirm.unwreck: 'Are you sure to activate the broken schedule?'
 action.execute: Execute
 action.execute.title: 'Execute schedule'
 confirm.execute: 'Are you sure to execute the schedule?'

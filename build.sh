@@ -9,11 +9,8 @@ docker-compose exec php composer install
 # Install node module dependencies & build/compile JS files through Webpack.
 docker-compose exec yarn /bin/bash -c "cd /usr/src/app && yarn install && yarn build"
 
-# Create the database if it isn't created yet.
-docker-compose exec php bin/console doctrine:database:create
-
 # Run the database migrations to setup the database tables.
-docker-compose exec php bin/console doctrine:migrations:migrate
+docker-compose exec php bin/console doctrine:migrations:migrate -y
 
 # Extract an update the translation content.
 docker-compose exec php bin/console translation:update --dump-messages --force en

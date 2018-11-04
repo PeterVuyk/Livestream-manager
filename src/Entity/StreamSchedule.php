@@ -40,7 +40,7 @@ class StreamSchedule
     private $cronExpression;
 
     /**
-     * @var \DateTimeImmutable|null
+     * @var \DateTimeInterface|null
      * @ORM\Column(name="last_execution", type="datetime", nullable=true)
      */
     private $lastExecution;
@@ -140,17 +140,17 @@ class StreamSchedule
     }
 
     /**
-     * @return \DateTimeImmutable|null
+     * @return \DateTimeInterface|null
      */
-    public function getLastExecution(): ?\DateTimeImmutable
+    public function getLastExecution(): ?\DateTimeInterface
     {
         return $this->lastExecution;
     }
 
     /**
-     * @param \DateTimeImmutable|null $lastExecution
+     * @param \DateTimeInterface|null $lastExecution
      */
-    public function setLastExecution(?\DateTimeImmutable $lastExecution): void
+    public function setLastExecution(?\DateTimeInterface $lastExecution): void
     {
         $this->lastExecution = $lastExecution;
     }
