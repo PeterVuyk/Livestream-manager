@@ -42,22 +42,20 @@ recurring_scheduler.detail.run_with_next_execution: 'Run with next execution'
 recurring_scheduler.detail.link.generate_expression: 'Generate expression'
 recurring_scheduler.detail.image.cron_expression: 'Cron expression explained'
 recurring_scheduler.new.title: 'Add new schedule'
-recurring_scheduler.list.detail.last_execution_failed: 'Failed'
-recurring_scheduler.list.detail.last_execution_success: 'Success'
 recurring_scheduler.list.title: 'Recurring streams'
 recurring_scheduler.list.detail.name: Name
 recurring_scheduler.list.detail.command: Command
 recurring_scheduler.list.detail.cronExpression: 'Cron expression'
 recurring_scheduler.list.detail.lastExecution: 'Last run'
 recurring_scheduler.list.detail.nextExecution: 'Next run'
-recurring_scheduler.list.detail.lastReturnSuccessful: 'Last run successful'
 recurring_scheduler.list.detail.priority: Priority
 recurring_scheduler.list.detail.actions: Actions
+recurring_scheduler.list.detail.logging: "Logging"
 recurring_scheduler.list.execution_next_run: 'Next execution'
 action.edit: 'Edit schedule'
-action.unwreck: Activate
-action.wrecked.title: 'Broken schedule'
-confirm.unwreck: 'Are you sure to activate the broken schedule?'
+action.rerun_failed_schedule: Activate
+action.rerun_failed_schedule.title: 'Activate broken schedule'
+confirm.rerun_failed_schedule: 'Are you sure to activate the broken schedule?'
 action.execute: Execute
 action.execute.title: 'Execute schedule'
 confirm.execute: 'Are you sure to execute the schedule?'

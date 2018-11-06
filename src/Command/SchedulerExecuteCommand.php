@@ -3,20 +3,24 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Entity\ScheduleLog;
 use App\Entity\StreamSchedule;
+use App\Exception\CouldNotExecuteCommandException;
 use App\Repository\StreamScheduleRepository;
 use Cron\CronExpression;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
-use Symfony\Component\Console\Exception\CommandNotFoundException;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class SchedulerExecuteCommand extends Command
 {
     const COMMAND_START_STREAM = 'scheduler:execute';
+
+    const ERROR_MESSAGE = '<error>%s - Aborted</error>';
+    const INFO_MESSAGE = '<info>%s</info>';
 
     /** @var StreamScheduleRepository */
     private $streamScheduleRepository;
@@ -49,36 +53,39 @@ class SchedulerExecuteCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null|void
-     * @throws ORMException
-     * @throws OptimisticLockException
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {
-        $output->writeln('<info>Scheduler execution started</info>');
+        $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution started'));
         $streamSchedules = $this->streamScheduleRepository->findActiveCommands();
         foreach ($streamSchedules as $streamSchedule) {
             $cron = CronExpression::factory($streamSchedule->getCronExpression());
             if (!$cron instanceof CronExpression) {
-                $output->writeln(
-                    '<error>Invalid cron expression: ' . $streamSchedule->getCronExpression() . ' - Aborted</error>'
-                );
+                $output->writeln(sprintf(
+                    self::ERROR_MESSAGE,
+                    'Invalid cron expression: ' . $streamSchedule->getCronExpression()
+                ));
                 continue;
             }
-            if ($streamSchedule->getRunWithNextExecution()) {
-                $this->executeCommand($streamSchedule, $input, $output);
-            }
 
-            if ($cron->getNextRunDate() < new \DateTime()) {
-                $this->executeCommand($streamSchedule, $input, $output);
+            if ($cron->getNextRunDate() < new \DateTime() || $streamSchedule->getRunWithNextExecution()) {
+                try {
+                    $this->executeCommand($streamSchedule, $input, $output);
+                } catch (ORMException | OptimisticLockException $exception) {
+                    $this->logger->error('could not update stream schedule', ['message' => $exception->getMessage()]);
+                } catch (CouldNotExecuteCommandException $exception) {
+                    //Do nothing, already logged. Continue process to run the next command.
+                }
             }
         }
-        $output->writeln('<info>Scheduler execution finished</info>');
+        $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution finished'));
     }
 
     /**
      * @param StreamSchedule $streamSchedule
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @throws CouldNotExecuteCommandException
      * @throws ORMException
      * @throws OptimisticLockException
      */
@@ -86,30 +93,25 @@ class SchedulerExecuteCommand extends Command
     {
         try {
             $command = $this->getApplication()->find($streamSchedule->getCommand());
-        } catch (CommandNotFoundException $exception) {
-            $output->writeln('<error>Can not find command ' . $streamSchedule->getCommand() . '</error>');
-            $this->logger->error(
-                'Command to execute not found',
-                ['message' => $exception->getMessage(), 'command' => $streamSchedule->getCommand()]
-            );
-            return;
-        }
 
-        $command->mergeApplicationDefinition();
-        $input->bind($command->getDefinition());
+            $command->mergeApplicationDefinition();
+            $input->bind($command->getDefinition());
 
-        try {
             $command->run($input, $output);
             $streamSchedule->setRunWithNextExecution(false);
-            $streamSchedule->setLastRunSuccessful(true);
             $streamSchedule->setLastExecution(new \DateTimeImmutable());
+            $scheduleLog = new ScheduleLog($streamSchedule, true, 'Command successfully executed');
+            $streamSchedule->addScheduleLog($scheduleLog);
+
+            $output->writeln(sprintf(self::INFO_MESSAGE, 'Command successfully executed'));
         } catch (\Exception $exception) {
-            $output->writeln('<error>Failed running command ' . $streamSchedule->getCommand() . '</error>');
-            $this->logger->error(
-                'Failed running command to execute',
-                ['message' => $exception->getMessage(), 'command' => $streamSchedule->getCommand()]
-            );
+            $output->writeln(sprintf(self::ERROR_MESSAGE, $exception->getMessage()));
+            $this->logger->error('Could not execute command', ['message' => $exception->getMessage()]);
+
             $streamSchedule->setWrecked(true);
+            $scheduleLog = new ScheduleLog($streamSchedule, false, $exception->getMessage());
+            $streamSchedule->addScheduleLog($scheduleLog);
+            throw CouldNotExecuteCommandException::couldNotRunCommand($streamSchedule, $exception);
         } finally {
             $this->streamScheduleRepository->save($streamSchedule);
         }

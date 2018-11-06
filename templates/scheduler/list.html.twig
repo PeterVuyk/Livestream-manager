@@ -14,7 +14,7 @@
                 <th>{{ "recurring_scheduler.list.detail.cronExpression"|trans }}</th>
                 <th>{{ "recurring_scheduler.list.detail.nextExecution"|trans }}</th>
                 <th>{{ "recurring_scheduler.list.detail.lastExecution"|trans }}</th>
-                <th>{{ "recurring_scheduler.list.detail.lastReturnSuccessful"|trans }}</th>
+                <th>{{ "recurring_scheduler.list.detail.logging"|trans }}</th>
                 <th>{{ "recurring_scheduler.list.detail.priority"|trans }}</th>
                 <th>{{ "recurring_scheduler.list.detail.actions"|trans }}</th>
             </tr>
@@ -22,7 +22,7 @@
 
         <tbody>
         {% for scheduledItem in scheduledItems %}
-            <tr class="{% if scheduledItem.disabled == true %}text-muted{% elseif scheduledItem.wrecked %}text-danger{% endif %}">
+            <tr class="{% if scheduledItem.disabled == true %}text-muted{% endif %}">
                 <td>
                     <a href="{{ path('scheduler_toggle_disabling', {'scheduleId': scheduledItem.id}) }}" >
                     {% if scheduledItem.disabled == true %}
@@ -44,25 +44,28 @@
                         {{ cronExpression(scheduledItem.cronExpression)|date("D M j, G:i:s", "Europe/Amsterdam") }}
                     {% endif %}
                 </td>
-                <td>{% if scheduledItem.lastExecution is null %}-{% else %}{{ scheduledItem.lastExecution|date("D M j, G:i:s", "Europe/Amsterdam") }}{% endif %}</td>
                 <td>
-                    {% if scheduledItem.lastExecution is null %}
-                        -
-                    {% elseif scheduledItem.lastExecution == true %}
-                        {{ 'recurring_scheduler.list.detail.last_execution_success'|trans }}
-                    {% else %}
-                        {{ 'recurring_scheduler.list.detail.last_execution_failed'|trans }}
+                    {% if scheduledItem.lastExecution is null %}-{% else %}{{ scheduledItem.lastExecution|date("D M j, G:i:s", "Europe/Amsterdam") }}{% endif %}
+                    {% set scheduleLog = scheduledItem.scheduleLog|first ? scheduledItem.scheduleLog|first : null %}
+                    {% if scheduleLog is not null and scheduleLog.runSuccessful == true %}
+                        <span class="fa fa-check text-center text-success"></span>
+                    {% elseif scheduleLog is not null and scheduleLog.runSuccessful == false %}
+                            <span class="fa fa-warning text-danger"></span>
                     {% endif %}
+                </td>
+                <td>
+                    logging..
                 </td>
                 <td>{{ scheduledItem.priority }}</td>
                 <td style="min-width: 90px;">
-                    {% if scheduledItem.wrecked == true %}
-                        <a href="#js-wrecked-scheduled-modal-{{ scheduledItem.id }}" data-toggle="modal">
-                            <span class="glyphicon glyphicon-exclamation-sign"></span>
+                    {% if scheduleLog is not null and scheduleLog.runSuccessful == true %}
+                        <span class="fa fa-check text-center text-success"></span>
+                    {% elseif scheduledItem.wrecked == true and scheduleLog is not null and scheduleLog.runSuccessful == false %}
+                        <a href="#js-rerun-failed-schedule-modal-{{ scheduledItem.id }}" data-toggle="modal">
+                            <span class="fa fa-undo text-warning"></span>
                         </a>
-                        {{ include('scheduler/modal/wreckedModal.html.twig') }}
+                        {{ include('scheduler/modal/rerunFailedModal.html.twig') }}
                     {% endif %}
-
                     <a href="{{ path('scheduler_edit', {'scheduleId': scheduledItem.id}) }}" >
                         <span class="text-info glyphicon glyphicon-pencil"></span> <span class="sr-only">{{ "action.edit"|trans }}</span>
                     </a>

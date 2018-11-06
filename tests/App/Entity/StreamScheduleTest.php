@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Tests\App\Entity;
 
+use App\Entity\ScheduleLog;
 use App\Entity\StreamSchedule;
+use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 
 class StreamScheduleTest extends TestCase
@@ -46,13 +48,6 @@ class StreamScheduleTest extends TestCase
         $this->assertInstanceOf(\DateTimeImmutable::class, $streamSchedule->getLastExecution());
     }
 
-    public function testLastRunSuccessful()
-    {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setLastRunSuccessful(true);
-        $this->assertSame(true, $streamSchedule->getLastRunSuccessful());
-    }
-
     public function testPriority()
     {
         $streamSchedule = new StreamSchedule();
@@ -79,5 +74,16 @@ class StreamScheduleTest extends TestCase
         $streamSchedule = new StreamSchedule();
         $streamSchedule->setWrecked(false);
         $this->assertSame(false, $streamSchedule->isWrecked());
+    }
+
+    /**
+     * @throws \Exception
+     */
+    public function testScheduleLog()
+    {
+        $scheduleLog = new ScheduleLog('4227813d-5c7b-4757-960e-a54a8c4cb67f', new StreamSchedule(), 'message');
+        $streamSchedule = new StreamSchedule();
+        $streamSchedule->addScheduleLog(new ArrayCollection([$scheduleLog]));
+        $this->assertInstanceOf(ArrayCollection::class, $streamSchedule->getScheduleLog());
     }
 }

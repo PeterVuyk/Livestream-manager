@@ -3,13 +3,14 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
 use App\Validator\ContainsCronExpression;
 
 /**
  * @ORM\Table(name="stream_schedule")
- * @ORM\Entity(repositoryClass="App\Repository\StreamScheduleRepository")
+ * @ORM\Entity
  */
 class StreamSchedule
 {
@@ -46,12 +47,6 @@ class StreamSchedule
     private $lastExecution;
 
     /**
-     * @var bool|null
-     * @ORM\Column(name="last_run_successful", type="boolean", nullable=true)
-     */
-    private $lastRunSuccessful;
-
-    /**
      * @var int|null
      * @ORM\Column(type="integer")
      */
@@ -74,6 +69,14 @@ class StreamSchedule
      * @ORM\Column(name="wrecked", type="boolean")
      */
     private $wrecked;
+
+    /**
+     * @var ArrayCollection|ScheduleLog[]
+     *
+     * @ORM\OneToMany(targetEntity="App\Entity\ScheduleLog", mappedBy="streamSchedule", cascade={"persist"})
+     * @ORM\OrderBy({"timeExecuted" = "ASC"})
+     */
+    private $scheduleLog = [];
 
     /**
      * @return null|string
@@ -156,22 +159,6 @@ class StreamSchedule
     }
 
     /**
-     * @return bool|null
-     */
-    public function getLastRunSuccessful(): ?bool
-    {
-        return $this->lastRunSuccessful;
-    }
-
-    /**
-     * @param bool|null $lastRunSuccessful
-     */
-    public function setLastRunSuccessful(?bool $lastRunSuccessful): void
-    {
-        $this->lastRunSuccessful = $lastRunSuccessful;
-    }
-
-    /**
      * @return int|null
      */
     public function getPriority(): ?int
@@ -222,7 +209,7 @@ class StreamSchedule
     /**
      * @return bool|null
      */
-    public function getWrecked(): ?bool
+    public function isWrecked(): ?bool
     {
         return $this->wrecked;
     }
@@ -233,5 +220,21 @@ class StreamSchedule
     public function setWrecked(?bool $wrecked): void
     {
         $this->wrecked = $wrecked;
+    }
+
+    /**
+     * @return ScheduleLog[]|ArrayCollection
+     */
+    public function getScheduleLog()
+    {
+        return $this->scheduleLog;
+    }
+
+    /**
+     * @param ScheduleLog|ArrayCollection $scheduleLog
+     */
+    public function addScheduleLog(ScheduleLog $scheduleLog): void
+    {
+        $this->scheduleLog[] = $scheduleLog;
     }
 }

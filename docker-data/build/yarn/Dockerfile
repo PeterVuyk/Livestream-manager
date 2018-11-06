@@ -5,8 +5,8 @@ RUN apt-get update && apt-get install -y curl apt-transport-https && \
     echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list && \
     apt-get update && apt-get install -y yarn
 
-#ARG LIVESTREAM_USER
-#RUN useradd -ms /bin/bash ${LIVESTREAM_USER}
-#USER ${LIVESTREAM_USER}
+ARG LIVESTREAM_USER
+RUN useradd -ms /bin/bash ${LIVESTREAM_USER}
+USER ${LIVESTREAM_USER}
 
 WORKDIR /usr/src/app
