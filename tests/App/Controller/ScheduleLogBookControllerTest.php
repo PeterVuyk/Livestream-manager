@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Controller\ScheduleLogBookController;
-use App\Entity\StreamSchedule;
+use App\Entity\RecurringSchedule;
 use App\Service\SchedulerService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -47,7 +47,7 @@ class ScheduleLogBookControllerTest extends TestCase
     {
         $this->schedulerServiceMock->expects($this->once())
             ->method('getScheduleById')
-            ->willReturn(new StreamSchedule());
+            ->willReturn(new RecurringSchedule());
 
         $result = $this->streamLoggingController->viewLogging('id');
         $this->assertSame(Response::HTTP_OK, $result->getStatusCode());

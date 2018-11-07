@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Controller\SetupStreamController;
-use App\Entity\StreamSchedule;
+use App\Entity\RecurringSchedule;
 use App\Service\SchedulerService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -71,7 +71,7 @@ class SetupStreamControllerTest extends TestCase
         $formInterfaceMock->expects($this->once())->method('handleRequest');
         $formInterfaceMock->expects($this->once())->method('isSubmitted')->willReturn(true);
         $formInterfaceMock->expects($this->once())->method('isValid')->willReturn(true);
-        $formInterfaceMock->expects($this->once())->method('getData')->willReturn(new StreamSchedule());
+        $formInterfaceMock->expects($this->once())->method('getData')->willReturn(new RecurringSchedule());
         $this->formFactoryMock->expects($this->once())->method('create')->willReturn($formInterfaceMock);
 
         $this->flashBagMock->expects($this->once())->method('add');
@@ -90,7 +90,7 @@ class SetupStreamControllerTest extends TestCase
         $formInterfaceMock->expects($this->once())->method('handleRequest');
         $formInterfaceMock->expects($this->once())->method('isSubmitted')->willReturn(true);
         $formInterfaceMock->expects($this->once())->method('isValid')->willReturn(true);
-        $formInterfaceMock->expects($this->once())->method('getData')->willReturn(new StreamSchedule());
+        $formInterfaceMock->expects($this->once())->method('getData')->willReturn(new RecurringSchedule());
         $this->formFactoryMock->expects($this->once())->method('create')->willReturn($formInterfaceMock);
 
         $this->flashBagMock->expects($this->once())->method('add');
@@ -115,7 +115,7 @@ class SetupStreamControllerTest extends TestCase
 
         $this->schedulerServiceMock->expects($this->once())
             ->method('getScheduleById')
-            ->willReturn(new StreamSchedule());
+            ->willReturn(new RecurringSchedule());
 
         $this->flashBagMock->expects($this->never())->method('add');
 
@@ -131,12 +131,12 @@ class SetupStreamControllerTest extends TestCase
         $formInterfaceMock->expects($this->once())->method('handleRequest');
         $formInterfaceMock->expects($this->once())->method('isSubmitted')->willReturn(true);
         $formInterfaceMock->expects($this->once())->method('isValid')->willReturn(true);
-        $formInterfaceMock->expects($this->once())->method('getData')->willReturn(new StreamSchedule());
+        $formInterfaceMock->expects($this->once())->method('getData')->willReturn(new RecurringSchedule());
         $this->formFactoryMock->expects($this->once())->method('create')->willReturn($formInterfaceMock);
 
         $this->schedulerServiceMock->expects($this->once())
             ->method('getScheduleById')
-            ->willReturn(new StreamSchedule());
+            ->willReturn(new RecurringSchedule());
         $this->schedulerServiceMock->expects($this->once())->method('saveStream');
 
         $this->flashBagMock->expects($this->once())->method('add');
@@ -153,12 +153,12 @@ class SetupStreamControllerTest extends TestCase
         $formInterfaceMock->expects($this->once())->method('handleRequest');
         $formInterfaceMock->expects($this->once())->method('isSubmitted')->willReturn(true);
         $formInterfaceMock->expects($this->once())->method('isValid')->willReturn(true);
-        $formInterfaceMock->expects($this->once())->method('getData')->willReturn(new StreamSchedule());
+        $formInterfaceMock->expects($this->once())->method('getData')->willReturn(new RecurringSchedule());
         $this->formFactoryMock->expects($this->once())->method('create')->willReturn($formInterfaceMock);
 
         $this->schedulerServiceMock->expects($this->once())
             ->method('getScheduleById')
-            ->willReturn(new StreamSchedule());
+            ->willReturn(new RecurringSchedule());
         $this->schedulerServiceMock->expects($this->once())
             ->method('saveStream')
             ->willThrowException(New \Exception());

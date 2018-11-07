@@ -3,9 +3,9 @@ declare(strict_types=1);
 
 namespace App\Tests\Service;
 
-use App\Entity\StreamSchedule;
-use App\Exception\StreamScheduleNotFoundException;
-use App\Repository\StreamScheduleRepository;
+use App\Entity\RecurringSchedule;
+use App\Exception\RecurringScheduleNotFoundException;
+use App\Repository\RecurringScheduleRepository;
 use App\Service\SchedulerService;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -17,23 +17,23 @@ class SchedulerServiceTest extends TestCase
     /** @var SchedulerService */
     private $scheduleService;
 
-    /** @var StreamScheduleRepository|MockObject */
-    private $streamScheduleRepository;
+    /** @var RecurringScheduleRepository|MockObject */
+    private $recurringScheduleRepository;
 
     public function setUp()
     {
-        $this->streamScheduleRepository = $this->createMock(StreamScheduleRepository::class);
-        $this->scheduleService = new SchedulerService($this->streamScheduleRepository);
+        $this->recurringScheduleRepository = $this->createMock(RecurringScheduleRepository::class);
+        $this->scheduleService = new SchedulerService($this->recurringScheduleRepository);
     }
 
     public function testGetAllScheduledItems()
     {
-        $this->streamScheduleRepository->expects($this->once())
+        $this->recurringScheduleRepository->expects($this->once())
             ->method('findAll')
-            ->willReturn([new StreamSchedule()]);
+            ->willReturn([new RecurringSchedule()]);
 
         $result = $this->scheduleService->getAllScheduledItems();
-        $this->assertInstanceOf(StreamSchedule::class, $result[0]);
+        $this->assertInstanceOf(RecurringSchedule::class, $result[0]);
     }
 
     /**
@@ -42,34 +42,34 @@ class SchedulerServiceTest extends TestCase
      */
     public function testSave()
     {
-        $this->streamScheduleRepository->expects($this->once())->method('save');
-        $this->scheduleService->saveStream(new StreamSchedule());
+        $this->recurringScheduleRepository->expects($this->once())->method('save');
+        $this->scheduleService->saveStream(new RecurringSchedule());
         $this->addToAssertionCount(1);
     }
 
     public function testGetScheduleById()
     {
-        $this->streamScheduleRepository->expects($this->once())
+        $this->recurringScheduleRepository->expects($this->once())
             ->method('findOneBy')
-            ->willReturn(new StreamSchedule());
+            ->willReturn(new RecurringSchedule());
 
         $result = $this->scheduleService->getScheduleById('id');
-        $this->assertInstanceOf(StreamSchedule::class, $result);
+        $this->assertInstanceOf(RecurringSchedule::class, $result);
     }
 
     /**
      * @throws ORMException
      * @throws OptimisticLockException
-     * @throws StreamScheduleNotFoundException
+     * @throws RecurringScheduleNotFoundException
      */
     public function testToggleDisablingSchedule()
     {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setDisabled(false);
-        $this->streamScheduleRepository->expects($this->once())
+        $recurringSchedule = new RecurringSchedule();
+        $recurringSchedule->setDisabled(false);
+        $this->recurringScheduleRepository->expects($this->once())
             ->method('findOneBy')
-            ->willReturn($streamSchedule);
-        $this->streamScheduleRepository->expects($this->once())->method('save');
+            ->willReturn($recurringSchedule);
+        $this->recurringScheduleRepository->expects($this->once())->method('save');
 
         $this->scheduleService->toggleDisablingSchedule('id');
         $this->addToAssertionCount(1);
@@ -78,16 +78,16 @@ class SchedulerServiceTest extends TestCase
     /**
      * @throws ORMException
      * @throws OptimisticLockException
-     * @throws StreamScheduleNotFoundException
+     * @throws RecurringScheduleNotFoundException
      */
     public function testToggleScheduleWithNextExecution()
     {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setDisabled(false);
-        $this->streamScheduleRepository->expects($this->once())
+        $recurringSchedule = new RecurringSchedule();
+        $recurringSchedule->setDisabled(false);
+        $this->recurringScheduleRepository->expects($this->once())
             ->method('findOneBy')
-            ->willReturn($streamSchedule);
-        $this->streamScheduleRepository->expects($this->once())->method('save');
+            ->willReturn($recurringSchedule);
+        $this->recurringScheduleRepository->expects($this->once())->method('save');
 
         $this->scheduleService->executeScheduleWithNextExecution('id');
         $this->addToAssertionCount(1);
@@ -95,13 +95,13 @@ class SchedulerServiceTest extends TestCase
 
     /**
      * @throws ORMException
-     * @throws StreamScheduleNotFoundException
+     * @throws RecurringScheduleNotFoundException
      */
     public function testRemoveSchedule()
     {
-        $this->streamScheduleRepository->expects($this->once())
+        $this->recurringScheduleRepository->expects($this->once())
             ->method('findOneBy')
-            ->willReturn(new StreamSchedule());
+            ->willReturn(new RecurringSchedule());
 
         $this->scheduleService->removeSchedule('id');
         $this->addToAssertionCount(1);
@@ -109,14 +109,14 @@ class SchedulerServiceTest extends TestCase
 
     /**
      * @throws ORMException
-     * @throws StreamScheduleNotFoundException
+     * @throws RecurringScheduleNotFoundException
      */
     public function testUnwreckSchedule()
     {
-        $this->streamScheduleRepository->expects($this->once())
+        $this->recurringScheduleRepository->expects($this->once())
             ->method('findOneBy')
-            ->willReturn(new StreamSchedule());
-        $this->streamScheduleRepository->expects($this->once())->method('save');
+            ->willReturn(new RecurringSchedule());
+        $this->recurringScheduleRepository->expects($this->once())->method('save');
 
         $this->scheduleService->unwreckSchedule('id');
         $this->addToAssertionCount(1);

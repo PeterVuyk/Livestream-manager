@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Entity;
 
 use App\Entity\ScheduleLog;
-use App\Entity\StreamSchedule;
+use App\Entity\RecurringSchedule;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
@@ -21,9 +21,9 @@ class ScheduleLogTest extends TestCase
     /**
      * @throws \Exception
      */
-    public function testGetStreamSchedule()
+    public function testGetRecurringSchedule()
     {
-        $this->assertInstanceOf(StreamSchedule::class, $this->getScheduleLog()->getStreamSchedule());
+        $this->assertInstanceOf(RecurringSchedule::class, $this->getScheduleLog()->getRecurringSchedule());
     }
 
     /**
@@ -56,6 +56,6 @@ class ScheduleLogTest extends TestCase
      */
     public function getScheduleLog()
     {
-        return new ScheduleLog(new StreamSchedule(), true, 'message');
+        return new ScheduleLog(new RecurringSchedule(), true, 'message');
     }
 }

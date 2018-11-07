@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Tests\Repository;
 
-use App\Entity\StreamSchedule;
-use App\Repository\StreamScheduleRepository;
+use App\Entity\RecurringSchedule;
+use App\Repository\RecurringScheduleRepository;
 use Doctrine\ORM\Persisters\Entity\EntityPersister;
 use Doctrine\ORM\UnitOfWork;
 use PHPUnit\Framework\TestCase;
@@ -15,10 +15,10 @@ use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class StreamScheduleRepositoryTest extends TestCase
+class RecurringScheduleRepositoryTest extends TestCase
 {
-    /** @var StreamScheduleRepository */
-    private $streamScheduleRepository;
+    /** @var RecurringScheduleRepository */
+    private $recurringScheduleRepository;
 
     /** @var MockObject|EntityManager */
     private $entityManager;
@@ -30,7 +30,7 @@ class StreamScheduleRepositoryTest extends TestCase
         $this->entityManager->expects($this->once())->method('getClassMetadata')->willReturn($classMetaData);
         $registryInterface = $this->createMock(RegistryInterface::class);
         $registryInterface->expects($this->once())->method('getManagerForClass')->willReturn($this->entityManager);
-        $this->streamScheduleRepository = new StreamScheduleRepository($registryInterface);
+        $this->recurringScheduleRepository = new RecurringScheduleRepository($registryInterface);
     }
 
     /**
@@ -41,7 +41,7 @@ class StreamScheduleRepositoryTest extends TestCase
     {
         $this->entityManager->expects($this->once())->method('persist');
         $this->entityManager->expects($this->once())->method('flush');
-        $this->streamScheduleRepository->save(new StreamSchedule());
+        $this->recurringScheduleRepository->save(new RecurringSchedule());
     }
 
     /**
@@ -51,18 +51,18 @@ class StreamScheduleRepositoryTest extends TestCase
     {
         $this->entityManager->expects($this->once())->method('remove');
         $this->entityManager->expects($this->once())->method('flush');
-        $this->streamScheduleRepository->remove(new StreamSchedule());
+        $this->recurringScheduleRepository->remove(new RecurringSchedule());
     }
 
     public function testFindActiveCommands()
     {
         $entityPersisterMock = $this->createMock(EntityPersister::class);
-        $entityPersisterMock->expects($this->once())->method('loadAll')->willReturn([new StreamSchedule()]);
+        $entityPersisterMock->expects($this->once())->method('loadAll')->willReturn([new RecurringSchedule()]);
         $unitOfWorkMock = $this->createMock(UnitOfWork::class);
         $unitOfWorkMock->expects($this->once())->method('getEntityPersister')->willReturn($entityPersisterMock);
         $this->entityManager->expects($this->once())->method('getUnitOfWork')->willReturn($unitOfWorkMock);
 
-        $streamSchedules = $this->streamScheduleRepository->findActiveCommands();
-        $this->assertInstanceOf(StreamSchedule::class, $streamSchedules[0]);
+        $recurringSchedules = $this->recurringScheduleRepository->findActiveCommands();
+        $this->assertInstanceOf(RecurringSchedule::class, $recurringSchedules[0]);
     }
 }

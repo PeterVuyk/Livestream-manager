@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\StreamSchedule;
-use App\Form\StreamScheduleType;
+use App\Entity\RecurringSchedule;
+use App\Form\RecurringScheduleType;
 use App\Service\SchedulerService;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -55,7 +55,7 @@ class SetupStreamController extends Controller
      */
     public function createStream(Request $request)
     {
-        $form = $this->formFactory->create(StreamScheduleType::class, new StreamSchedule());
+        $form = $this->formFactory->create(RecurringScheduleType::class, new RecurringSchedule());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
@@ -79,12 +79,12 @@ class SetupStreamController extends Controller
      */
     public function editStream(string $scheduleId, Request $request)
     {
-        $streamSchedule = $this->schedulerService->getScheduleById($scheduleId);
-        if (!$streamSchedule instanceof StreamSchedule) {
+        $recurringSchedule = $this->schedulerService->getScheduleById($scheduleId);
+        if (!$recurringSchedule instanceof RecurringSchedule) {
             $this->flashBag->add(self::ERROR_MESSAGE, 'Can not edit requested schedule.');
             return new RedirectResponse($this->router->generate('scheduler_list'));
         }
-        $form = $this->formFactory->create(StreamScheduleType::class, $streamSchedule);
+        $form = $this->formFactory->create(RecurringScheduleType::class, $recurringSchedule);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

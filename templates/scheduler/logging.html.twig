@@ -1,6 +1,6 @@
 {% extends "base.html.twig" %}
 {% block title %}{{ 'schedule_logging.list.title'|trans }}{% endblock title %}
-{% block pageTitle %}{{ 'schedule_logging.list.title'|trans }}&nbsp;-&nbsp;{{ streamSchedule.name }}{% endblock pageTitle %}
+{% block pageTitle %}{{ 'schedule_logging.list.title'|trans }}&nbsp;-&nbsp;{{ recurringSchedule.name }}{% endblock pageTitle %}
 
 {% block content %}
     <div class="table-responsive table-stripped">
@@ -14,7 +14,7 @@
             </thead>
 
             <tbody>
-            {% for schedulelog in streamSchedule.schedulelog|slice(0, 25) %}
+            {% for schedulelog in recurringSchedule.schedulelog|slice(0, 25) %}
                 <tr>
                     <td>
                         {% if schedulelog.runSuccessful == true %}

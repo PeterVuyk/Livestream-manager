@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Exception;
 
-class StreamScheduleNotFoundException extends \Exception
+class RecurringScheduleNotFoundException extends \Exception
 {
     private const TOGGLE_DISABLING_STREAM_SCHEDULE_MESSAGE =
         'Stream schedule not found with id: %s. Could not toggle disabling recurring schedule';

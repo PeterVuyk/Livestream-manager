@@ -46,11 +46,11 @@ class ScheduleLogBookController extends Controller
     public function viewLogging(string $scheduleId)
     {
         try {
-            $streamSchedule = $this->schedulerService->getScheduleById($scheduleId);
+            $recurringSchedule = $this->schedulerService->getScheduleById($scheduleId);
         } catch (\Exception $exception) {
             $this->flashBag->add(self::ERROR_MESSAGE, 'Could not open latest logging from schedule.');
             return new RedirectResponse($this->router->generate('scheduler_list'));
         }
-        return $this->render('scheduler/logging.html.twig', ['streamSchedule' => $streamSchedule]);
+        return $this->render('scheduler/logging.html.twig', ['recurringSchedule' => $recurringSchedule]);
     }
 }

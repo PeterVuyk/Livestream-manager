@@ -12,7 +12,7 @@ use App\Validator\ContainsCronExpression;
  * @ORM\Table(name="stream_schedule")
  * @ORM\Entity
  */
-class StreamSchedule
+class RecurringSchedule
 {
     /**
      * @var uuid|null
@@ -73,7 +73,7 @@ class StreamSchedule
     /**
      * @var ArrayCollection|ScheduleLog[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\ScheduleLog", mappedBy="streamSchedule", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ScheduleLog", mappedBy="recurringSchedule", cascade={"persist"})
      * @ORM\OrderBy({"timeExecuted" = "ASC"})
      */
     private $scheduleLog = [];

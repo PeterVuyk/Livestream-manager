@@ -3,13 +3,13 @@ declare(strict_types=1);
 
 namespace App\Repository;
 
-use App\Entity\StreamSchedule;
+use App\Entity\RecurringSchedule;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
-class StreamScheduleRepository extends ServiceEntityRepository
+class RecurringScheduleRepository extends ServiceEntityRepository
 {
     /**
      * UserRepository constructor.
@@ -17,32 +17,32 @@ class StreamScheduleRepository extends ServiceEntityRepository
      */
     public function __construct(RegistryInterface $registry)
     {
-        parent::__construct($registry, StreamSchedule::class);
+        parent::__construct($registry, RecurringSchedule::class);
     }
 
     /**
-     * @param StreamSchedule $streamSchedule
+     * @param RecurringSchedule $recurringSchedule
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function save(StreamSchedule $streamSchedule): void
+    public function save(RecurringSchedule $recurringSchedule): void
     {
-        $this->getEntityManager()->persist($streamSchedule);
+        $this->getEntityManager()->persist($recurringSchedule);
         $this->getEntityManager()->flush();
     }
 
     /**
-     * @param StreamSchedule $streamSchedule
+     * @param RecurringSchedule $recurringSchedule
      * @throws ORMException
      */
-    public function remove(StreamSchedule $streamSchedule): void
+    public function remove(RecurringSchedule $recurringSchedule): void
     {
-        $this->getEntityManager()->remove($streamSchedule);
+        $this->getEntityManager()->remove($recurringSchedule);
         $this->getEntityManager()->flush();
     }
 
     /**
-     * @return StreamSchedule[]
+     * @return RecurringSchedule[]
      */
     public function findActiveCommands(): array
     {

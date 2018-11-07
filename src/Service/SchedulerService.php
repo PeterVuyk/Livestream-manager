@@ -3,111 +3,111 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-use App\Entity\StreamSchedule;
-use App\Exception\StreamScheduleNotFoundException;
-use App\Repository\StreamScheduleRepository;
+use App\Entity\RecurringSchedule;
+use App\Exception\RecurringScheduleNotFoundException;
+use App\Repository\RecurringScheduleRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 
 class SchedulerService
 {
-    /** @var StreamScheduleRepository */
-    private $streamScheduleRepository;
+    /** @var RecurringScheduleRepository */
+    private $recurringScheduleRepository;
 
     /**
      * SchedulerService constructor.
-     * @param StreamScheduleRepository $streamScheduleRepository
+     * @param RecurringScheduleRepository $recurringScheduleRepository
      */
-    public function __construct(StreamScheduleRepository $streamScheduleRepository)
+    public function __construct(RecurringScheduleRepository $recurringScheduleRepository)
     {
-        $this->streamScheduleRepository = $streamScheduleRepository;
+        $this->recurringScheduleRepository = $recurringScheduleRepository;
     }
 
     /**
-     * @return StreamSchedule[]
+     * @return RecurringSchedule[]
      */
     public function getAllScheduledItems(): array
     {
-        return $this->streamScheduleRepository->findAll();
+        return $this->recurringScheduleRepository->findAll();
     }
 
     /**
-     * @param StreamSchedule $streamSchedule
+     * @param RecurringSchedule $recurringSchedule
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function saveStream(StreamSchedule $streamSchedule): void
+    public function saveStream(RecurringSchedule $recurringSchedule): void
     {
-        $this->streamScheduleRepository->save($streamSchedule);
+        $this->recurringScheduleRepository->save($recurringSchedule);
     }
 
     /**
      * @param string $id
-     * @return StreamSchedule|object|null
+     * @return RecurringSchedule|object|null
      */
-    public function getScheduleById(string $id): ?StreamSchedule
+    public function getScheduleById(string $id): ?RecurringSchedule
     {
-        return $this->streamScheduleRepository->findOneBy(['id' => $id]);
+        return $this->recurringScheduleRepository->findOneBy(['id' => $id]);
     }
 
     /**
      * @param string $scheduleId
      * @throws ORMException
      * @throws OptimisticLockException
-     * @throws StreamScheduleNotFoundException
+     * @throws RecurringScheduleNotFoundException
      */
     public function toggleDisablingSchedule(string $scheduleId): void
     {
-        $streamSchedule = $this->getScheduleById($scheduleId);
-        if (!$streamSchedule instanceof StreamSchedule) {
-            throw StreamScheduleNotFoundException::couldNotDisableSchedule($scheduleId);
+        $recurringSchedule = $this->getScheduleById($scheduleId);
+        if (!$recurringSchedule instanceof RecurringSchedule) {
+            throw RecurringScheduleNotFoundException::couldNotDisableSchedule($scheduleId);
         }
-        $streamSchedule->setDisabled(!$streamSchedule->getDisabled());
-        $this->saveStream($streamSchedule);
+        $recurringSchedule->setDisabled(!$recurringSchedule->getDisabled());
+        $this->saveStream($recurringSchedule);
     }
 
     /**
      * @param string $scheduleId
      * @throws ORMException
      * @throws OptimisticLockException
-     * @throws StreamScheduleNotFoundException
+     * @throws RecurringScheduleNotFoundException
      */
     public function executeScheduleWithNextExecution(string $scheduleId): void
     {
-        $streamSchedule = $this->getScheduleById($scheduleId);
-        if (!$streamSchedule instanceof StreamSchedule) {
-            throw StreamScheduleNotFoundException::couldNotRunWithNextExecution($scheduleId);
+        $recurringSchedule = $this->getScheduleById($scheduleId);
+        if (!$recurringSchedule instanceof RecurringSchedule) {
+            throw RecurringScheduleNotFoundException::couldNotRunWithNextExecution($scheduleId);
         }
-        $streamSchedule->setRunWithNextExecution(true);
-        $this->saveStream($streamSchedule);
+        $recurringSchedule->setRunWithNextExecution(true);
+        $this->saveStream($recurringSchedule);
     }
 
     /**
      * @param string $scheduleId
-     * @throws StreamScheduleNotFoundException
+     * @throws RecurringScheduleNotFoundException
      * @throws ORMException
      */
     public function removeSchedule(string $scheduleId): void
     {
-        $streamSchedule = $this->getScheduleById($scheduleId);
-        if (!$streamSchedule instanceof StreamSchedule) {
-            throw StreamScheduleNotFoundException::couldNotRemoveSchedule($scheduleId);
+        $recurringSchedule = $this->getScheduleById($scheduleId);
+        if (!$recurringSchedule instanceof RecurringSchedule) {
+            throw RecurringScheduleNotFoundException::couldNotRemoveSchedule($scheduleId);
         }
-        $this->streamScheduleRepository->remove($streamSchedule);
+        $this->recurringScheduleRepository->remove($recurringSchedule);
     }
 
     /**
      * @param string $scheduleId
-     * @throws StreamScheduleNotFoundException
+     * @throws RecurringScheduleNotFoundException
      * @throws ORMException
      */
     public function unwreckSchedule(string $scheduleId): void
     {
-        $streamSchedule = $this->getScheduleById($scheduleId);
-        if (!$streamSchedule instanceof StreamSchedule) {
-            throw StreamScheduleNotFoundException::couldNotUnwreckSchedule($scheduleId);
+        $recurringSchedule = $this->getScheduleById($scheduleId);
+        if (!$recurringSchedule instanceof RecurringSchedule) {
+            throw RecurringScheduleNotFoundException::couldNotUnwreckSchedule($scheduleId);
         }
-        $streamSchedule->setWrecked(false);
-        $this->streamScheduleRepository->save($streamSchedule);
+        $recurringSchedule->setWrecked(false);
+        $this->recurringScheduleRepository->save($recurringSchedule);
     }
 }

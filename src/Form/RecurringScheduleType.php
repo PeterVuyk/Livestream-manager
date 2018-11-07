@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\Entity\StreamSchedule;
+use App\Entity\RecurringSchedule;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -14,7 +14,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class StreamScheduleType extends AbstractType
+class RecurringScheduleType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -96,7 +96,7 @@ class StreamScheduleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => StreamSchedule::class,
+            'data_class' => RecurringSchedule::class,
             'wrapper_attr' => 'default_wrapper',
         ));
     }

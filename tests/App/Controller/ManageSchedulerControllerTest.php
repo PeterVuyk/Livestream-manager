@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Controller\ManageSchedulerController;
-use App\Exception\StreamScheduleNotFoundException;
+use App\Exception\RecurringScheduleNotFoundException;
 use App\Service\SchedulerService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -63,7 +63,7 @@ class ManageSchedulerControllerTest extends TestCase
     {
         $this->schedulerServiceMock->expects($this->once())
             ->method('toggleDisablingSchedule')
-            ->willThrowException(new StreamScheduleNotFoundException('id'));
+            ->willThrowException(new RecurringScheduleNotFoundException('id'));
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
@@ -86,7 +86,7 @@ class ManageSchedulerControllerTest extends TestCase
     {
         $this->schedulerServiceMock->expects($this->once())
             ->method('executeScheduleWithNextExecution')
-            ->willThrowException(new StreamScheduleNotFoundException('id'));
+            ->willThrowException(new RecurringScheduleNotFoundException('id'));
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
@@ -109,7 +109,7 @@ class ManageSchedulerControllerTest extends TestCase
     {
         $this->schedulerServiceMock->expects($this->once())
             ->method('removeSchedule')
-            ->willThrowException(new StreamScheduleNotFoundException('id'));
+            ->willThrowException(new RecurringScheduleNotFoundException('id'));
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
         $this->flashBagMock->expects($this->once())->method('add');
@@ -133,7 +133,7 @@ class ManageSchedulerControllerTest extends TestCase
     {
         $this->schedulerServiceMock->expects($this->once())
             ->method('unwreckSchedule')
-            ->willThrowException(new StreamScheduleNotFoundException('id'));
+            ->willThrowException(new RecurringScheduleNotFoundException('id'));
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
         $this->flashBagMock->expects($this->once())->method('add');

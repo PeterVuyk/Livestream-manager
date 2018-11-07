@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\ScheduleLog;
-use App\Entity\StreamSchedule;
+use App\Entity\RecurringSchedule;
 use App\Exception\CouldNotExecuteCommandException;
-use App\Repository\StreamScheduleRepository;
+use App\Repository\RecurringScheduleRepository;
 use Cron\CronExpression;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
@@ -22,22 +22,22 @@ class SchedulerExecuteCommand extends Command
     const ERROR_MESSAGE = '<error>%s - Aborted</error>';
     const INFO_MESSAGE = '<info>%s</info>';
 
-    /** @var StreamScheduleRepository */
-    private $streamScheduleRepository;
+    /** @var RecurringScheduleRepository */
+    private $recurringScheduleRepository;
 
     /** @var LoggerInterface */
     private $logger;
 
     /**
      * SchedulerExecuteCommand constructor.
-     * @param StreamScheduleRepository $streamScheduleRepository
+     * @param RecurringScheduleRepository $recurringScheduleRepository
      * @param LoggerInterface $logger
      */
     public function __construct(
-        StreamScheduleRepository $streamScheduleRepository,
+        RecurringScheduleRepository $recurringScheduleRepository,
         LoggerInterface $logger
     ) {
-        $this->streamScheduleRepository = $streamScheduleRepository;
+        $this->recurringScheduleRepository = $recurringScheduleRepository;
         $this->logger = $logger;
         parent::__construct();
     }
@@ -57,20 +57,20 @@ class SchedulerExecuteCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution started'));
-        $streamSchedules = $this->streamScheduleRepository->findActiveCommands();
-        foreach ($streamSchedules as $streamSchedule) {
-            $cron = CronExpression::factory($streamSchedule->getCronExpression());
+        $recurringSchedules = $this->recurringScheduleRepository->findActiveCommands();
+        foreach ($recurringSchedules as $recurringSchedule) {
+            $cron = CronExpression::factory($recurringSchedule->getCronExpression());
             if (!$cron instanceof CronExpression) {
                 $output->writeln(sprintf(
                     self::ERROR_MESSAGE,
-                    'Invalid cron expression: ' . $streamSchedule->getCronExpression()
+                    'Invalid cron expression: ' . $recurringSchedule->getCronExpression()
                 ));
                 continue;
             }
 
-            if ($cron->getNextRunDate() < new \DateTime() || $streamSchedule->getRunWithNextExecution()) {
+            if ($cron->getNextRunDate() < new \DateTime() || $recurringSchedule->getRunWithNextExecution()) {
                 try {
-                    $this->executeCommand($streamSchedule, $input, $output);
+                    $this->executeCommand($recurringSchedule, $input, $output);
                 } catch (ORMException | OptimisticLockException $exception) {
                     $this->logger->error('could not update stream schedule', ['message' => $exception->getMessage()]);
                 } catch (CouldNotExecuteCommandException $exception) {
@@ -82,38 +82,38 @@ class SchedulerExecuteCommand extends Command
     }
 
     /**
-     * @param StreamSchedule $streamSchedule
+     * @param RecurringSchedule $recurringSchedule
      * @param InputInterface $input
      * @param OutputInterface $output
      * @throws CouldNotExecuteCommandException
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function executeCommand(StreamSchedule $streamSchedule, InputInterface $input, OutputInterface $output)
+    public function executeCommand(RecurringSchedule $recurringSchedule, InputInterface $input, OutputInterface $output)
     {
         try {
-            $command = $this->getApplication()->find($streamSchedule->getCommand());
+            $command = $this->getApplication()->find($recurringSchedule->getCommand());
 
             $command->mergeApplicationDefinition();
             $input->bind($command->getDefinition());
 
             $command->run($input, $output);
-            $streamSchedule->setRunWithNextExecution(false);
-            $streamSchedule->setLastExecution(new \DateTimeImmutable());
-            $scheduleLog = new ScheduleLog($streamSchedule, true, 'Command successfully executed');
-            $streamSchedule->addScheduleLog($scheduleLog);
+            $recurringSchedule->setRunWithNextExecution(false);
+            $recurringSchedule->setLastExecution(new \DateTimeImmutable());
+            $scheduleLog = new ScheduleLog($recurringSchedule, true, 'Command successfully executed');
+            $recurringSchedule->addScheduleLog($scheduleLog);
 
             $output->writeln(sprintf(self::INFO_MESSAGE, 'Command successfully executed'));
         } catch (\Exception $exception) {
             $output->writeln(sprintf(self::ERROR_MESSAGE, $exception->getMessage()));
             $this->logger->error('Could not execute command', ['message' => $exception->getMessage()]);
 
-            $streamSchedule->setWrecked(true);
-            $scheduleLog = new ScheduleLog($streamSchedule, false, $exception->getMessage());
-            $streamSchedule->addScheduleLog($scheduleLog);
-            throw CouldNotExecuteCommandException::couldNotRunCommand($streamSchedule, $exception);
+            $recurringSchedule->setWrecked(true);
+            $scheduleLog = new ScheduleLog($recurringSchedule, false, $exception->getMessage());
+            $recurringSchedule->addScheduleLog($scheduleLog);
+            throw CouldNotExecuteCommandException::couldNotRunCommand($recurringSchedule, $exception);
         } finally {
-            $this->streamScheduleRepository->save($streamSchedule);
+            $this->recurringScheduleRepository->save($recurringSchedule);
         }
     }
 }
