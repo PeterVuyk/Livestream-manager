@@ -1,34 +1,39 @@
 scheduler_list:
   path: /list
-  defaults: { _controller: App\Controller\RecurringSchedulerController:list }
+  defaults: { _controller: App\Controller\ManageSchedulerController:list }
   methods: [GET]
 
 scheduler_create:
   path: /details/create-stream
-  defaults: { _controller: App\Controller\RecurringSchedulerController:createStream }
+  defaults: { _controller: App\Controller\SetupStreamController:createStream }
   methods: [GET, POST]
 
 scheduler_edit:
   path: /details/edit-stream/{scheduleId}
-  defaults: { _controller: App\Controller\RecurringSchedulerController:editStream }
+  defaults: { _controller: App\Controller\SetupStreamController:editStream }
   methods: [GET, POST]
 
 scheduler_toggle_disabling:
   path: /details/disable/{scheduleId}
-  defaults: { _controller: App\Controller\RecurringSchedulerController:toggleDisablingSchedule }
+  defaults: { _controller: App\Controller\ManageSchedulerController:toggleDisablingSchedule }
   methods: [GET]
 
 scheduler_execution:
   path: /details/execution/{scheduleId}
-  defaults: { _controller: App\Controller\RecurringSchedulerController:executeScheduleWithNextExecution }
+  defaults: { _controller: App\Controller\ManageSchedulerController:executeScheduleWithNextExecution }
   methods: [GET]
 
 scheduler_remove:
   path: /details/remove/{scheduleId}
-  defaults: { _controller: App\Controller\RecurringSchedulerController:removeSchedule }
+  defaults: { _controller: App\Controller\ManageSchedulerController:removeSchedule }
   methods: [GET]
 
 scheduler_unwreck:
   path: /details/unwreck/{scheduleId}
-  defaults: { _controller: App\Controller\RecurringSchedulerController:unwreckSchedule }
+  defaults: { _controller: App\Controller\ManageSchedulerController:unwreckSchedule }
+  methods: [GET]
+
+scheduler_view_logging:
+  defaults: { _controller: App\Controller\ScheduleLogBookController:viewLogging }
+  path: /logging/{scheduleId}
   methods: [GET]

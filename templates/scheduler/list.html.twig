@@ -26,9 +26,9 @@
                 <td>
                     <a href="{{ path('scheduler_toggle_disabling', {'scheduleId': scheduledItem.id}) }}" >
                     {% if scheduledItem.disabled == true %}
-                        <span class="text-danger glyphicon glyphicon-off"></span> <span class="sr-only">&nbsp;</span>
+                        <span class="text-danger fa fa-power-off fa-lg"></span> <span class="sr-only">&nbsp;</span>
                     {% else %}
-                        <span class="text-success glyphicon glyphicon-off"></span> <span class="sr-only">&nbsp;</span>
+                        <span class="text-success fa fa-power-off fa-lg"></span> <span class="sr-only">&nbsp;</span>
                     {% endif %}
                     </a>
                 </td>
@@ -48,35 +48,37 @@
                     {% if scheduledItem.lastExecution is null %}-{% else %}{{ scheduledItem.lastExecution|date("D M j, G:i:s", "Europe/Amsterdam") }}{% endif %}
                     {% set scheduleLog = scheduledItem.scheduleLog|first ? scheduledItem.scheduleLog|first : null %}
                     {% if scheduleLog is not null and scheduleLog.runSuccessful == true %}
-                        <span class="fa fa-check text-center text-success"></span>
+                        <span class="fa fa-check text-center text-success fa-lg"></span>
                     {% elseif scheduleLog is not null and scheduleLog.runSuccessful == false %}
-                            <span class="fa fa-warning text-danger"></span>
+                            <span class="fa fa-warning text-danger fa-lg"></span>
                     {% endif %}
                 </td>
                 <td>
-                    logging..
+                    {% if scheduleLog is not null %}
+                        <a href="{{ path('scheduler_view_logging', {'scheduleId': scheduledItem.id}) }}">
+                            <span class="fa fa-eye fa-lg"></span>
+                        </a>
+                    {% endif %}
                 </td>
                 <td>{{ scheduledItem.priority }}</td>
                 <td style="min-width: 90px;">
-                    {% if scheduleLog is not null and scheduleLog.runSuccessful == true %}
-                        <span class="fa fa-check text-center text-success"></span>
-                    {% elseif scheduledItem.wrecked == true and scheduleLog is not null and scheduleLog.runSuccessful == false %}
+                    {% if scheduledItem.wrecked == true and scheduleLog is not null and scheduleLog.runSuccessful == false %}
                         <a href="#js-rerun-failed-schedule-modal-{{ scheduledItem.id }}" data-toggle="modal">
-                            <span class="fa fa-undo text-warning"></span>
+                            <span class="fa fa-undo text-warning fa-lg"></span>
                         </a>
                         {{ include('scheduler/modal/rerunFailedModal.html.twig') }}
                     {% endif %}
                     <a href="{{ path('scheduler_edit', {'scheduleId': scheduledItem.id}) }}" >
-                        <span class="text-info glyphicon glyphicon-pencil"></span> <span class="sr-only">{{ "action.edit"|trans }}</span>
+                        <span class="text-info fa fa-edit fa-lg"></span> <span class="sr-only">{{ "action.edit"|trans }}</span>
                     </a>
 
                     <a href="#js-delete-scheduled-modal-{{ scheduledItem.id }}" data-toggle="modal">
-                        <span class="text-danger glyphicon glyphicon-trash"></span>
+                        <span class="text-danger fa fa-trash fa-lg"></span>
                     </a>
                     {{ include('scheduler/modal/deleteModal.html.twig') }}
 
                     <a href="#js-execute-scheduled-modal-{{ scheduledItem.id }}" data-toggle="modal">
-                        <span class="text-{% if scheduledItem.runWithNextExecution == true %}muted{% else %}success{% endif %} glyphicon glyphicon-play"></span>
+                        <span class="text-{% if scheduledItem.runWithNextExecution == true %}muted{% else %}success{% endif %} fa fa-play fa-lg"></span>
                     </a>
                     {{ include('scheduler/modal/executeModal.html.twig') }}
                 </td>

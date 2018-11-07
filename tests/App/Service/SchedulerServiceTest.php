@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Service;
+namespace App\Tests\Service;
 
 use App\Entity\StreamSchedule;
 use App\Exception\StreamScheduleNotFoundException;

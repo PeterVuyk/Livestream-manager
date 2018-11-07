@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Repository;
+namespace App\Tests\Repository;
 
 use App\Entity\StreamSchedule;
 use App\Repository\StreamScheduleRepository;

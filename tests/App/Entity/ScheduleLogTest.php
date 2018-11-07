@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Entity;
+namespace App\Tests\Entity;
 
 use App\Entity\ScheduleLog;
 use App\Entity\StreamSchedule;

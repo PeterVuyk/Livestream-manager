@@ -1,11 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Entity;
+namespace App\Tests\Entity;
 
 use App\Entity\ScheduleLog;
 use App\Entity\StreamSchedule;
-use Doctrine\Common\Collections\ArrayCollection;
 use PHPUnit\Framework\TestCase;
 
 class StreamScheduleTest extends TestCase
@@ -81,9 +80,9 @@ class StreamScheduleTest extends TestCase
      */
     public function testScheduleLog()
     {
-        $scheduleLog = new ScheduleLog('4227813d-5c7b-4757-960e-a54a8c4cb67f', new StreamSchedule(), 'message');
+        $scheduleLog = new ScheduleLog(new StreamSchedule(), true, 'message');
         $streamSchedule = new StreamSchedule();
-        $streamSchedule->addScheduleLog(new ArrayCollection([$scheduleLog]));
-        $this->assertInstanceOf(ArrayCollection::class, $streamSchedule->getScheduleLog());
+        $streamSchedule->addScheduleLog($scheduleLog);
+        $this->assertInstanceOf(ScheduleLog::class, $streamSchedule->getScheduleLog()[0]);
     }
 }

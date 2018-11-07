@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Controller\Api;
+namespace App\Tests\Controller\Api;
 
 use App\Controller\Api\LivestreamController;
 use App\Exception\FailedStartingLivestreamException;
