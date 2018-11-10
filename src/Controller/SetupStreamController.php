@@ -6,6 +6,7 @@ namespace App\Controller;
 use App\Entity\RecurringSchedule;
 use App\Form\RecurringScheduleType;
 use App\Service\SchedulerService;
+use Doctrine\DBAL\Types\Type;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;

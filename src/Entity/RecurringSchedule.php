@@ -3,14 +3,14 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\DBal\Types\EnumWeekDaysType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
-use App\Validator\ContainsCronExpression;
 
 /**
- * @ORM\Table(name="stream_schedule")
- * @ORM\Entity
+ * @ORM\Table(name="recurring_schedule")
+ * @ORM\Entity(repositoryClass="App\Repository\RecurringScheduleRepository")
  */
 class RecurringSchedule
 {
@@ -34,14 +34,19 @@ class RecurringSchedule
     private $command;
 
     /**
-     * @ContainsCronExpression()
      * @var string|null
-     * @ORM\Column(name="cron_expression", type="string", length=50, unique=false)
+     * @ORM\Column(name="execution_day", type="custom_enum_week_days", unique=false, nullable=false)
      */
-    private $cronExpression;
+    private $executionDay;
 
     /**
-     * @var \DateTimeInterface|null
+     * @var mixed|null
+     * @ORM\Column(name="execution_time", type="time", unique=false, nullable=false)
+     */
+    private $executionTime;
+
+    /**
+     * @var \DateTime|null
      * @ORM\Column(name="last_execution", type="datetime", nullable=true)
      */
     private $lastExecution;
@@ -127,33 +132,17 @@ class RecurringSchedule
     }
 
     /**
-     * @return null|string
+     * @return \DateTime|null
      */
-    public function getCronExpression(): ?string
-    {
-        return $this->cronExpression;
-    }
-
-    /**
-     * @param null|string $cronExpression
-     */
-    public function setCronExpression(?string $cronExpression): void
-    {
-        $this->cronExpression = $cronExpression;
-    }
-
-    /**
-     * @return \DateTimeInterface|null
-     */
-    public function getLastExecution(): ?\DateTimeInterface
+    public function getLastExecution(): ?\DateTime
     {
         return $this->lastExecution;
     }
 
     /**
-     * @param \DateTimeInterface|null $lastExecution
+     * @param \DateTime|null $lastExecution
      */
-    public function setLastExecution(?\DateTimeInterface $lastExecution): void
+    public function setLastExecution(?\DateTime $lastExecution): void
     {
         $this->lastExecution = $lastExecution;
     }
@@ -236,5 +225,78 @@ class RecurringSchedule
     public function addScheduleLog(ScheduleLog $scheduleLog): void
     {
         $this->scheduleLog[] = $scheduleLog;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getExecutionDay(): ?string
+    {
+        return $this->executionDay;
+    }
+
+    /**
+     * @param string $executionDay
+     * @throws \InvalidArgumentException
+     */
+    public function setExecutionDay(string $executionDay): void
+    {
+        $day = strtolower($executionDay);
+        if (!in_array($day, EnumWeekDaysType::DAYS_OF_WEEK)) {
+            throw new \InvalidArgumentException('Invalid executionDay input');
+        }
+        $this->executionDay = $day;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getExecutionTime(): ?\DateTime
+    {
+        return $this->executionTime;
+    }
+
+    /**
+     * @param \DateTime|null $executionTime
+     */
+    public function setExecutionTime(\DateTime $executionTime): void
+    {
+        $this->executionTime = $executionTime;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
+    public function getNextExecutionTime(): ?\DateTime
+    {
+        if (empty($this->getExecutionDay() || !$this->getExecutionTime() instanceof \DateTime)) {
+            return null;
+        }
+
+        $nextExecution = new \DateTime($this->getExecutionDay());
+        $nextExecution->modify($this->getExecutionTime()->format("H:i"));
+        return $nextExecution;
+    }
+
+    /**
+     * @return bool
+     */
+    public function streamTobeExecuted(): bool
+    {
+        if ($this->isWrecked() === true) {
+            return false;
+        }
+        if ($this->getRunWithNextExecution() === true) {
+            return true;
+        }
+        if ($this->getLastExecution() instanceof \DateTime) {
+            if ($this->getLastExecution() > new \DateTime('- 1 hour')) {
+                return false;
+            }
+        }
+        if ($this->getNextExecutionTime() < new \DateTime()) {
+            return true;
+        }
+        return false;
     }
 }

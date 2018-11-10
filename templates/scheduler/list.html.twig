@@ -11,8 +11,7 @@
                 <th>&nbsp;</th>
                 <th>{{ "recurring_scheduler.list.detail.name"|trans }}</th>
                 <th>{{ "recurring_scheduler.list.detail.command"|trans }}</th>
-                <th>{{ "recurring_scheduler.list.detail.cronExpression"|trans }}</th>
-                <th>{{ "recurring_scheduler.list.detail.nextExecution"|trans }}</th>
+                <th>{{ "recurring_scheduler.list.detail.scheduledExecution"|trans }}</th>
                 <th>{{ "recurring_scheduler.list.detail.lastExecution"|trans }}</th>
                 <th>{{ "recurring_scheduler.list.detail.logging"|trans }}</th>
                 <th>{{ "recurring_scheduler.list.detail.priority"|trans }}</th>
@@ -34,14 +33,14 @@
                 </td>
                 <td>{{ scheduledItem.name }}</td>
                 <td>{{ scheduledItem.command }}</td>
-                <td>{{ scheduledItem.cronExpression }}</td>
                 <td>
-                    {% if scheduledItem.disabled == true %}
-                        &nbsp;-&nbsp;
-                    {% elseif scheduledItem.runWithNextExecution == true %}
-                        {% trans %}recurring_scheduler.list.execution_next_run{% endtrans %}
+                    {% if scheduledItem.runWithNextExecution == true %}
+                        {{ 'recurring_scheduler.list.run_with_next_execution'|trans }}
                     {% else %}
-                        {{ cronExpression(scheduledItem.cronExpression)|date("D M j, G:i:s", "Europe/Amsterdam") }}
+                        {{ 'recurring_scheduler.list.time_prefix'|trans }}&nbsp;
+                        {{ scheduledItem.executionDay|trans|lower }}&nbsp;
+                        {{ 'recurring_scheduler.list.time'|trans }}&nbsp;
+                        {{ scheduledItem.executionTime|date("G:i", "Europe/Amsterdam") }}
                     {% endif %}
                 </td>
                 <td>

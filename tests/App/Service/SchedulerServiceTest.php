@@ -29,7 +29,7 @@ class SchedulerServiceTest extends TestCase
     public function testGetAllScheduledItems()
     {
         $this->recurringScheduleRepository->expects($this->once())
-            ->method('findAll')
+            ->method('findBy')
             ->willReturn([new RecurringSchedule()]);
 
         $result = $this->scheduleService->getAllScheduledItems();

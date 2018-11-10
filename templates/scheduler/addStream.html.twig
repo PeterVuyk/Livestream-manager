@@ -3,25 +3,25 @@
 {% block pageTitle %}{% trans %}recurring_scheduler.new.title{% endtrans %}{% endblock pageTitle %}
 
 {% block content %}
-    {% set styleConfiguration = {'class': 'form-control'} %}
     <div class="col-lg-6 col-sm-12">
         {{ form_start(form) }}
         {{ form_row(form.id) }}
-        {{ form_row(form.name, {'attr': styleConfiguration|merge({'placeholder': 'name'}) }) }}
-        {{ form_row(form.command, {'attr': styleConfiguration } ) }}
-        {{ form_row(form.cronExpression, {'attr': styleConfiguration|merge({'placeholder': '*/10 * * * *'}) }) }}
-        {{ form_row(form.priority, {'attr': styleConfiguration } ) }}
+        {{ form_row(form.name) }}
+        {{ form_row(form.command) }}
+        {{ form_row(form.executionDay) }}
+        {{ form_row(form.executionTime) }}
+        {{ form_row(form.priority) }}
         <div>
             {{ form_widget(form.runWithNextExecution) }}
             {{ form_label(form.runWithNextExecution) }}
         </div>
         <div>
-            {{ form_widget( form.disabled ) }}
+            {{ form_widget( form.disabled) }}
             {{ form_label( form.disabled) }}
         </div>
         <div class="row">
             <a href="{{ path('scheduler_list') }}" class="btn btn-default btn-lg" role="button">Cancel</a>
-            {{ form_widget(form.save, {'attr': {'class': 'btn btn-success btn-lg pull-right'} }) }}
+            {{ form_widget(form.save) }}
         </div>
         {{ form_end(form) }}
     </div>

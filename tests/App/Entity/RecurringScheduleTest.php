@@ -30,21 +30,14 @@ class RecurringScheduleTest extends TestCase
         $this->assertSame('command:name', $recurringSchedule->getCommand());
     }
 
-    public function testCronExpression()
-    {
-        $recurringSchedule = new RecurringSchedule();
-        $recurringSchedule->setCronExpression('* * * * *');
-        $this->assertSame('* * * * *', $recurringSchedule->getCronExpression());
-    }
-
     /**
      * @throws \Exception
      */
     public function testLastExecution()
     {
         $recurringSchedule = new RecurringSchedule();
-        $recurringSchedule->setLastExecution(new \DateTimeImmutable());
-        $this->assertInstanceOf(\DateTimeImmutable::class, $recurringSchedule->getLastExecution());
+        $recurringSchedule->setLastExecution(new \DateTime());
+        $this->assertInstanceOf(\DateTime::class, $recurringSchedule->getLastExecution());
     }
 
     public function testPriority()
@@ -75,6 +68,28 @@ class RecurringScheduleTest extends TestCase
         $this->assertSame(false, $recurringSchedule->isWrecked());
     }
 
+    public function testExecutionTimeMinutes()
+    {
+        $recurringSchedule = new RecurringSchedule();
+        $recurringSchedule->setExecutionTime(new \DateTime());
+        $this->assertInstanceOf(\DateTime::class, $recurringSchedule->getExecutionTime());
+    }
+
+    public function testExecutionDayOfTheWeek()
+    {
+        $recurringSchedule = new RecurringSchedule();
+        $recurringSchedule->setExecutionDay('monday');
+        $this->assertSame('monday', $recurringSchedule->getExecutionDay());
+    }
+
+    public function testGetNextExecutionTime()
+    {
+        $recurringSchedule = new RecurringSchedule();
+        $recurringSchedule->setExecutionTime(new \DateTime());
+        $recurringSchedule->setExecutionDay('monday');
+        $this->assertInstanceOf(\DateTime::class, $recurringSchedule->getNextExecutionTime());
+    }
+
     /**
      * @throws \Exception
      */
@@ -84,5 +99,50 @@ class RecurringScheduleTest extends TestCase
         $recurringSchedule = new RecurringSchedule();
         $recurringSchedule->addScheduleLog($scheduleLog);
         $this->assertInstanceOf(ScheduleLog::class, $recurringSchedule->getScheduleLog()[0]);
+    }
+
+    /**
+     * @dataProvider streamTobeExecutedProvider
+     * @param RecurringSchedule $recurringSchedule
+     * @param bool $result
+     */
+    public function testStreamTobeExecuted(RecurringSchedule $recurringSchedule, bool $result)
+    {
+        $this->assertSame($result, $recurringSchedule->streamTobeExecuted());
+    }
+
+    public function streamTobeExecutedProvider()
+    {
+        $recurringScheduleWrecked = new RecurringSchedule();
+        $recurringScheduleWrecked->setWrecked(true);
+        $recurringScheduleRunWithNextExecution = new RecurringSchedule();
+        $recurringScheduleRunWithNextExecution->setRunWithNextExecution(true);
+        $recurringScheduleNextExecution = new RecurringSchedule();
+        $recurringScheduleNextExecution->setExecutionTime(new \DateTime('- 1 minute'));
+        $recurringScheduleNoExecution = new RecurringSchedule();
+        $recurringScheduleNoExecution->setExecutionTime(new \DateTime('+ 1 minute'));
+        $recurringScheduleNoExecution->setExecutionDay(date('l'));
+        $recurringScheduleAlreadyExecuted = new RecurringSchedule();
+        $recurringScheduleAlreadyExecuted->setLastExecution(new \DateTime());
+        $recurringScheduleAlreadyExecuted->setExecutionDay(date('l'));
+
+        return [
+            [
+                'recurringSchedule' => $recurringScheduleWrecked,
+                'result' => false,
+            ], [
+                'recurringSchedule' => $recurringScheduleRunWithNextExecution,
+                'result' => true,
+            ], [
+                'recurringSchedule' => $recurringScheduleAlreadyExecuted,
+                'result' => false,
+            ], [
+                'recurringSchedule' => $recurringScheduleNextExecution,
+                'result' => true,
+            ], [
+                'recurringSchedule' => $recurringScheduleNoExecution,
+                'result' => false,
+            ]
+        ];
     }
 }

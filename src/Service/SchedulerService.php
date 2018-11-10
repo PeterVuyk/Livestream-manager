@@ -28,7 +28,7 @@ class SchedulerService
      */
     public function getAllScheduledItems(): array
     {
-        return $this->recurringScheduleRepository->findAll();
+        return $this->recurringScheduleRepository->findBy([], ['priority' => 'DESC']);
     }
 
     /**

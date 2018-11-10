@@ -7,7 +7,6 @@ use App\Entity\ScheduleLog;
 use App\Entity\RecurringSchedule;
 use App\Exception\CouldNotExecuteCommandException;
 use App\Repository\RecurringScheduleRepository;
-use Cron\CronExpression;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Psr\Log\LoggerInterface;
@@ -59,23 +58,15 @@ class SchedulerExecuteCommand extends Command
         $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution started'));
         $recurringSchedules = $this->recurringScheduleRepository->findActiveCommands();
         foreach ($recurringSchedules as $recurringSchedule) {
-            $cron = CronExpression::factory($recurringSchedule->getCronExpression());
-            if (!$cron instanceof CronExpression) {
-                $output->writeln(sprintf(
-                    self::ERROR_MESSAGE,
-                    'Invalid cron expression: ' . $recurringSchedule->getCronExpression()
-                ));
+            if ($recurringSchedule->streamTobeExecuted() === false) {
                 continue;
             }
-
-            if ($cron->getNextRunDate() < new \DateTime() || $recurringSchedule->getRunWithNextExecution()) {
-                try {
-                    $this->executeCommand($recurringSchedule, $input, $output);
-                } catch (ORMException | OptimisticLockException $exception) {
-                    $this->logger->error('could not update stream schedule', ['message' => $exception->getMessage()]);
-                } catch (CouldNotExecuteCommandException $exception) {
-                    //Do nothing, already logged. Continue process to run the next command.
-                }
+            try {
+                $this->executeCommand($recurringSchedule, $input, $output);
+            } catch (ORMException | OptimisticLockException $exception) {
+                $this->logger->error('could not update stream schedule', ['message' => $exception->getMessage()]);
+            } catch (CouldNotExecuteCommandException $exception) {
+                //Do nothing, already logged. Continue process.
             }
         }
         $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution finished'));
@@ -99,7 +90,7 @@ class SchedulerExecuteCommand extends Command
 
             $command->run($input, $output);
             $recurringSchedule->setRunWithNextExecution(false);
-            $recurringSchedule->setLastExecution(new \DateTimeImmutable());
+            $recurringSchedule->setLastExecution(new \DateTime());
             $scheduleLog = new ScheduleLog($recurringSchedule, true, 'Command successfully executed');
             $recurringSchedule->addScheduleLog($scheduleLog);
 
@@ -109,6 +100,7 @@ class SchedulerExecuteCommand extends Command
             $this->logger->error('Could not execute command', ['message' => $exception->getMessage()]);
 
             $recurringSchedule->setWrecked(true);
+            $recurringSchedule->setRunWithNextExecution(false);
             $scheduleLog = new ScheduleLog($recurringSchedule, false, $exception->getMessage());
             $recurringSchedule->addScheduleLog($scheduleLog);
             throw CouldNotExecuteCommandException::couldNotRunCommand($recurringSchedule, $exception);
