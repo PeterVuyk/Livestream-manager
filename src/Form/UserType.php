@@ -25,8 +25,22 @@ class UserType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
-            ->add('email', EmailType::class, ['label' => 'registration_form.label_email'])
-            ->add('username', TextType::class, ['label' => 'registration_form.label_username'])
+            ->add(
+                'email',
+                EmailType::class,
+                [
+                    'label' => 'registration_form.label_email',
+                    'translation_domain' => 'users',
+                ]
+            )
+            ->add(
+                'username',
+                TextType::class,
+                [
+                    'label' => 'registration_form.label_username',
+                    'translation_domain' => 'users',
+                ]
+            )
             ->add(
                 'plainPassword',
                 RepeatedType::class,
@@ -34,6 +48,7 @@ class UserType extends AbstractType
                     'type' => PasswordType::class,
                     'first_options'  => ['label' => 'registration_form.label_password'],
                     'second_options' => ['label' => 'registration_form.label_repeat_password'],
+                    'translation_domain' => 'users',
                     'required' => true,
                     'constraints' => [
                         new Assert\NotBlank(),
@@ -41,8 +56,10 @@ class UserType extends AbstractType
                 ])
             ->add(
                 'submitButton',
-                SubmitType::class, [
+                SubmitType::class,
+                [
                     'label' => 'registration_form.submit_button',
+                    'translation_domain' => 'users',
                     'attr' => ['class' => 'btn btn-success btn-lg pull-right'],
                 ]
             );

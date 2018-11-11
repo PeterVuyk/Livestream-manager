@@ -1,6 +1,7 @@
 {% extends "base.html.twig" %}
-{% block title %}{{ 'user.details.title'|trans }}{% endblock title %}
-{% block pageTitle %}{{ 'user.details.title'|trans }}{% endblock pageTitle %}
+{% trans_default_domain 'users' %}
+{% block title %}{{ 'user_details.title'|trans }}{% endblock title %}
+{% block pageTitle %}{{ 'user_details.title'|trans }}{% endblock pageTitle %}
 
 {% block content %}
     {{ form(form) }}

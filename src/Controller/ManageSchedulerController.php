@@ -61,7 +61,7 @@ class ManageSchedulerController extends Controller
         try {
             $this->schedulerService->toggleDisablingSchedule($scheduleId);
         } catch (\Exception $exception) {
-            $this->flashBag->add(self::ERROR_MESSAGE, 'Unable to toggle the disable status from the stream.');
+            $this->flashBag->add(self::ERROR_MESSAGE, 'flash.manage_schedule.error.could_not_disable_status');
         }
         return new RedirectResponse($this->router->generate('scheduler_list'));
     }
@@ -75,7 +75,7 @@ class ManageSchedulerController extends Controller
         try {
             $this->schedulerService->executeScheduleWithNextExecution($scheduleId);
         } catch (\Exception $exception) {
-            $this->flashBag->add(self::ERROR_MESSAGE, 'Could not toggle schedule with next execution.');
+            $this->flashBag->add(self::ERROR_MESSAGE, 'flash.manage_schedule.error.could_not_toggle_execution');
         }
         return new RedirectResponse($this->router->generate('scheduler_list'));
     }
@@ -89,7 +89,7 @@ class ManageSchedulerController extends Controller
         try {
             $this->schedulerService->removeSchedule($scheduleId);
         } catch (\Exception $exception) {
-            $this->flashBag->add(self::ERROR_MESSAGE, 'Could not remove schedule.');
+            $this->flashBag->add(self::ERROR_MESSAGE, 'flash.manage_schedule.error.could_not_remove');
         }
         return new RedirectResponse($this->router->generate('scheduler_list'));
     }
@@ -103,7 +103,7 @@ class ManageSchedulerController extends Controller
         try {
             $this->schedulerService->unwreckSchedule($scheduleId);
         } catch (\Exception $exception) {
-            $this->flashBag->add(self::ERROR_MESSAGE, 'Could not activate broken schedule.');
+            $this->flashBag->add(self::ERROR_MESSAGE, 'flash.manage_schedule.error.could_not_activate');
         }
         return new RedirectResponse($this->router->generate('scheduler_list'));
     }

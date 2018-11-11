@@ -48,7 +48,7 @@ class ScheduleLogBookController extends Controller
         try {
             $recurringSchedule = $this->schedulerService->getScheduleById($scheduleId);
         } catch (\Exception $exception) {
-            $this->flashBag->add(self::ERROR_MESSAGE, 'Could not open latest logging from schedule.');
+            $this->flashBag->add(self::ERROR_MESSAGE, 'flash.logbook.error.could_not_open');
             return new RedirectResponse($this->router->generate('scheduler_list'));
         }
         return $this->render('scheduler/logging.html.twig', ['recurringSchedule' => $recurringSchedule]);

@@ -1,0 +1,16 @@
+schedule_rerun_failed.confirm.rerun_failed_schedule: 'Are you sure to activate the broken schedule?'
+schedule_rerun_failed.action.title_rerun_failed_schedule: 'Activate broken schedule'
+schedule_rerun_failed.action.activate: Activate
+schedule_rerun_failed.action.cancel: Cancel
+schedule_execute.confirm.execute: 'Are you sure to execute the schedule?'
+schedule_execute.action.title_execute: 'Execute schedule'
+schedule_execute.action.execute: Execute
+schedule_execute.action.cancel: Cancel
+schedule_delete.confirm.delete: 'Are you sure to delete the schedule?'
+schedule_delete.action.title_schedule: 'Delete schedule'
+schedule_delete.action.delete: Delete
+schedule_delete.action.cancel: Cancel
+user_delete.confirm.delete: 'Are you sure to remove this user?'
+user_delete.action.delete: Remove
+user_delete.action.cancel: Cancel
+user_delete.action.title_user: 'Remove user'

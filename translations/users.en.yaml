@@ -1,0 +1,17 @@
+users_list.column_username: Username
+users_list.column_email: Email
+users_list.column_action: Actions
+users_list.page_title: 'Authorized users'
+users_list.registration_button: 'Add user'
+user_details.label_email: 'Email:'
+user_details.label_username: 'Username:'
+user_details.label_is_active: Active
+user_details.submit_button: Update
+user_details.title: 'User details'
+user_registration.title: 'Register user'
+registration_form.label_username: 'Username:'
+registration_form.label_email: 'Email:'
+registration_form.label_password: 'Password:'
+registration_form.label_repeat_password: 'Repeat password:'
+registration_form.submit_button: Register
+

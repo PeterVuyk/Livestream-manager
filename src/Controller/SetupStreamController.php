@@ -54,21 +54,21 @@ class SetupStreamController extends Controller
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function createStream(Request $request)
+    public function createRecurringStream(Request $request)
     {
         $form = $this->formFactory->create(RecurringScheduleType::class, new RecurringSchedule());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $this->schedulerService->saveStream($form->getData());
-                $this->flashBag->add(self::SUCCESS_MESSAGE, 'Command successful added.');
+                $this->flashBag->add(self::SUCCESS_MESSAGE, 'flash.setup_stream.success.schedule_created');
             } catch (\Exception $exception) {
-                $this->flashBag->add(self::ERROR_MESSAGE, 'Could not save schedule.');
+                $this->flashBag->add(self::ERROR_MESSAGE, 'flash.setup_stream.error.could_not_save_schedule');
             }
             return new RedirectResponse($this->router->generate('scheduler_list'));
         }
         return $this->render(
-            'scheduler/addStream.html.twig',
+            'scheduler/createRecurringStream.html.twig',
             array('form' => $form->createView())
         );
     }
@@ -82,7 +82,7 @@ class SetupStreamController extends Controller
     {
         $recurringSchedule = $this->schedulerService->getScheduleById($scheduleId);
         if (!$recurringSchedule instanceof RecurringSchedule) {
-            $this->flashBag->add(self::ERROR_MESSAGE, 'Can not edit requested schedule.');
+            $this->flashBag->add(self::ERROR_MESSAGE, 'flash.setup_stream.error.can_not_edit_schedule');
             return new RedirectResponse($this->router->generate('scheduler_list'));
         }
         $form = $this->formFactory->create(RecurringScheduleType::class, $recurringSchedule);
@@ -91,14 +91,14 @@ class SetupStreamController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $this->schedulerService->saveStream($form->getData());
-                $this->flashBag->add(self::SUCCESS_MESSAGE, 'Command successful updated.');
+                $this->flashBag->add(self::SUCCESS_MESSAGE, 'flash.setup_stream.success.schedule_updated');
             } catch (\Exception $exception) {
-                $this->flashBag->add(self::ERROR_MESSAGE, 'Could not edit schedule.');
+                $this->flashBag->add(self::ERROR_MESSAGE, 'flash.setup_stream.error.can_not_edit_schedule');
             }
             return new RedirectResponse($this->router->generate('scheduler_list'));
         }
         return $this->render(
-            'scheduler/addStream.html.twig',
+            'scheduler/createRecurringStream.html.twig',
             array('form' => $form->createView())
         );
     }

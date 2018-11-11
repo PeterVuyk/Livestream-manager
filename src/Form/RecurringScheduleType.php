@@ -33,8 +33,9 @@ class RecurringScheduleType extends AbstractType
             'name',
             TextType::class,
             [
-                'label' => 'recurring_scheduler.detail.name',
+                'label' => 'recurring.form.label.detail.name',
                 'required' => true,
+                'translation_domain' => 'schedule_create',
                 'attr' => ['class' => 'form-control', 'placeholder' => 'name'],
             ]
         );
@@ -43,7 +44,8 @@ class RecurringScheduleType extends AbstractType
             'command',
             CommandChoiceType::class,
             [
-                'label' => 'recurring_scheduler.detail.command',
+                'label' => 'recurring.form.label.detail.command',
+                'translation_domain' => 'schedule_create',
                 'required' => true,
                 'attr' => ['class' => 'form-control'],
             ]
@@ -54,7 +56,8 @@ class RecurringScheduleType extends AbstractType
             ChoiceType::class,
             [
                 'choices' => $this->getDaysOfTheWeek(),
-                'label' => 'recurring_scheduler.detail.label.weekday_choice',
+                'label' => 'recurring.form.label.detail.label.weekday_choice',
+                'translation_domain' => 'schedule_create',
                 'required' => true,
                 'attr' => ['class' => 'form-control'],
             ]
@@ -65,7 +68,8 @@ class RecurringScheduleType extends AbstractType
             TimeType::class,
             [
                 'input' => 'datetime',
-                'label' => 'recurring_scheduler.detail.label.time',
+                'label' => 'recurring.form.label.detail.label.time',
+                'translation_domain' => 'schedule_create',
                 'required' => true,
             ]
         );
@@ -74,7 +78,8 @@ class RecurringScheduleType extends AbstractType
             'priority',
             IntegerType::class,
             [
-                'label' => 'recurring_scheduler.detail.priority',
+                'label' => 'recurring.form.label.detail.priority',
+                'translation_domain' => 'schedule_create',
                 'empty_data' => 0,
                 'required' => false,
                 'attr' => ['class' => 'form-control'],
@@ -85,8 +90,9 @@ class RecurringScheduleType extends AbstractType
             'runWithNextExecution',
             CheckboxType::class,
             [
-                'label' => 'recurring_scheduler.detail.run_with_next_execution',
+                'label' => 'recurring.form.label.detail.run_with_next_execution',
                 'required' => false,
+                'translation_domain' => 'schedule_create',
             ]
         );
 
@@ -94,7 +100,8 @@ class RecurringScheduleType extends AbstractType
             'disabled',
             CheckboxType::class,
             [
-                'label' => 'recurring_scheduler.detail.disabled',
+                'label' => 'recurring.form.label.detail.disabled',
+                'translation_domain' => 'schedule_create',
                 'required' => false,
             ]
         );
@@ -103,7 +110,8 @@ class RecurringScheduleType extends AbstractType
             'save',
             SubmitType::class,
             [
-                'label' => 'recurring_scheduler.detail.save',
+                'label' => 'recurring.form.label.detail.save',
+                'translation_domain' => 'schedule_create',
                 'attr' => ['class' => 'btn btn-success btn-lg pull-right'],
             ]
         );
@@ -123,13 +131,13 @@ class RecurringScheduleType extends AbstractType
     private function getDaysOfTheWeek(): array
     {
         return [
-            'monday' => EnumWeekDaysType::ENUM_MONDAY,
-            'tuesday' => EnumWeekDaysType::ENUM_TUESDAY,
-            'wednesday' => EnumWeekDaysType::ENUM_WEDNESDAY,
-            'thursday' => EnumWeekDaysType::ENUM_THURSDAY,
-            'friday' => EnumWeekDaysType::ENUM_FRIDAY,
-            'saturday' => EnumWeekDaysType::ENUM_SATURDAY,
-            'sunday' => EnumWeekDaysType::ENUM_SUNDAY,
+            'recurring.form.weekday_choice_type.monday' => EnumWeekDaysType::ENUM_MONDAY,
+            'recurring.form.weekday_choice_type.tuesday' => EnumWeekDaysType::ENUM_TUESDAY,
+            'recurring.form.weekday_choice_type.wednesday' => EnumWeekDaysType::ENUM_WEDNESDAY,
+            'recurring.form.weekday_choice_type.thursday' => EnumWeekDaysType::ENUM_THURSDAY,
+            'recurring.form.weekday_choice_type.friday' => EnumWeekDaysType::ENUM_FRIDAY,
+            'recurring.form.weekday_choice_type.saturday' => EnumWeekDaysType::ENUM_SATURDAY,
+            'recurring.form.weekday_choice_type.sunday' => EnumWeekDaysType::ENUM_SUNDAY,
         ];
     }
 }

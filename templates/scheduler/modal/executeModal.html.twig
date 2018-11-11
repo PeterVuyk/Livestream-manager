@@ -1,19 +1,20 @@
+{% trans_default_domain 'modal' %}
 <div class="modal" id="js-execute-scheduled-modal-{{ scheduledItem.id }}" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title">{% trans %}action.execute.title{% endtrans %}</h5>
+                <h5 class="modal-title">{{ 'schedule_execute.action.title_execute'|trans }}</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                <p>{% trans %}confirm.execute{% endtrans %}</p>
+                <p>{{ 'schedule_execute.confirm.execute'|trans }}</p>
             </div>
             <div class="modal-footer">
                 <button onclick="location.href='{{ path('scheduler_execution', {'scheduleId': scheduledItem.id}) }}'"
-                        type="button" class="btn btn-primary">{% trans %}action.execute{% endtrans %}</button>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">{% trans %}action.cancel{% endtrans %}</button>
+                        type="button" class="btn btn-primary">{{ 'schedule_execute.action.execute'|trans }}</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'schedule_execute.action.cancel'|trans }}</button>
             </div>
         </div>
     </div>

@@ -3,9 +3,9 @@ scheduler_list:
   defaults: { _controller: App\Controller\ManageSchedulerController:list }
   methods: [GET]
 
-scheduler_create:
-  path: /details/create-stream
-  defaults: { _controller: App\Controller\SetupStreamController:createStream }
+recurring_scheduler_create:
+  path: /details/create-recurring
+  defaults: { _controller: App\Controller\SetupStreamController:createRecurringStream }
   methods: [GET, POST]
 
 scheduler_edit:

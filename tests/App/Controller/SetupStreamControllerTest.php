@@ -61,7 +61,7 @@ class SetupStreamControllerTest extends TestCase
 
         $this->twigMock = $this->createMock(\Twig_Environment::class);
 
-        $result = $this->setupStreamController->createStream(new Request());
+        $result = $this->setupStreamController->createRecurringStream(new Request());
         $this->assertSame(Response::HTTP_OK, $result->getStatusCode());
     }
 
@@ -80,7 +80,7 @@ class SetupStreamControllerTest extends TestCase
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
-        $result = $this->setupStreamController->createStream(new Request());
+        $result = $this->setupStreamController->createRecurringStream(new Request());
         $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
     }
 
@@ -101,7 +101,7 @@ class SetupStreamControllerTest extends TestCase
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
-        $result = $this->setupStreamController->createStream(new Request());
+        $result = $this->setupStreamController->createRecurringStream(new Request());
         $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
     }
 

@@ -59,10 +59,10 @@ class RegistrationController extends Controller
             try {
                 $this->userService->createUser($user);
             } catch (ORMException | OptimisticLockException $exception) {
-                $session->getFlashBag()->add(self::ERROR_MESSAGE, 'Could not save new user.');
+                $session->getFlashBag()->add(self::ERROR_MESSAGE, 'flash.registration.error.could_not_save');
                 return new RedirectResponse($request->getUri());
             }
-            $session->getFlashBag()->add(self::SUCCESS_MESSAGE, 'User successfully created.');
+            $session->getFlashBag()->add(self::SUCCESS_MESSAGE, 'flash.registration.success.user_created');
             return new RedirectResponse($this->router->generate('user_list'));
         }
         return $this->render(

@@ -1,7 +1,8 @@
 {% extends "base.html.twig" %}
-{% set active_page = 'recurring_schedule' %}
-{% block title %}{{ 'recurring_scheduler.list.title'|trans }}{% endblock title %}
-{% block pageTitle %}{{ 'recurring_scheduler.list.title'|trans }}{% endblock pageTitle %}
+{% set active_page = 'schedule' %}
+{% trans_default_domain 'schedule_list' %}
+{% block title %}{{ 'scheduler_list.title'|trans }}{% endblock title %}
+{% block pageTitle %}{{ 'scheduler_list.title'|trans }}{% endblock pageTitle %}
 
 {% block content %}
     <div class="table-responsive table-stripped">
@@ -9,19 +10,19 @@
         <thead>
             <tr>
                 <th>&nbsp;</th>
-                <th>{{ "recurring_scheduler.list.detail.name"|trans }}</th>
-                <th>{{ "recurring_scheduler.list.detail.command"|trans }}</th>
-                <th>{{ "recurring_scheduler.list.detail.scheduledExecution"|trans }}</th>
-                <th>{{ "recurring_scheduler.list.detail.lastExecution"|trans }}</th>
-                <th>{{ "recurring_scheduler.list.detail.logging"|trans }}</th>
-                <th>{{ "recurring_scheduler.list.detail.priority"|trans }}</th>
-                <th>{{ "recurring_scheduler.list.detail.actions"|trans }}</th>
+                <th>{{ "scheduler_list.column.name"|trans }}</th>
+                <th>{{ "scheduler_list.column.command"|trans }}</th>
+                <th>{{ "scheduler_list.column.scheduledExecution"|trans }}</th>
+                <th>{{ "scheduler_list.column.lastExecution"|trans }}</th>
+                <th>{{ "scheduler_list.column.logging"|trans }}</th>
+                <th>{{ "scheduler_list.column.priority"|trans }}</th>
+                <th>{{ "scheduler_list.column.actions"|trans }}</th>
             </tr>
         </thead>
 
         <tbody>
         {% for scheduledItem in scheduledItems %}
-            <tr class="{% if scheduledItem.disabled == true %}text-muted{% endif %}">
+            <tr class="{% if scheduledItem.disabled == true %} text-muted{% endif %}">
                 <td>
                     <a href="{{ path('scheduler_toggle_disabling', {'scheduleId': scheduledItem.id}) }}" >
                     {% if scheduledItem.disabled == true %}
@@ -35,11 +36,11 @@
                 <td>{{ scheduledItem.command }}</td>
                 <td>
                     {% if scheduledItem.runWithNextExecution == true %}
-                        {{ 'recurring_scheduler.list.run_with_next_execution'|trans }}
+                        {{ 'scheduler_list.run_with_next_execution'|trans }}
                     {% else %}
-                        {{ 'recurring_scheduler.list.time_prefix'|trans }}&nbsp;
+                        {{ 'scheduler_list.recurring_time_prefix'|trans }}&nbsp;
                         {{ scheduledItem.executionDay|trans|lower }}&nbsp;
-                        {{ 'recurring_scheduler.list.time'|trans }}&nbsp;
+                        {{ 'scheduler_list.recurring_time_at'|trans }}&nbsp;
                         {{ scheduledItem.executionTime|date("G:i", "Europe/Amsterdam") }}
                     {% endif %}
                 </td>
@@ -68,7 +69,7 @@
                         {{ include('scheduler/modal/rerunFailedModal.html.twig') }}
                     {% endif %}
                     <a href="{{ path('scheduler_edit', {'scheduleId': scheduledItem.id}) }}" >
-                        <span class="text-info fa fa-edit fa-lg"></span> <span class="sr-only">{{ "action.edit"|trans }}</span>
+                        <span class="text-info fa fa-edit fa-lg"></span> <span class="sr-only">{{ "schedule.action.edit"|trans }}</span>
                     </a>
 
                     <a href="#js-delete-scheduled-modal-{{ scheduledItem.id }}" data-toggle="modal">
@@ -86,5 +87,10 @@
         </tbody>
     </table>
     </div>
-    <a href="{{ path('scheduler_create') }}" class="btn btn-primary btn-lg pull-right" role="button">{{ "action.recurring_new"|trans }}</a>
+    <a href="{{ path('recurring_scheduler_create') }}" class="btn btn-primary btn-lg pull-right" role="button">
+        {{ "schedule.action.recurring_new"|trans }}
+    </a>
+    <a href="{{ path('recurring_scheduler_create') }}" class="btn btn-primary btn-lg pull-right" role="button">
+        {{ "schedule.action.onetime_new"|trans }}
+    </a>
 {% endblock content %}

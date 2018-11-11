@@ -1,3 +1,4 @@
+{% trans_default_domain 'homepage' %}
 <div id="navbar" class="navbar navbar-inverse navbar-fixed-top">
     <div class="container">
         <ul class="nav navbar-nav">
@@ -13,11 +14,8 @@
                     <li><a href="{{ path('registration') }}">{{ 'navigation.register'|trans }}</a></li>
                 </ul>
             </li>
-            <li class="{% if active_page is defined and active_page == 'recurring_schedule' %}active{% endif %}">
-                <a href="{{ path('scheduler_list') }}">{{ 'navigation.recurring_schedule'|trans }}</a>
-            </li>
-            <li class="{% if active_page is defined and active_page == 'onetime_schedule' %}active{% endif %}">
-                <a href="#">{{ 'navigation.onetime_schedule'|trans }}</a>
+            <li class="{% if active_page is defined and active_page == 'schedule' %}active{% endif %}">
+                <a href="{{ path('scheduler_list') }}">{{ 'navigation.schedule'|trans }}</a>
             </li>
         </ul>
         <ul class="nav navbar-nav navbar-right">

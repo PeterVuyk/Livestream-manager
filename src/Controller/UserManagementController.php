@@ -67,7 +67,7 @@ class UserManagementController extends Controller
         } catch (\Exception $exception) {
             /** @var Session $session */
             $session = $request->getSession();
-            $session->getFlashBag()->add(self::ERROR_MESSAGE, 'Could not remove user.');
+            $session->getFlashBag()->add(self::ERROR_MESSAGE, 'flash.user_management.error.could_not_remove_user');
         }
         return new RedirectResponse($this->router->generate('user_list'));
     }
@@ -84,7 +84,7 @@ class UserManagementController extends Controller
         } catch (\Exception $exception) {
             /** @var Session $session */
             $session = $request->getSession();
-            $session->getFlashBag()->add(self::ERROR_MESSAGE, 'Unable to toggle the disable status from the user.');
+            $session->getFlashBag()->add(self::ERROR_MESSAGE, 'flash.user_management.error.failed_disabling_user');
         }
 
         return new RedirectResponse($this->router->generate('user_list'));
@@ -108,9 +108,9 @@ class UserManagementController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $this->userService->updateUser($form->getData());
-                $session->getFlashBag()->add(self::SUCCESS_MESSAGE, 'User successfully updated.');
+                $session->getFlashBag()->add(self::SUCCESS_MESSAGE, 'flash.user_management.success.user_created');
             } catch (ORMException | OptimisticLockException $exception) {
-                $session->getFlashBag()->add(self::ERROR_MESSAGE, 'Could not update the user.');
+                $session->getFlashBag()->add(self::ERROR_MESSAGE, 'flash.user_management.error.failed_saving_user');
             }
             return new RedirectResponse($request->getUri());
         }
