@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Exception;
 
-use App\Entity\RecurringSchedule;
+use App\Entity\StreamSchedule;
 
 class CouldNotExecuteCommandException extends \Exception
 {
@@ -14,11 +14,11 @@ class CouldNotExecuteCommandException extends \Exception
         parent::__construct($reason, 0, $previous);
     }
 
-    public static function couldNotRunCommand(RecurringSchedule $recurringSchedule, \Throwable $previous)
+    public static function couldNotRunCommand(StreamSchedule $streamSchedule, \Throwable $previous)
     {
         $message = sprintf(
             self::FAILED_RUNNING_COMMAND_MESSAGE,
-            $recurringSchedule->getCommand(),
+            $streamSchedule->getCommand(),
             $previous->getMessage()
         );
         return new self($message, $previous);

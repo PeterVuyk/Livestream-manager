@@ -1,7 +1,5 @@
 doctrine:
     dbal:
-        types:
-            custom_enum_week_days: App\DBal\Types\EnumWeekDaysType
         default_connection: livestream
         connections:
             livestream:

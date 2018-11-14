@@ -1,39 +1,39 @@
 scheduler_list:
   path: /list
-  defaults: { _controller: App\Controller\ManageSchedulerController:list }
+  defaults: { _controller: App\Controller\ScheduleController:list }
   methods: [GET]
 
-recurring_scheduler_create:
-  path: /details/create-recurring
-  defaults: { _controller: App\Controller\SetupStreamController:createRecurringStream }
+schedule_scheduler_create:
+  path: /details/create
+  defaults: { _controller: App\Controller\ScheduleController:createSchedule }
   methods: [GET, POST]
 
-scheduler_edit:
+schedule_edit:
   path: /details/edit-stream/{scheduleId}
-  defaults: { _controller: App\Controller\SetupStreamController:editStream }
+  defaults: { _controller: App\Controller\ManageScheduleController:editSchedule }
   methods: [GET, POST]
 
-scheduler_toggle_disabling:
+schedule_toggle_disabling:
   path: /details/disable/{scheduleId}
-  defaults: { _controller: App\Controller\ManageSchedulerController:toggleDisablingSchedule }
+  defaults: { _controller: App\Controller\ManageScheduleController:toggleDisablingSchedule }
   methods: [GET]
 
-scheduler_execution:
+schedule_execution:
   path: /details/execution/{scheduleId}
-  defaults: { _controller: App\Controller\ManageSchedulerController:executeScheduleWithNextExecution }
+  defaults: { _controller: App\Controller\ManageScheduleController:executeScheduleWithNextExecution }
   methods: [GET]
 
-scheduler_remove:
+schedule_remove:
   path: /details/remove/{scheduleId}
-  defaults: { _controller: App\Controller\ManageSchedulerController:removeSchedule }
+  defaults: { _controller: App\Controller\ManageScheduleController:removeSchedule }
   methods: [GET]
 
-scheduler_unwreck:
+schedule_unwreck:
   path: /details/unwreck/{scheduleId}
-  defaults: { _controller: App\Controller\ManageSchedulerController:unwreckSchedule }
+  defaults: { _controller: App\Controller\ManageScheduleController:unwreckSchedule }
   methods: [GET]
 
-scheduler_view_logging:
+schedule_view_logging:
   defaults: { _controller: App\Controller\ScheduleLogBookController:viewLogging }
-  path: /logging/{scheduleId}
+  path: /details/logging/{scheduleId}
   methods: [GET]

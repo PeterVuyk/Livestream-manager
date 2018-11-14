@@ -12,7 +12,7 @@
                 <p>{{ 'schedule_execute.confirm.execute'|trans }}</p>
             </div>
             <div class="modal-footer">
-                <button onclick="location.href='{{ path('scheduler_execution', {'scheduleId': scheduledItem.id}) }}'"
+                <button onclick="location.href='{{ path(path, {'scheduleId': scheduledItem.id}) }}'"
                         type="button" class="btn btn-primary">{{ 'schedule_execute.action.execute'|trans }}</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'schedule_execute.action.cancel'|trans }}</button>
             </div>

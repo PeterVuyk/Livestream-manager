@@ -3,11 +3,11 @@ declare(strict_types=1);
 
 namespace App\Form;
 
-use App\DBal\Types\EnumWeekDaysType;
-use App\Entity\RecurringSchedule;
+use App\Entity\StreamSchedule;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,7 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class RecurringScheduleType extends AbstractType
+class StreamScheduleType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -33,7 +33,7 @@ class RecurringScheduleType extends AbstractType
             'name',
             TextType::class,
             [
-                'label' => 'recurring.form.label.detail.name',
+                'label' => 'stream.form.label.detail.name',
                 'required' => true,
                 'translation_domain' => 'schedule_create',
                 'attr' => ['class' => 'form-control', 'placeholder' => 'name'],
@@ -44,7 +44,7 @@ class RecurringScheduleType extends AbstractType
             'command',
             CommandChoiceType::class,
             [
-                'label' => 'recurring.form.label.detail.command',
+                'label' => 'stream.form.label.detail.command',
                 'translation_domain' => 'schedule_create',
                 'required' => true,
                 'attr' => ['class' => 'form-control'],
@@ -56,9 +56,10 @@ class RecurringScheduleType extends AbstractType
             ChoiceType::class,
             [
                 'choices' => $this->getDaysOfTheWeek(),
-                'label' => 'recurring.form.label.detail.label.weekday_choice',
+                'label' => 'stream.form.label.detail.label.weekday_choice',
                 'translation_domain' => 'schedule_create',
                 'required' => true,
+                'placeholder' => 'stream.form.placeholder.weekday_choice',
                 'attr' => ['class' => 'form-control'],
             ]
         );
@@ -68,21 +69,32 @@ class RecurringScheduleType extends AbstractType
             TimeType::class,
             [
                 'input' => 'datetime',
-                'label' => 'recurring.form.label.detail.label.time',
+                'label' => 'stream.form.label.detail.label.time',
                 'translation_domain' => 'schedule_create',
+                'data' => new \DateTime(),
                 'required' => true,
             ]
+        );
+
+        $builder->add(
+            'onetimeExecutionDate',
+            DateTimeType::class,
+            [
+                'label' => 'label-name',
+                'data' => new \DateTime(),
+            ]
+
         );
 
         $builder->add(
             'priority',
             IntegerType::class,
             [
-                'label' => 'recurring.form.label.detail.priority',
+                'label' => 'stream.form.label.detail.priority',
                 'translation_domain' => 'schedule_create',
                 'empty_data' => 0,
                 'required' => false,
-                'attr' => ['class' => 'form-control'],
+                'attr' => ['class' => 'form-control', 'min' => 0, 'max' => 1000],
             ]
         );
 
@@ -90,7 +102,7 @@ class RecurringScheduleType extends AbstractType
             'runWithNextExecution',
             CheckboxType::class,
             [
-                'label' => 'recurring.form.label.detail.run_with_next_execution',
+                'label' => 'stream.form.label.detail.run_with_next_execution',
                 'required' => false,
                 'translation_domain' => 'schedule_create',
             ]
@@ -100,7 +112,7 @@ class RecurringScheduleType extends AbstractType
             'disabled',
             CheckboxType::class,
             [
-                'label' => 'recurring.form.label.detail.disabled',
+                'label' => 'stream.form.label.detail.disabled',
                 'translation_domain' => 'schedule_create',
                 'required' => false,
             ]
@@ -110,7 +122,7 @@ class RecurringScheduleType extends AbstractType
             'save',
             SubmitType::class,
             [
-                'label' => 'recurring.form.label.detail.save',
+                'label' => 'stream.form.label.detail.save',
                 'translation_domain' => 'schedule_create',
                 'attr' => ['class' => 'btn btn-success btn-lg pull-right'],
             ]
@@ -123,7 +135,7 @@ class RecurringScheduleType extends AbstractType
     public function configureOptions(OptionsResolver $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => RecurringSchedule::class,
+            'data_class' => StreamSchedule::class,
             'wrapper_attr' => 'default_wrapper',
         ));
     }
@@ -131,13 +143,13 @@ class RecurringScheduleType extends AbstractType
     private function getDaysOfTheWeek(): array
     {
         return [
-            'recurring.form.weekday_choice_type.monday' => EnumWeekDaysType::ENUM_MONDAY,
-            'recurring.form.weekday_choice_type.tuesday' => EnumWeekDaysType::ENUM_TUESDAY,
-            'recurring.form.weekday_choice_type.wednesday' => EnumWeekDaysType::ENUM_WEDNESDAY,
-            'recurring.form.weekday_choice_type.thursday' => EnumWeekDaysType::ENUM_THURSDAY,
-            'recurring.form.weekday_choice_type.friday' => EnumWeekDaysType::ENUM_FRIDAY,
-            'recurring.form.weekday_choice_type.saturday' => EnumWeekDaysType::ENUM_SATURDAY,
-            'recurring.form.weekday_choice_type.sunday' => EnumWeekDaysType::ENUM_SUNDAY,
+            'stream.form.weekday_choice_type.monday' => StreamSchedule::ENUM_MONDAY,
+            'stream.form.weekday_choice_type.tuesday' => StreamSchedule::ENUM_TUESDAY,
+            'stream.form.weekday_choice_type.wednesday' => StreamSchedule::ENUM_WEDNESDAY,
+            'stream.form.weekday_choice_type.thursday' => StreamSchedule::ENUM_THURSDAY,
+            'stream.form.weekday_choice_type.friday' => StreamSchedule::ENUM_FRIDAY,
+            'stream.form.weekday_choice_type.saturday' => StreamSchedule::ENUM_SATURDAY,
+            'stream.form.weekday_choice_type.sunday' => StreamSchedule::ENUM_SUNDAY,
         ];
     }
 }

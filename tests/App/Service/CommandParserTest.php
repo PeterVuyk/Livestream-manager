@@ -6,7 +6,8 @@ namespace App\Tests\Service;
 use App\Command\SchedulerExecuteCommand;
 use App\Command\StartLivestreamCommand;
 use App\Command\StopLivestreamCommand;
-use App\Repository\RecurringScheduleRepository;
+use App\Repository\OnetimeScheduleRepository;
+use App\Repository\StreamScheduleRepository;
 use App\Service\CommandParser;
 use App\Service\StartStreamService;
 use App\Service\StopStreamService;
@@ -38,14 +39,14 @@ class CommandParserTest extends TestCase
     public function testGetCommands()
     {
         $loggerMock = $this->createMock(LoggerInterface::class);
-        $recurringScheduleMock = $this->createMock(RecurringScheduleRepository::class);
+        $streamScheduleRepositoryMock = $this->createMock(StreamScheduleRepository::class);
         $traceableEventDispatcherMock = $this->createMock(TraceableEventDispatcher::class);
         $containerMock = $this->createMock(ContainerInterface::class);
         $containerMock->expects($this->exactly(4))
             ->method('get')
             ->willReturn(
                 $traceableEventDispatcherMock,
-                new SchedulerExecuteCommand($recurringScheduleMock, $loggerMock),
+                new SchedulerExecuteCommand($streamScheduleRepositoryMock, $loggerMock),
                 new StartLivestreamCommand($this->createMock(StartStreamService::class)),
                 new StopLivestreamCommand($this->createMock(StopStreamService::class))
             );

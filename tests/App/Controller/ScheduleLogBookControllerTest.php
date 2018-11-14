@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Controller\ScheduleLogBookController;
-use App\Entity\RecurringSchedule;
-use App\Service\SchedulerService;
+use App\Entity\StreamSchedule;
+use App\Service\ManageScheduleService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -20,8 +20,8 @@ class ScheduleLogBookControllerTest extends TestCase
     /** @var \Twig_Environment|MockObject */
     private $twigMock;
 
-    /** @var SchedulerService|MockObject */
-    private $schedulerServiceMock;
+    /** @var ManageScheduleService|MockObject */
+    private $manageScheduleServiceMock;
 
     /** @var RouterInterface|MockObject */
     private $routerMock;
@@ -32,12 +32,12 @@ class ScheduleLogBookControllerTest extends TestCase
     public function setUp()
     {
         $this->twigMock = $this->createMock(\Twig_Environment::class);
-        $this->schedulerServiceMock = $this->createMock(SchedulerService::class);
+        $this->manageScheduleServiceMock = $this->createMock(ManageScheduleService::class);
         $this->routerMock = $this->createMock(RouterInterface::class);
         $this->flashBagMock = $this->createMock(FlashBagInterface::class);
         $this->streamLoggingController = new ScheduleLogBookController(
             $this->twigMock,
-            $this->schedulerServiceMock,
+            $this->manageScheduleServiceMock,
             $this->routerMock,
             $this->flashBagMock
         );
@@ -45,9 +45,9 @@ class ScheduleLogBookControllerTest extends TestCase
 
     public function testViewLoggingSuccess()
     {
-        $this->schedulerServiceMock->expects($this->once())
+        $this->manageScheduleServiceMock->expects($this->once())
             ->method('getScheduleById')
-            ->willReturn(new RecurringSchedule());
+            ->willReturn(new StreamSchedule());
 
         $result = $this->streamLoggingController->viewLogging('id');
         $this->assertSame(Response::HTTP_OK, $result->getStatusCode());
@@ -55,7 +55,7 @@ class ScheduleLogBookControllerTest extends TestCase
 
     public function testViewLoggingFailed()
     {
-        $this->schedulerServiceMock->expects($this->once())
+        $this->manageScheduleServiceMock->expects($this->once())
             ->method('getScheduleById')
             ->willThrowException(new \Exception());
         $this->flashBagMock->expects($this->once())->method('add');

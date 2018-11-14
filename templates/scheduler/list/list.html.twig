@@ -1,0 +1,45 @@
+{% extends "base.html.twig" %}
+{% set active_page = 'schedule' %}
+{% trans_default_domain 'schedule_list' %}
+{% block title %}{{ 'scheduler_list.title'|trans }}{% endblock title %}
+{% block pageTitle %}{{ 'scheduler_list.title'|trans }}{% endblock pageTitle %}
+
+{% block content %}
+    <div class="table-responsive table-stripped">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>&nbsp;</th>
+                <th>{{ "scheduler_list.column.name"|trans }}</th>
+                <th>{{ "scheduler_list.column.command"|trans }}</th>
+                <th>{{ "scheduler_list.column.scheduledExecution"|trans }}</th>
+                <th>{{ "scheduler_list.column.lastExecution"|trans }}</th>
+                <th>{{ "scheduler_list.column.logging"|trans }}</th>
+                <th>{{ "scheduler_list.column.priority"|trans }}</th>
+                <th>{{ "scheduler_list.column.actions"|trans }}</th>
+            </tr>
+        </thead>
+
+        <tbody>
+        {% if recurringScheduledItems is not empty %}
+            {% set recurringItems = false %}
+            <tr><th class="text-muted" colspan="8">Recurring:</th></tr>
+            {% for recurringSchedule in recurringScheduledItems %}
+                {{ include('scheduler/list/recurringScheduleListItem.html.twig', {recurringSchedule: recurringSchedule}) }}
+            {% endfor %}
+        {% endif %}
+        </tbody>
+        <tbody>
+        {% if onetimeScheduledItems is not empty %}
+            <tr><th class="text-muted" colspan="8">One-time:</th></tr>
+            {% for onetimeSchedule in onetimeScheduledItems %}
+                {{ include('scheduler/list/onetimeScheduleListItem.html.twig', {onetimeSchedule: onetimeSchedule}) }}
+            {% endfor %}
+        {% endif %}
+        </tbody>
+    </table>
+    </div>
+    <a href="{{ path('schedule_scheduler_create') }}" class="btn btn-primary btn-lg pull-right" role="button">
+        {{ "schedule.action.new"|trans }}
+    </a>
+{% endblock content %}

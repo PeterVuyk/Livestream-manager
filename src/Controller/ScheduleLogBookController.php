@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Service\SchedulerService;
+use App\Service\ManageScheduleService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
@@ -11,8 +11,8 @@ use Symfony\Component\Routing\RouterInterface;
 
 class ScheduleLogBookController extends Controller
 {
-    /** @var SchedulerService */
-    private $schedulerService;
+    /** @var ManageScheduleService */
+    private $manageScheduleService;
 
     /** @var RouterInterface */
     private $router;
@@ -23,18 +23,18 @@ class ScheduleLogBookController extends Controller
     /**
      * StreamLoggingController constructor.
      * @param \Twig_Environment $twig
-     * @param SchedulerService $schedulerService
+     * @param ManageScheduleService $manageScheduleService
      * @param RouterInterface $router
      * @param FlashBagInterface $flashBag
      */
     public function __construct(
         \Twig_Environment $twig,
-        SchedulerService $schedulerService,
+        ManageScheduleService $manageScheduleService,
         RouterInterface $router,
         FlashBagInterface $flashBag
     ) {
         parent::__construct($twig);
-        $this->schedulerService = $schedulerService;
+        $this->manageScheduleService = $manageScheduleService;
         $this->router = $router;
         $this->flashBag = $flashBag;
     }
@@ -46,11 +46,11 @@ class ScheduleLogBookController extends Controller
     public function viewLogging(string $scheduleId)
     {
         try {
-            $recurringSchedule = $this->schedulerService->getScheduleById($scheduleId);
+            $streamSchedule = $this->manageScheduleService->getScheduleById($scheduleId);
         } catch (\Exception $exception) {
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.logbook.error.could_not_open');
             return new RedirectResponse($this->router->generate('scheduler_list'));
         }
-        return $this->render('scheduler/logging.html.twig', ['recurringSchedule' => $recurringSchedule]);
+        return $this->render('scheduler/logging.html.twig', ['streamSchedule' => $streamSchedule]);
     }
 }

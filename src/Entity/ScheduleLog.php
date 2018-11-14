@@ -21,11 +21,11 @@ class ScheduleLog
     private $id;
 
     /**
-     * @var ArrayCollection|RecurringSchedule
-     * @ORM\ManyToOne(targetEntity="RecurringSchedule", inversedBy="scheduleLog")
+     * @var ArrayCollection|StreamSchedule
+     * @ORM\ManyToOne(targetEntity="StreamSchedule", inversedBy="scheduleLog")
      * @ORM\JoinColumn(name="stream_schedule_id", referencedColumnName="id")
      */
-    private $recurringSchedule;
+    private $streamSchedule;
 
     /**
      * @var bool|null
@@ -47,17 +47,17 @@ class ScheduleLog
 
     /**
      * ScheduleLog constructor.
-     * @param RecurringSchedule|ArrayCollection $recurringSchedule
+     * @param StreamSchedule|ArrayCollection $streamSchedule
      * @param bool $runSuccessful
      * @param string $message
      */
     public function __construct(
-        RecurringSchedule $recurringSchedule,
+        StreamSchedule $streamSchedule,
         bool $runSuccessful,
         string $message
     ) {
         $this->id = Uuid::uuid4();
-        $this->recurringSchedule = $recurringSchedule;
+        $this->streamSchedule = $streamSchedule;
         $this->runSuccessful = $runSuccessful;
         $this->message = $message;
         $this->timeExecuted = new \DateTimeImmutable();
@@ -72,11 +72,11 @@ class ScheduleLog
     }
 
     /**
-     * @return RecurringSchedule|ArrayCollection
+     * @return StreamSchedule|ArrayCollection
      */
-    public function getRecurringSchedule()
+    public function getStreamSchedule()
     {
-        return $this->recurringSchedule;
+        return $this->streamSchedule;
     }
 
     /**

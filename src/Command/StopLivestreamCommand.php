@@ -17,11 +17,11 @@ class StopLivestreamCommand extends Command
 
     /**
      * StartLivestreamCommand constructor.
-     * @param StopStreamService $stopRecurringService
+     * @param StopStreamService $stopStreamService
      */
-    public function __construct(StopStreamService $stopRecurringService)
+    public function __construct(StopStreamService $stopStreamService)
     {
-        $this->stopStreamService = $stopRecurringService;
+        $this->stopStreamService = $stopStreamService;
         parent::__construct();
     }
 

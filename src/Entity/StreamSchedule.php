@@ -3,17 +3,36 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\DBal\Types\EnumWeekDaysType;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
+use Symfony\Component\Validator\Constraints as Assert;
 
 /**
- * @ORM\Table(name="recurring_schedule")
- * @ORM\Entity(repositoryClass="App\Repository\RecurringScheduleRepository")
+ * @ORM\Table(name="stream_schedule")
+ * @ORM\Entity(repositoryClass="App\Repository\StreamScheduleRepository")
  */
-class RecurringSchedule
+class StreamSchedule
 {
+    const ENUM_WEEK_DAYS = 'enumWeekDays';
+    const ENUM_MONDAY = 'monday';
+    const ENUM_TUESDAY = 'tuesday';
+    const ENUM_WEDNESDAY = 'wednesday';
+    const ENUM_THURSDAY = 'thursday';
+    const ENUM_FRIDAY = 'friday';
+    const ENUM_SATURDAY = 'saturday';
+    const ENUM_SUNDAY = 'sunday';
+
+    const DAYS_OF_WEEK = [
+        self::ENUM_MONDAY,
+        self::ENUM_TUESDAY,
+        self::ENUM_WEDNESDAY,
+        self::ENUM_THURSDAY,
+        self::ENUM_FRIDAY,
+        self::ENUM_SATURDAY,
+        self::ENUM_SUNDAY
+    ];
+
     /**
      * @var uuid|null
      * @ORM\Column(name="id", type="guid", nullable=false)
@@ -34,16 +53,23 @@ class RecurringSchedule
     private $command;
 
     /**
+     * @assert\Choice({"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"})
      * @var string|null
-     * @ORM\Column(name="execution_day", type="custom_enum_week_days", unique=false, nullable=false)
+     * @ORM\Column(name="execution_day", type="string", unique=false, nullable=true)
      */
     private $executionDay;
 
     /**
      * @var mixed|null
-     * @ORM\Column(name="execution_time", type="time", unique=false, nullable=false)
+     * @ORM\Column(name="execution_time", type="time", unique=false, nullable=true)
      */
     private $executionTime;
+
+    /**
+     * @var \DateTime|null
+     * @ORM\Column(name="onetime_execution_date", type="datetime", unique=false, nullable=true)
+     */
+    private $onetimeExecutionDate;
 
     /**
      * @var \DateTime|null
@@ -52,6 +78,7 @@ class RecurringSchedule
     private $lastExecution;
 
     /**
+     * @Assert\GreaterThan(0)
      * @var int|null
      * @ORM\Column(type="integer")
      */
@@ -78,7 +105,7 @@ class RecurringSchedule
     /**
      * @var ArrayCollection|ScheduleLog[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\ScheduleLog", mappedBy="recurringSchedule", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ScheduleLog", mappedBy="streamSchedule", cascade={"persist"})
      * @ORM\OrderBy({"timeExecuted" = "ASC"})
      */
     private $scheduleLog = [];
@@ -242,7 +269,7 @@ class RecurringSchedule
     public function setExecutionDay(string $executionDay): void
     {
         $day = strtolower($executionDay);
-        if (!in_array($day, EnumWeekDaysType::DAYS_OF_WEEK)) {
+        if (!in_array($day, self::DAYS_OF_WEEK)) {
             throw new \InvalidArgumentException('Invalid executionDay input');
         }
         $this->executionDay = $day;
@@ -267,6 +294,33 @@ class RecurringSchedule
     /**
      * @return \DateTime|null
      */
+    public function getOnetimeExecutionDate(): ?\DateTime
+    {
+        return $this->onetimeExecutionDate;
+    }
+
+    /**
+     * @param \DateTime|null $onetimeExecutionDate
+     */
+    public function setOnetimeExecutionDate(?\DateTime $onetimeExecutionDate): void
+    {
+        $this->onetimeExecutionDate = $onetimeExecutionDate;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isRecurring(): bool
+    {
+        if ($this->getOnetimeExecutionDate() instanceof \DateTime) {
+            return false;
+        }
+        return true;
+    }
+
+    /**
+     * @return \DateTime|null
+     */
     public function getNextExecutionTime(): ?\DateTime
     {
         if (empty($this->getExecutionDay() || !$this->getExecutionTime() instanceof \DateTime)) {
@@ -279,6 +333,7 @@ class RecurringSchedule
     }
 
     /**
+
      * @return bool
      */
     public function streamTobeExecuted(): bool

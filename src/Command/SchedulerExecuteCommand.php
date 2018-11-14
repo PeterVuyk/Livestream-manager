@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\ScheduleLog;
-use App\Entity\RecurringSchedule;
+use App\Entity\StreamSchedule;
 use App\Exception\CouldNotExecuteCommandException;
-use App\Repository\RecurringScheduleRepository;
+use App\Repository\StreamScheduleRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Psr\Log\LoggerInterface;
@@ -21,22 +21,22 @@ class SchedulerExecuteCommand extends Command
     const ERROR_MESSAGE = '<error>%s - Aborted</error>';
     const INFO_MESSAGE = '<info>%s</info>';
 
-    /** @var RecurringScheduleRepository */
-    private $recurringScheduleRepository;
+    /** @var StreamScheduleRepository */
+    private $streamScheduleRepository;
 
     /** @var LoggerInterface */
     private $logger;
 
     /**
      * SchedulerExecuteCommand constructor.
-     * @param RecurringScheduleRepository $recurringScheduleRepository
+     * @param StreamScheduleRepository $streamScheduleRepository
      * @param LoggerInterface $logger
      */
     public function __construct(
-        RecurringScheduleRepository $recurringScheduleRepository,
+        StreamScheduleRepository $streamScheduleRepository,
         LoggerInterface $logger
     ) {
-        $this->recurringScheduleRepository = $recurringScheduleRepository;
+        $this->streamScheduleRepository = $streamScheduleRepository;
         $this->logger = $logger;
         parent::__construct();
     }
@@ -45,7 +45,7 @@ class SchedulerExecuteCommand extends Command
     {
         $this
             ->setName(self::COMMAND_START_STREAM)
-            ->setDescription('Execute scheduled recurring commands.');
+            ->setDescription('Execute scheduled commands.');
     }
 
     /**
@@ -56,56 +56,65 @@ class SchedulerExecuteCommand extends Command
     public function execute(InputInterface $input, OutputInterface $output)
     {
         $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution started'));
-        $recurringSchedules = $this->recurringScheduleRepository->findActiveCommands();
-        foreach ($recurringSchedules as $recurringSchedule) {
-            if ($recurringSchedule->streamTobeExecuted() === false) {
+        $this->processSchedules($input, $output);
+        $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution finished'));
+    }
+
+    /**
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     */
+    private function processSchedules(InputInterface $input, OutputInterface $output)
+    {
+        $streamSchedules = $this->streamScheduleRepository->findActiveCommands();
+        foreach ($streamSchedules as $streamSchedule) {
+            if ($streamSchedule->streamTobeExecuted() === false) {
                 continue;
             }
             try {
-                $this->executeCommand($recurringSchedule, $input, $output);
+                $this->executeCommand($streamSchedule, $input, $output);
             } catch (ORMException | OptimisticLockException $exception) {
                 $this->logger->error('could not update stream schedule', ['message' => $exception->getMessage()]);
             } catch (CouldNotExecuteCommandException $exception) {
                 //Do nothing, already logged. Continue process.
             }
         }
-        $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution finished'));
     }
 
     /**
-     * @param RecurringSchedule $recurringSchedule
+     * @param StreamSchedule $streamSchedule
      * @param InputInterface $input
      * @param OutputInterface $output
      * @throws CouldNotExecuteCommandException
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function executeCommand(RecurringSchedule $recurringSchedule, InputInterface $input, OutputInterface $output)
+    private function executeCommand(StreamSchedule $streamSchedule, InputInterface $input, OutputInterface $output)
     {
         try {
-            $command = $this->getApplication()->find($recurringSchedule->getCommand());
+            $command = $this->getApplication()->find($streamSchedule->getCommand());
 
             $command->mergeApplicationDefinition();
             $input->bind($command->getDefinition());
 
             $command->run($input, $output);
-            $recurringSchedule->setRunWithNextExecution(false);
-            $recurringSchedule->setLastExecution(new \DateTime());
-            $scheduleLog = new ScheduleLog($recurringSchedule, true, 'Command successfully executed');
-            $recurringSchedule->addScheduleLog($scheduleLog);
+            $streamSchedule->setRunWithNextExecution(false);
+            $streamSchedule->setLastExecution(new \DateTime());
+            $scheduleLog = new ScheduleLog($streamSchedule, true, 'Command successfully executed');
+            $streamSchedule->addScheduleLog($scheduleLog);
 
             $output->writeln(sprintf(self::INFO_MESSAGE, 'Command successfully executed'));
         } catch (\Exception $exception) {
             $output->writeln(sprintf(self::ERROR_MESSAGE, $exception->getMessage()));
             $this->logger->error('Could not execute command', ['message' => $exception->getMessage()]);
 
-            $recurringSchedule->setWrecked(true);
-            $recurringSchedule->setRunWithNextExecution(false);
-            $scheduleLog = new ScheduleLog($recurringSchedule, false, $exception->getMessage());
-            $recurringSchedule->addScheduleLog($scheduleLog);
-            throw CouldNotExecuteCommandException::couldNotRunCommand($recurringSchedule, $exception);
+            $streamSchedule->setWrecked(true);
+            $streamSchedule->setRunWithNextExecution(false);
+            $scheduleLog = new ScheduleLog($streamSchedule, false, $exception->getMessage());
+            $streamSchedule->addScheduleLog($scheduleLog);
+            throw CouldNotExecuteCommandException::couldNotRunCommand($streamSchedule, $exception);
         } finally {
-            $this->recurringScheduleRepository->save($recurringSchedule);
+            $this->streamScheduleRepository->save($streamSchedule);
         }
     }
 }

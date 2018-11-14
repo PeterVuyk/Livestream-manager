@@ -1,7 +1,7 @@
 {% extends "base.html.twig" %}
 {% trans_default_domain 'schedule_create' %}
-{% block title %}{{ 'recurring.new.title'|trans }}{% endblock title %}
-{% block pageTitle %}{{ 'recurring.new.title'|trans }}{% endblock pageTitle %}
+{% block title %}{{ 'stream_schedule.new.title'|trans }}{% endblock title %}
+{% block pageTitle %}{{ 'stream_schedule.new.title'|trans }}{% endblock pageTitle %}
 
 {% block content %}
     <div class="col-lg-6 col-sm-12">
@@ -11,17 +11,22 @@
         {{ form_row(form.command) }}
         {{ form_row(form.executionDay) }}
         {{ form_row(form.executionTime) }}
+        {{ form_row(form.onetimeExecutionDate) }}
         {{ form_row(form.priority) }}
         <div>
             {{ form_widget(form.runWithNextExecution) }}
             {{ form_label(form.runWithNextExecution) }}
         </div>
         <div>
+            {{ form_widget(form.onetimeExecutionDate) }}
+            {{ form_label(form.onetimeExecutionDate) }}
+        </div>
+        <div>
             {{ form_widget( form.disabled) }}
             {{ form_label( form.disabled) }}
         </div>
         <div class="row">
-            <a href="{{ path('scheduler_list') }}" class="btn btn-default btn-lg" role="button">{{ 'recurring.action.cancel'|trans }}</a>
+            <a href="{{ path('scheduler_list') }}" class="btn btn-default btn-lg" role="button">{{ 'stream_schedule.action.cancel'|trans }}</a>
             {{ form_widget(form.save) }}
         </div>
         {{ form_end(form) }}
