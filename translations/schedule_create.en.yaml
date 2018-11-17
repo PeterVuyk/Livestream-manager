@@ -12,6 +12,7 @@ stream.form.label.detail.label.time: 'Execution time'
 stream.form.label.detail.priority: 'Priority'
 stream.form.label.detail.run_with_next_execution: 'Run with next execution'
 stream.form.label.detail.disabled: 'disable'
+stream.form.label.detail.is_recurring: 'Recurring stream'
 stream.form.label.detail.save: 'save'
 stream.form.placeholder.weekday_choice: 'choose a day'
 stream_schedule.action.cancel: Cancel

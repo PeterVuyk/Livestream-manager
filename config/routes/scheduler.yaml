@@ -3,9 +3,14 @@ scheduler_list:
   defaults: { _controller: App\Controller\ScheduleController:list }
   methods: [GET]
 
-schedule_scheduler_create:
-  path: /details/create
-  defaults: { _controller: App\Controller\ScheduleController:createSchedule }
+schedule_create_recurring:
+  path: /details/create-recurring
+  defaults: { _controller: App\Controller\ScheduleController:createRecurringSchedule }
+  methods: [GET, POST]
+
+schedule_create_onetime:
+  path: /details/create-onetime
+  defaults: { _controller: App\Controller\ScheduleController:createOnetimeSchedule }
   methods: [GET, POST]
 
 schedule_edit:

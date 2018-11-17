@@ -1,0 +1,10 @@
+services:
+    _defaults:
+        public: false
+        autowire: true
+        autoconfigure: true
+
+    App\Twig\Validator:
+        public: false
+        tags:
+        - { name: 'twig.extension' }

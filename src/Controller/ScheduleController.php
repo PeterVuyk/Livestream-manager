@@ -4,7 +4,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\StreamSchedule;
-use App\Form\StreamScheduleType;
+use App\Form\CreateOnetimeScheduleType;
+use App\Form\CreateRecurringScheduleType;
 use App\Service\ManageScheduleService;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -64,12 +65,37 @@ class ScheduleController extends Controller
     }
 
     /**
+     * @todo: this and onetime schedule looks the same. make one function...
      * @param Request $request
      * @return RedirectResponse|Response
      */
-    public function createSchedule(Request $request)
+    public function createRecurringSchedule(Request $request)
     {
-        $form = $this->formFactory->create(StreamScheduleType::class, new StreamSchedule());
+
+        $form = $this->formFactory->create(CreateRecurringScheduleType::class, new StreamSchedule());
+        $form->handleRequest($request);
+        if ($form->isSubmitted() && $form->isValid()) {
+            try {
+                $this->manageScheduleService->saveSchedule($form->getData());
+                $this->flashBag->add(self::SUCCESS_MESSAGE, 'flash.schedule.success.schedule_created');
+            } catch (\Exception $exception) {
+                $this->flashBag->add(self::ERROR_MESSAGE, 'flash.schedule.error.could_not_save_schedule');
+            }
+            return new RedirectResponse($this->router->generate('scheduler_list'));
+        }
+        return $this->render(
+            'scheduler/createSchedule.html.twig',
+            array('form' => $form->createView())
+        );
+    }
+
+    /**
+     * @param Request $request
+     * @return RedirectResponse|Response
+     */
+    public function createOnetimeSchedule(Request $request)
+    {
+        $form = $this->formFactory->create(CreateOnetimeScheduleType::class, new StreamSchedule());
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {

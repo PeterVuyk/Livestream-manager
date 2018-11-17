@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\StreamSchedule;
-use App\Form\StreamScheduleType;
+use App\Form\UpdateScheduleType;
 use App\Service\ManageScheduleService;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -122,7 +122,7 @@ class ManageScheduleController extends Controller
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.manage_schedule.error.can_not_edit_schedule');
             return new RedirectResponse($this->router->generate('scheduler_list'));
         }
-        $form = $this->formFactory->create(StreamScheduleType::class, $streamSchedule);
+        $form = $this->formFactory->create(UpdateScheduleType::class, $streamSchedule);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
@@ -135,7 +135,7 @@ class ManageScheduleController extends Controller
             return new RedirectResponse($this->router->generate('scheduler_list'));
         }
         return $this->render(
-            'scheduler/createSchedule.html.twig',
+            'scheduler/editSchedule.html.twig',
             array('form' => $form->createView())
         );
     }

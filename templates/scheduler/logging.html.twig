@@ -1,6 +1,5 @@
 {% extends "base.html.twig" %}
 {% trans_default_domain 'logbook' %}
-{% trans_default_domain 'schedule_list' %}
 {% block title %}{{ 'schedule_logging.list.title'|trans }}{% endblock title %}
 {% block pageTitle %}{{ 'schedule_logging.list.title'|trans }}&nbsp;-&nbsp;{{ streamSchedule.name }}{% endblock pageTitle %}
 
@@ -15,8 +14,8 @@
             </tr>
             </thead>
             <tbody>
-            {% for schedulelog in streamSchedule.schedulelog|slice(0, 25) %}
-                <tr>
+            {% for schedulelog in streamSchedule.schedulelog|reverse|slice(0, 25) %}
+                <tr class="{% if schedulelog.runSuccessful == false %}text-danger{% endif %}">
                     <td>
                         {% if schedulelog.runSuccessful == true %}
                             {{ 'schedule_logging.run_success'|trans }}

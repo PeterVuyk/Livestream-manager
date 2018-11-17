@@ -14,24 +14,6 @@ use Symfony\Component\Validator\Constraints as Assert;
  */
 class StreamSchedule
 {
-    const ENUM_WEEK_DAYS = 'enumWeekDays';
-    const ENUM_MONDAY = 'monday';
-    const ENUM_TUESDAY = 'tuesday';
-    const ENUM_WEDNESDAY = 'wednesday';
-    const ENUM_THURSDAY = 'thursday';
-    const ENUM_FRIDAY = 'friday';
-    const ENUM_SATURDAY = 'saturday';
-    const ENUM_SUNDAY = 'sunday';
-
-    const DAYS_OF_WEEK = [
-        self::ENUM_MONDAY,
-        self::ENUM_TUESDAY,
-        self::ENUM_WEDNESDAY,
-        self::ENUM_THURSDAY,
-        self::ENUM_FRIDAY,
-        self::ENUM_SATURDAY,
-        self::ENUM_SUNDAY
-    ];
 
     /**
      * @var uuid|null
@@ -269,7 +251,7 @@ class StreamSchedule
     public function setExecutionDay(string $executionDay): void
     {
         $day = strtolower($executionDay);
-        if (!in_array($day, self::DAYS_OF_WEEK)) {
+        if (!in_array($day, Weekdays::getDaysOfTheWeek())) {
             throw new \InvalidArgumentException('Invalid executionDay input');
         }
         $this->executionDay = $day;
@@ -286,7 +268,7 @@ class StreamSchedule
     /**
      * @param \DateTime|null $executionTime
      */
-    public function setExecutionTime(\DateTime $executionTime): void
+    public function setExecutionTime(?\DateTime $executionTime): void
     {
         $this->executionTime = $executionTime;
     }
@@ -323,6 +305,10 @@ class StreamSchedule
      */
     public function getNextExecutionTime(): ?\DateTime
     {
+        if ($this->getOnetimeExecutionDate() instanceof \DateTime) {
+            return $this->getOnetimeExecutionDate();
+        }
+
         if (empty($this->getExecutionDay() || !$this->getExecutionTime() instanceof \DateTime)) {
             return null;
         }

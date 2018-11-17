@@ -4,7 +4,7 @@ scheduler_list.column.command: Command
 scheduler_list.column.lastExecution: 'Last run'
 scheduler_list.column.priority: Priority
 scheduler_list.column.actions: Actions
-scheduler_list.column.logging: "Logging"
+scheduler_list.column.logging: "Logbook"
 scheduler_list.column.scheduledExecution: 'Scheduled execution'
 scheduler_list.recurring_time_prefix: 'Every'
 scheduler_list.recurring_time_at: 'at'
@@ -17,4 +17,5 @@ friday: 'Friday'
 saturday: 'Saturday'
 sunday: 'Sunday'
 schedule.action.edit: 'Edit schedule'
-schedule.action.new: 'Add stream'
+schedule.action.new_recurring: 'Add recurring'
+schedule.action.new_onetime: 'Add one-time'

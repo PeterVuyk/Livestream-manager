@@ -25,7 +25,7 @@
             {% set recurringItems = false %}
             <tr><th class="text-muted" colspan="8">Recurring:</th></tr>
             {% for recurringSchedule in recurringScheduledItems %}
-                {{ include('scheduler/list/recurringScheduleListItem.html.twig', {recurringSchedule: recurringSchedule}) }}
+                {{ include('scheduler/list/scheduleListItem.html.twig', {streamSchedule: recurringSchedule}) }}
             {% endfor %}
         {% endif %}
         </tbody>
@@ -33,13 +33,16 @@
         {% if onetimeScheduledItems is not empty %}
             <tr><th class="text-muted" colspan="8">One-time:</th></tr>
             {% for onetimeSchedule in onetimeScheduledItems %}
-                {{ include('scheduler/list/onetimeScheduleListItem.html.twig', {onetimeSchedule: onetimeSchedule}) }}
+                {{ include('scheduler/list/scheduleListItem.html.twig', {streamSchedule: onetimeSchedule}) }}
             {% endfor %}
         {% endif %}
         </tbody>
     </table>
     </div>
-    <a href="{{ path('schedule_scheduler_create') }}" class="btn btn-primary btn-lg pull-right" role="button">
-        {{ "schedule.action.new"|trans }}
+    <a href="{{ path('schedule_create_recurring') }}" class="btn btn-primary btn-lg pull-right" role="button">
+        {{ "schedule.action.new_recurring"|trans }}
+    </a>
+    <a href="{{ path('schedule_create_onetime') }}" class="btn btn-primary btn-lg pull-right" role="button">
+        {{ "schedule.action.new_onetime"|trans }}
     </a>
 {% endblock content %}

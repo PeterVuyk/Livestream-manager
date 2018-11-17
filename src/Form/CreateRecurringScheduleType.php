@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\StreamSchedule;
+use App\Entity\Weekdays;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
-use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
@@ -17,7 +17,7 @@ use Symfony\Component\Form\Extension\Core\Type\IntegerType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 
-class StreamScheduleType extends AbstractType
+class CreateRecurringScheduleType extends AbstractType
 {
     /**
      * @param FormBuilderInterface $builder
@@ -55,7 +55,7 @@ class StreamScheduleType extends AbstractType
             'executionDay',
             ChoiceType::class,
             [
-                'choices' => $this->getDaysOfTheWeek(),
+                'choices' => self::getDaysOfTheWeek(),
                 'label' => 'stream.form.label.detail.label.weekday_choice',
                 'translation_domain' => 'schedule_create',
                 'required' => true,
@@ -74,16 +74,6 @@ class StreamScheduleType extends AbstractType
                 'data' => new \DateTime(),
                 'required' => true,
             ]
-        );
-
-        $builder->add(
-            'onetimeExecutionDate',
-            DateTimeType::class,
-            [
-                'label' => 'label-name',
-                'data' => new \DateTime(),
-            ]
-
         );
 
         $builder->add(
@@ -140,16 +130,19 @@ class StreamScheduleType extends AbstractType
         ));
     }
 
-    private function getDaysOfTheWeek(): array
+    /**
+     * @return array
+     */
+    public static function getDaysOfTheWeek(): array
     {
         return [
-            'stream.form.weekday_choice_type.monday' => StreamSchedule::ENUM_MONDAY,
-            'stream.form.weekday_choice_type.tuesday' => StreamSchedule::ENUM_TUESDAY,
-            'stream.form.weekday_choice_type.wednesday' => StreamSchedule::ENUM_WEDNESDAY,
-            'stream.form.weekday_choice_type.thursday' => StreamSchedule::ENUM_THURSDAY,
-            'stream.form.weekday_choice_type.friday' => StreamSchedule::ENUM_FRIDAY,
-            'stream.form.weekday_choice_type.saturday' => StreamSchedule::ENUM_SATURDAY,
-            'stream.form.weekday_choice_type.sunday' => StreamSchedule::ENUM_SUNDAY,
+            'stream.form.weekday_choice_type.monday' => Weekdays::ENUM_MONDAY,
+            'stream.form.weekday_choice_type.tuesday' => Weekdays::ENUM_TUESDAY,
+            'stream.form.weekday_choice_type.wednesday' => Weekdays::ENUM_WEDNESDAY,
+            'stream.form.weekday_choice_type.thursday' => Weekdays::ENUM_THURSDAY,
+            'stream.form.weekday_choice_type.friday' => Weekdays::ENUM_FRIDAY,
+            'stream.form.weekday_choice_type.saturday' => Weekdays::ENUM_SATURDAY,
+            'stream.form.weekday_choice_type.sunday' => Weekdays::ENUM_SUNDAY,
         ];
     }
 }
