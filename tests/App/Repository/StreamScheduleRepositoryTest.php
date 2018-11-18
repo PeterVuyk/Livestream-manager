@@ -74,7 +74,6 @@ class StreamScheduleRepositoryTest extends TestCase
         $queryBuilderMock->expects($this->once())->method('from')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->once())->method('where')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->exactly(2))->method('andWhere')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('orderBy')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->once())->method('getQuery')->willReturn($abstractQueryMock);
         $abstractQueryMock->expects($this->once())->method('getResult')->willReturn([new StreamSchedule()]);
 
@@ -92,7 +91,6 @@ class StreamScheduleRepositoryTest extends TestCase
         $queryBuilderMock->expects($this->once())->method('from')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->once())->method('where')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->exactly(2))->method('andWhere')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('orderBy')->willReturn($queryBuilderMock);
         $queryBuilderMock->expects($this->once())->method('getQuery')->willReturn($abstractQueryMock);
         $abstractQueryMock->expects($this->once())->method('getResult')->willReturn([new StreamSchedule()]);
 

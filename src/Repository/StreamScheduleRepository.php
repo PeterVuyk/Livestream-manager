@@ -5,13 +5,13 @@ namespace App\Repository;
 
 use App\Entity\StreamSchedule;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
+use Doctrine\DBAL\Types\Type;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
 class StreamScheduleRepository extends ServiceEntityRepository
 {
-    const PRIORITY_COLUMN = 'priority';
     const ID_COLUMN = 'id';
     const ONETIME_EXECUTION_DATE_COLUMN = 'onetime_execution_date';
 
@@ -48,13 +48,15 @@ class StreamScheduleRepository extends ServiceEntityRepository
     /**
      * @return StreamSchedule[]
      */
-    public function getOnetimeScheduledItems(): array
+    public function getActiveOnetimeScheduledItems(): array
     {
         return $this->createQueryBuilder('s')
             ->where('s.onetimeExecutionDate IS NOT NULL')
+//            ->andWhere('s.onetimeExecutionDate > :last')
             ->andWhere('s.executionDay IS NULL')
             ->andWhere('s.executionTime IS NULL')
-            ->orderBy('s.priority', 'DESC')
+            ->orderBy('s.onetimeExecutionDate', 'ASC')
+//            ->setParameter('last', new \DateTime('-3 hours'), Type::DATETIME)
             ->getQuery()
             ->getResult();
     }
@@ -68,7 +70,6 @@ class StreamScheduleRepository extends ServiceEntityRepository
             ->where('s.onetimeExecutionDate IS NULL')
             ->andWhere('s.executionDay IS NOT NULL')
             ->andWhere('s.executionTime IS NOT NULL')
-            ->orderBy('s.priority', 'DESC')
             ->getQuery()
             ->getResult();
     }
@@ -87,6 +88,6 @@ class StreamScheduleRepository extends ServiceEntityRepository
      */
     public function findActiveCommands(): array
     {
-        return $this->findBy(['disabled' => false, 'wrecked' => false], ['priority' => 'DESC']);
+        return $this->findBy(['disabled' => false, 'wrecked' => false]);
     }
 }

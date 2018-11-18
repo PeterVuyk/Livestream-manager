@@ -40,13 +40,6 @@ class StreamScheduleTest extends TestCase
         $this->assertInstanceOf(\DateTime::class, $streamSchedule->getLastExecution());
     }
 
-    public function testPriority()
-    {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setPriority(50);
-        $this->assertSame(50, $streamSchedule->getPriority());
-    }
-
     public function testRunWithNextExecution()
     {
         $streamSchedule = new StreamSchedule();

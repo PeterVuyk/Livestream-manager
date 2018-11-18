@@ -23,7 +23,7 @@ class ScheduleLog
     /**
      * @var ArrayCollection|StreamSchedule
      * @ORM\ManyToOne(targetEntity="StreamSchedule", inversedBy="scheduleLog")
-     * @ORM\JoinColumn(name="stream_schedule_id", referencedColumnName="id")
+     * @ORM\JoinColumn(name="stream_schedule_id", referencedColumnName="id", onDelete="CASCADE")
      */
     private $streamSchedule;
 

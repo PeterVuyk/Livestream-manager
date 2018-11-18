@@ -40,7 +40,6 @@
             </a>
         {% endif %}
     </td>
-    <td>{{ streamSchedule.priority }}</td>
     <td style="min-width: 90px;">
         {% if streamSchedule.wrecked == true and scheduleLog is not null and scheduleLog.runSuccessful == false %}
             <a href="#js-rerun-failed-schedule-modal-{{ streamSchedule.id }}" data-toggle="modal">

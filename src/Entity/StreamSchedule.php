@@ -60,13 +60,6 @@ class StreamSchedule
     private $lastExecution;
 
     /**
-     * @Assert\GreaterThan(0)
-     * @var int|null
-     * @ORM\Column(type="integer")
-     */
-    private $priority;
-
-    /**
      * @var bool|null
      * @ORM\Column(name="run_with_next_execution", type="boolean")
      */
@@ -87,7 +80,7 @@ class StreamSchedule
     /**
      * @var ArrayCollection|ScheduleLog[]
      *
-     * @ORM\OneToMany(targetEntity="App\Entity\ScheduleLog", mappedBy="streamSchedule", cascade={"persist"})
+     * @ORM\OneToMany(targetEntity="App\Entity\ScheduleLog", mappedBy="streamSchedule", cascade={"persist", "remove"})
      * @ORM\OrderBy({"timeExecuted" = "ASC"})
      */
     private $scheduleLog = [];
@@ -154,22 +147,6 @@ class StreamSchedule
     public function setLastExecution(?\DateTime $lastExecution): void
     {
         $this->lastExecution = $lastExecution;
-    }
-
-    /**
-     * @return int|null
-     */
-    public function getPriority(): ?int
-    {
-        return $this->priority;
-    }
-
-    /**
-     * @param int|null $priority
-     */
-    public function setPriority(?int $priority): void
-    {
-        $this->priority = $priority;
     }
 
     /**
@@ -335,8 +312,10 @@ class StreamSchedule
                 return false;
             }
         }
-        if ($this->getNextExecutionTime() < new \DateTime()) {
-            return true;
+        if ($this->getNextExecutionTime() <= new \DateTime()) {
+            if ($this->getNextExecutionTime() > new \DateTime('- 15 minutes')) {
+                return true;
+            }
         }
         return false;
     }

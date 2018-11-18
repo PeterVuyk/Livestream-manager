@@ -77,18 +77,6 @@ class CreateRecurringScheduleType extends AbstractType
         );
 
         $builder->add(
-            'priority',
-            IntegerType::class,
-            [
-                'label' => 'stream.form.label.detail.priority',
-                'translation_domain' => 'schedule_create',
-                'empty_data' => 0,
-                'required' => false,
-                'attr' => ['class' => 'form-control', 'min' => 0, 'max' => 1000],
-            ]
-        );
-
-        $builder->add(
             'runWithNextExecution',
             CheckboxType::class,
             [

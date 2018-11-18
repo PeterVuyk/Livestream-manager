@@ -34,7 +34,7 @@ class ManageScheduleService
      */
     public function getOnetimeSchedules(): array
     {
-        return $this->streamScheduleRepository->getOnetimeScheduledItems();
+        return $this->streamScheduleRepository->getActiveOnetimeScheduledItems();
     }
 
     /**
