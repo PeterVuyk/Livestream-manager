@@ -8,7 +8,7 @@
         {% endblock %}
         <link rel="icon" type="image/x-icon" href="{{ asset('build/images/favicon.2c7dab6b.ico') }}" />
     </head>
-    <nav>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         {% include 'components/navbar.html.twig' %}
     </nav>
     <body>
@@ -21,7 +21,6 @@
                         {% block content %}{% endblock content %}
                     </div>
                 </div>
-                <hr>
             </div>
         </div>
         {% block javascripts %}

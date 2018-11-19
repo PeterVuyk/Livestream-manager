@@ -20,9 +20,9 @@
                 <td>
                     <a href="{{ path('user_toggle_disabling', {'userId': user.id}) }}" >
                         {% if user.isActive == true %}
-                            <span class="text-success glyphicon glyphicon-off"></span> <span class="sr-only">&nbsp;</span>
+                            <span class="text-success fa fa-power-off fa-lg"></span> <span class="sr-only">&nbsp;</span>
                         {% else %}
-                            <span class="text-danger glyphicon glyphicon-off"></span> <span class="sr-only">&nbsp;</span>
+                            <span class="text-danger fa fa-power-off fa-lg"></span> <span class="sr-only">&nbsp;</span>
                         {% endif %}
                     </a>
                 </td>
@@ -30,11 +30,10 @@
                 <td>{{ user.email }}</td>
                 <td>
                     <a href="{{ path('user_details', {'userId': user.id}) }}" >
-                        <span class="text-info glyphicon glyphicon-pencil"></span>
+                        <span class="text-info fa fa-edit fa-lg"></span>
                     </a>
-
                     <a href="#js-delete-user-modal-{{ user.id }}" data-toggle="modal" data-url="{{ path('user_delete', {'userId': user.id}) }}">
-                        <span class="text-danger glyphicon glyphicon-trash"></span>
+                        <span class="text-danger fa fa-trash fa-lg"></span>
                     </a>
                     {{ include('user/modal/deleteUserModal.html.twig') }}
                 </td>
@@ -42,5 +41,5 @@
         {% endfor %}
         </tbody>
     </table>
-    <a href="{{ path('registration') }}" class="btn btn-primary btn-lg pull-right" role="button">{{ 'users_list.registration_button'|trans }}</a>
+    <a href="{{ path('registration') }}" class="btn btn-primary pull-right" role="button">{{ 'users_list.registration_button'|trans }}</a>
 {% endblock content %}

@@ -23,17 +23,38 @@ class UserDetailsType extends AbstractType
         $action = $options['action'];
 
         $builder
-            ->add('email', EmailType::class, ['label' => 'user_details.label_email'])
-            ->add('username', TextType::class, ['label' => 'user_details.label_username'])
-            ->add('active', CheckBoxType::class, [
-                'label' => 'user_details.label_is_active',
-                'required' => false,
-            ])
+            ->add(
+                'email',
+                EmailType::class,
+                [
+                    'label' => 'user_details.label_email',
+                    'translation_domain' => 'users',
+                ]
+            )
+
+            ->add(
+                'username',
+                TextType::class,
+                [
+                    'label' => 'user_details.label_username',
+                    'translation_domain' => 'users',
+                ]
+            )
+            ->add(
+                'active',
+                CheckBoxType::class,
+                [
+                    'label' => 'user_details.label_is_active',
+                    'required' => false,
+                    'translation_domain' => 'users',
+                ]
+            )
             ->add(
                 'submitButton',
                 SubmitType::class, [
                     'label' => 'user_details.submit_button',
-                    'attr' => ['class' => 'btn btn-secondary'],
+                    'translation_domain' => 'users',
+                    'attr' => ['class' => 'btn btn-primary pull-right'],
                 ]
             );
         $builder->setAction($action);

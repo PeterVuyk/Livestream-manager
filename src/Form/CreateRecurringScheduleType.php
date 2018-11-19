@@ -71,6 +71,7 @@ class CreateRecurringScheduleType extends AbstractType
                 'input' => 'datetime',
                 'label' => 'stream.form.label.detail.label.time',
                 'translation_domain' => 'schedule_create',
+                'attr' => ['class' => ''],
                 'data' => new \DateTime(),
                 'required' => true,
             ]
@@ -102,7 +103,7 @@ class CreateRecurringScheduleType extends AbstractType
             [
                 'label' => 'stream.form.label.detail.save',
                 'translation_domain' => 'schedule_create',
-                'attr' => ['class' => 'btn btn-success btn-lg pull-right'],
+                'attr' => ['class' => 'btn btn-primary pull-right'],
             ]
         );
     }

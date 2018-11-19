@@ -60,7 +60,7 @@ class UserType extends AbstractType
                 [
                     'label' => 'registration_form.submit_button',
                     'translation_domain' => 'users',
-                    'attr' => ['class' => 'btn btn-success btn-lg pull-right'],
+                    'attr' => ['class' => 'btn btn-primary pull-right'],
                 ]
             );
     }

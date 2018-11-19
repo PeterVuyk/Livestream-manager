@@ -1,4 +1,5 @@
 {% trans_default_domain 'schedule_list' %}
+
 <tr class="{% if streamSchedule.disabled == true %} text-muted{% endif %}">
     <td>
         <a href="{{ path('schedule_toggle_disabling', {'scheduleId': streamSchedule.id}) }}" >

@@ -4,32 +4,22 @@
 {% block pageTitle %}{{ 'stream_schedule.new.title'|trans }}{% endblock pageTitle %}
 
 {% block content %}
-    <div class="col-lg-6 col-sm-12">
-        {{ form_start(form) }}
-        {{ form_row(form.id) }}
-        {{ form_row(form.name) }}
-        {{ form_row(form.command) }}
-
-        {% if form.onetimeExecutionDate is defined %}
-            {{ form_row(form.onetimeExecutionDate) }}
-        {% endif %}
-        {% if form.executionDay is defined and form.executionTime is defined %}
-            {{ form_row(form.executionDay) }}
-            {{ form_row(form.executionTime) }}
-        {% endif %}
-        <div>
-            {{ form_widget(form.runWithNextExecution) }}
-            {{ form_label(form.runWithNextExecution) }}
-        </div>
-        <div>
-            {{ form_widget( form.disabled) }}
-            {{ form_label( form.disabled) }}
-        </div>
-        <div class="row">
-            <a href="{{ path('scheduler_list') }}" class="btn btn-default btn-lg" role="button">{{ 'stream_schedule.action.cancel'|trans }}</a>
-            {{ form_widget(form.save) }}
-        </div>
-        {{ form_end(form) }}
-    </div>
+    {{ form_start(form) }}
+    {{ form_row(form.name) }}
+    {{ form_row(form.command) }}
+    {% if form.onetimeExecutionDate is defined %}
+        {{ form_row(form.onetimeExecutionDate) }}
+    {% endif %}
+    {% if form.executionDay is defined and form.executionTime is defined %}
+        {{ form_row(form.executionDay) }}
+        {{ form_row(form.executionTime) }}
+    {% endif %}
+    {{ form_widget(form.runWithNextExecution) }}
+    {{ form_label(form.runWithNextExecution) }}
+    {{ form_widget( form.disabled) }}
+    {{ form_label( form.disabled) }}
+    <a href="{{ path('scheduler_list') }}" class="btn btn-danger" role="button">{{ 'stream_schedule.action.cancel'|trans }}</a>
+    {{ form_widget(form.save) }}
+    {{ form_end(form) }}
 {% endblock content %}
 
