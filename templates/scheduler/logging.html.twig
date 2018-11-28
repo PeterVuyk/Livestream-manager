@@ -24,7 +24,7 @@
                         {% endif %}
                     </td>
                     <td>{{ schedulelog.message }}</td>
-                    <td>{{ schedulelog.timeExecuted|date("D M j, G:i:s - Y", "Europe/Amsterdam") }}</td>
+                    <td>{{ schedulelog.timeExecuted|date("D M j, G:i:s - Y") }}</td>
                 </tr>
             {% endfor %}
             </tbody>

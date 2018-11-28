@@ -33,7 +33,8 @@ class OnetimeExecutionDateSubscriber implements EventSubscriberInterface
                 'onetimeExecutionDate',
                 DateTimeType::class,
                 [
-                    'label' => 'label-name',
+                    'label' => 'stream.form.label.detail.onetime_execution_date',
+                    'translation_domain' => 'schedule_create',
                     'data' => new \DateTime(),
                 ]
             );

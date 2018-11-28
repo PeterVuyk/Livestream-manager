@@ -28,6 +28,7 @@ class CreateRecurringScheduleType extends AbstractType
     {
         $builder->add('id', HiddenType::class, ['empty_data' => Uuid::uuid4()]);
         $builder->add('wrecked', HiddenType::class, ['empty_data' => false]);
+        $builder->add('isRunning', HiddenType::class, ['empty_data' => false]);
 
         $builder->add(
             'name',
@@ -37,17 +38,6 @@ class CreateRecurringScheduleType extends AbstractType
                 'required' => true,
                 'translation_domain' => 'schedule_create',
                 'attr' => ['class' => 'form-control', 'placeholder' => 'name'],
-            ]
-        );
-
-        $builder->add(
-            'command',
-            CommandChoiceType::class,
-            [
-                'label' => 'stream.form.label.detail.command',
-                'translation_domain' => 'schedule_create',
-                'required' => true,
-                'attr' => ['class' => 'form-control'],
             ]
         );
 
@@ -71,9 +61,19 @@ class CreateRecurringScheduleType extends AbstractType
                 'input' => 'datetime',
                 'label' => 'stream.form.label.detail.label.time',
                 'translation_domain' => 'schedule_create',
-                'attr' => ['class' => ''],
                 'data' => new \DateTime(),
                 'required' => true,
+            ]
+        );
+
+        $builder->add(
+            'streamDuration',
+            IntegerType::class,
+            [
+                'label' => 'stream.form.label.detail.minutes_to_run',
+                'translation_domain' => 'schedule_create',
+                'data' => 90,
+                'attr' => ['class' => 'form-control', 'min' => 1],
             ]
         );
 

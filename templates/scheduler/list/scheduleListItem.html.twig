@@ -1,6 +1,6 @@
 {% trans_default_domain 'schedule_list' %}
 
-<tr class="{% if streamSchedule.disabled == true %} text-muted{% endif %}">
+<tr class="{% if streamSchedule.disabled == true %} text-muted{% elseif streamSchedule.isRunning == true %} table-primary{% endif %}">
     <td>
         <a href="{{ path('schedule_toggle_disabling', {'scheduleId': streamSchedule.id}) }}" >
             {% if streamSchedule.disabled == true %}
@@ -11,21 +11,30 @@
         </a>
     </td>
     <td>{{ streamSchedule.name }}</td>
-    <td>{{ streamSchedule.command }}</td>
     <td>
         {% if streamSchedule.runWithNextExecution == true %}
             {{ 'scheduler_list.run_with_next_execution'|trans }}
         {% elseif streamSchedule.isRecurring == false and isDateTime(streamSchedule.onetimeExecutionDate) %}
-            {{ streamSchedule.onetimeExecutionDate|date("D M j, G:i", "Europe/Amsterdam") }}
+            {{ streamSchedule.onetimeExecutionDate|date("D M j, G:i") }}
         {% elseif streamSchedule.isRecurring == true %}
             {{ 'scheduler_list.recurring_time_prefix'|trans }}&nbsp;
             {{ streamSchedule.executionDay|trans|lower }}&nbsp;
             {{ 'scheduler_list.recurring_time_at'|trans }}&nbsp;
-            {{ streamSchedule.executionTime|date("G:i", "Europe/Amsterdam") }}
+            {{ streamSchedule.executionTime|date("G:i") }}&nbsp;
         {% endif %}
     </td>
     <td>
-        {% if streamSchedule.lastExecution is null %}-{% else %}{{ streamSchedule.lastExecution|date("D M j, G:i:s", "Europe/Amsterdam") }}{% endif %}
+        {% if streamSchedule.isRunning == true %}
+            {% if isDateTime(streamSchedule.getExecutionEndTime) %}
+            {{ 'scheduler_list.running_until'|trans }}
+            {{ streamSchedule.getExecutionEndTime|date("G:i") }}
+            {% endif %}
+        {% else %}
+            {{ streamSchedule.streamDuration }}&nbsp;{{ 'scheduler_list.schedule_duration_minutes'|trans }}
+        {% endif %}
+    </td>
+    <td>
+        {% if streamSchedule.lastExecution is null %}-{% else %}{{ streamSchedule.lastExecution|date("D M j, G:i:s") }}{% endif %}
         {% set scheduleLog = streamSchedule.scheduleLog|last ? streamSchedule.scheduleLog|last : null %}
         {% if scheduleLog is not null and scheduleLog.runSuccessful == true %}
             <span class="fa fa-check text-center text-success fa-lg"></span>

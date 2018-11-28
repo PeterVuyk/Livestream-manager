@@ -6,7 +6,6 @@
 {% block content %}
     {{ form_start(form) }}
     {{ form_row(form.name) }}
-    {{ form_row(form.command) }}
     {% if form.onetimeExecutionDate is defined %}
         {{ form_row(form.onetimeExecutionDate) }}
     {% endif %}
@@ -14,6 +13,7 @@
         {{ form_row(form.executionDay) }}
         {{ form_row(form.executionTime) }}
     {% endif %}
+    {{ form_row(form.streamDuration) }}
     {{ form_widget(form.runWithNextExecution) }}
     {{ form_label(form.runWithNextExecution) }}
     {{ form_widget( form.disabled) }}

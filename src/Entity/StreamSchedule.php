@@ -29,12 +29,6 @@ class StreamSchedule
     private $name;
 
     /**
-     * @var string|null
-     * @ORM\Column(type="string", length=50, unique=false)
-     */
-    private $command;
-
-    /**
      * @assert\Choice({"monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"})
      * @var string|null
      * @ORM\Column(name="execution_day", type="string", unique=false, nullable=true)
@@ -86,6 +80,19 @@ class StreamSchedule
     private $scheduleLog = [];
 
     /**
+     * @var int|null
+     * @Assert\NotNull
+     * @ORM\Column(name="stream_duration", type="integer", unique=false)
+     */
+    private $streamDuration;
+
+    /**
+     * @var bool|null
+     * @ORM\Column(name="is_running", type="boolean")
+     */
+    private $isRunning;
+
+    /**
      * @return null|string
      */
     public function getId(): ?string
@@ -115,22 +122,6 @@ class StreamSchedule
     public function setName(?string $name): void
     {
         $this->name = $name;
-    }
-
-    /**
-     * @return null|string
-     */
-    public function getCommand(): ?string
-    {
-        return $this->command;
-    }
-
-    /**
-     * @param null|string $command
-     */
-    public function setCommand(?string $command): void
-    {
-        $this->command = $command;
     }
 
     /**
@@ -267,6 +258,22 @@ class StreamSchedule
     }
 
     /**
+     * @return null|int
+     */
+    public function getStreamDuration(): ?int
+    {
+        return $this->streamDuration;
+    }
+
+    /**
+     * @param null|int $streamDuration
+     */
+    public function setStreamDuration(?int $streamDuration): void
+    {
+        $this->streamDuration= $streamDuration;
+    }
+
+    /**
      * @return bool
      */
     public function isRecurring(): bool
@@ -275,6 +282,22 @@ class StreamSchedule
             return false;
         }
         return true;
+    }
+
+    /**
+     * @return bool|null
+     */
+    public function IsRunning(): ?bool
+    {
+        return $this->isRunning;
+    }
+
+    /**
+     * @param bool|null $isRunning
+     */
+    public function setIsRunning(?bool $isRunning): void
+    {
+        $this->isRunning = $isRunning;
     }
 
     /**
@@ -296,7 +319,23 @@ class StreamSchedule
     }
 
     /**
+     * @return \DateTime|null
+     * @throws \Exception
+     */
+    public function getExecutionEndTime(): ?\DateTime
+    {
+        if ($this->isWrecked() || $this->isRunning() === false) {
+            return null;
+        }
 
+        if (!is_int($this->getStreamDuration()) || !$this->getLastExecution() instanceof \DateTime) {
+            return null;
+        }
+
+        return date_add($this->getLastExecution(), new \DateInterval('PT' . $this->getStreamDuration() . 'M'));
+    }
+
+    /**
      * @return bool
      */
     public function streamTobeExecuted(): bool

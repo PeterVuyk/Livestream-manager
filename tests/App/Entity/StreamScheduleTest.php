@@ -23,13 +23,6 @@ class StreamScheduleTest extends TestCase
         $this->assertSame('some-name', $streamSchedule->getName());
     }
 
-    public function testCommand()
-    {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setCommand('command:name');
-        $this->assertSame('command:name', $streamSchedule->getCommand());
-    }
-
     /**
      * @throws \Exception
      */
@@ -83,6 +76,13 @@ class StreamScheduleTest extends TestCase
         $this->assertInstanceOf(\DateTime::class, $streamSchedule->getNextExecutionTime());
     }
 
+    public function testStreamSchedule()
+    {
+        $streamSchedule = new StreamSchedule();
+        $streamSchedule->setStreamDuration(3);
+        $this->assertSame(3, $streamSchedule->getStreamDuration());
+    }
+
     /**
      * @throws \Exception
      */
@@ -112,6 +112,7 @@ class StreamScheduleTest extends TestCase
         $streamScheduleRunWithNextExecution->setRunWithNextExecution(true);
         $streamScheduleNextExecution = new StreamSchedule();
         $streamScheduleNextExecution->setExecutionTime(new \DateTime('- 1 minute'));
+        $streamScheduleNextExecution->setExecutionDay(date('l'));
         $streamScheduleNoExecution = new StreamSchedule();
         $streamScheduleNoExecution->setExecutionTime(new \DateTime('+ 1 minute'));
         $streamScheduleNoExecution->setExecutionDay(date('l'));
@@ -135,6 +136,44 @@ class StreamScheduleTest extends TestCase
             ], [
                 'streamSchedule' => $streamScheduleNoExecution,
                 'result' => false,
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider getExecutionEndTimeProvider
+     * @param StreamSchedule $streamSchedule
+     * @param $result
+     * @throws \Exception
+     */
+    public function testGetExecutionEndTime(StreamSchedule $streamSchedule, $result)
+    {
+        $this->assertEquals($result, $streamSchedule->getExecutionEndTime());
+    }
+
+    public function getExecutionEndTimeProvider()
+    {
+        $streamScheduleNotRunning = new StreamSchedule();
+        $streamScheduleNotRunning->setWrecked(false);
+        $streamScheduleNotRunning->setIsRunning(true);
+        $streamScheduleNoStreamDuration = new StreamSchedule();
+        $streamScheduleNoStreamDuration->setWrecked(false);
+        $streamScheduleNoStreamDuration->setIsRunning(true);
+        $now = new \DateTime();
+        $streamScheduleWithEndTime = new StreamSchedule();
+        $streamScheduleWithEndTime->setStreamDuration(5);
+        $streamScheduleWithEndTime->setLastExecution(($now)->modify('-5 minutes'));
+
+        return [
+            [
+                'streamSchedule' => $streamScheduleNotRunning,
+                'result' => null,
+            ], [
+                'streamSchedule' => $streamScheduleNoStreamDuration,
+                'result' => null,
+            ], [
+                'streamSchedule' => $streamScheduleWithEndTime,
+                'result' => $now,
             ]
         ];
     }

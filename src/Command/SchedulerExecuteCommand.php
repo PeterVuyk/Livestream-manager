@@ -68,15 +68,18 @@ class SchedulerExecuteCommand extends Command
     {
         $streamSchedules = $this->streamScheduleRepository->findActiveCommands();
         foreach ($streamSchedules as $streamSchedule) {
-            if ($streamSchedule->streamTobeExecuted() === false) {
-                continue;
-            }
             try {
-                $this->executeCommand($streamSchedule, $input, $output);
-            } catch (ORMException | OptimisticLockException $exception) {
-                $this->logger->error('could not update stream schedule', ['message' => $exception->getMessage()]);
+                $executionEndTime = $streamSchedule->getExecutionEndTime();
+                if ($executionEndTime instanceof \DateTime && $executionEndTime <= new \DateTime()) {
+                    $this->executeStopStream($streamSchedule, $input, $output);
+                }
+                if ($streamSchedule->streamTobeExecuted() === true) {
+                    $this->executeStartStream($streamSchedule, $input, $output);
+                }
             } catch (CouldNotExecuteCommandException $exception) {
                 //Do nothing, already logged. Continue process.
+            } catch (\Exception $exception) {
+                $this->logger->error('could not update stream schedule', ['message' => $exception->getMessage()]);
             }
         }
     }
@@ -89,30 +92,62 @@ class SchedulerExecuteCommand extends Command
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    private function executeCommand(StreamSchedule $streamSchedule, InputInterface $input, OutputInterface $output)
+    private function executeStopStream(StreamSchedule $streamSchedule, InputInterface $input, OutputInterface $output)
     {
         try {
-            $command = $this->getApplication()->find($streamSchedule->getCommand());
-
+            $command = $this->getApplication()->find(StopLivestreamCommand::COMMAND_STOP_STREAM);
             $command->mergeApplicationDefinition();
             $input->bind($command->getDefinition());
-
             $command->run($input, $output);
-            $streamSchedule->setRunWithNextExecution(false);
-            $streamSchedule->setLastExecution(new \DateTime());
-            $scheduleLog = new ScheduleLog($streamSchedule, true, 'Command successfully executed');
-            $streamSchedule->addScheduleLog($scheduleLog);
 
-            $output->writeln(sprintf(self::INFO_MESSAGE, 'Command successfully executed'));
+            $streamSchedule->setIsRunning(false);
+            $scheduleLog = new ScheduleLog($streamSchedule, true, 'Livestream successfully stopped');
+            $streamSchedule->addScheduleLog($scheduleLog);
+            $output->writeln(sprintf(self::INFO_MESSAGE, 'Livestream successfully stopped'));
         } catch (\Exception $exception) {
             $output->writeln(sprintf(self::ERROR_MESSAGE, $exception->getMessage()));
-            $this->logger->error('Could not execute command', ['message' => $exception->getMessage()]);
+            $this->logger->error('Could not execute stopStream command', ['exception' => $exception]);
+            $streamSchedule->setIsRunning(true);
+            $streamSchedule->setWrecked(true);
+            $scheduleLog = new ScheduleLog($streamSchedule, false, $exception->getMessage());
+            $streamSchedule->addScheduleLog($scheduleLog);
+            throw CouldNotExecuteCommandException::couldNotStopLivestream($exception);
+        } finally {
+            $this->streamScheduleRepository->save($streamSchedule);
+        }
+    }
 
+    /**
+     * @param StreamSchedule $streamSchedule
+     * @param InputInterface $input
+     * @param OutputInterface $output
+     * @throws CouldNotExecuteCommandException
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    private function executeStartStream(StreamSchedule $streamSchedule, InputInterface $input, OutputInterface $output)
+    {
+        try {
+            $command = $this->getApplication()->find(StartLivestreamCommand::COMMAND_START_STREAM);
+            $command->mergeApplicationDefinition();
+            $input->bind($command->getDefinition());
+            $command->run($input, $output);
+
+            $streamSchedule->setRunWithNextExecution(false);
+            $streamSchedule->setLastExecution(new \DateTime());
+            $scheduleLog = new ScheduleLog($streamSchedule, true, 'Livestream successfully started');
+            $streamSchedule->addScheduleLog($scheduleLog);
+            $streamSchedule->setIsRunning(true);
+            $output->writeln(sprintf(self::INFO_MESSAGE, 'Livestream successfully started'));
+        } catch (\Exception $exception) {
+            $output->writeln(sprintf(self::ERROR_MESSAGE, $exception->getMessage()));
+            $this->logger->error('Could not execute startStream command', ['exception' => $exception]);
+            $streamSchedule->setIsRunning(false);
             $streamSchedule->setWrecked(true);
             $streamSchedule->setRunWithNextExecution(false);
             $scheduleLog = new ScheduleLog($streamSchedule, false, $exception->getMessage());
             $streamSchedule->addScheduleLog($scheduleLog);
-            throw CouldNotExecuteCommandException::couldNotRunCommand($streamSchedule, $exception);
+            throw CouldNotExecuteCommandException::couldNotStartLivestream($exception);
         } finally {
             $this->streamScheduleRepository->save($streamSchedule);
         }

@@ -7,6 +7,7 @@ use App\Entity\StreamSchedule;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
+use Symfony\Component\Form\Extension\Core\Type\NumberType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\CheckboxType;
@@ -26,6 +27,7 @@ class CreateOnetimeScheduleType extends AbstractType
     {
         $builder->add('id', HiddenType::class, ['empty_data' => Uuid::uuid4()]);
         $builder->add('wrecked', HiddenType::class, ['empty_data' => false]);
+        $builder->add('isRunning', HiddenType::class, ['empty_data' => false]);
 
         $builder->add(
             'name',
@@ -39,22 +41,23 @@ class CreateOnetimeScheduleType extends AbstractType
         );
 
         $builder->add(
-            'command',
-            CommandChoiceType::class,
+            'onetimeExecutionDate',
+            DateTimeType::class,
             [
-                'label' => 'stream.form.label.detail.command',
+                'label' => 'stream.form.label.detail.onetime_execution_date',
                 'translation_domain' => 'schedule_create',
-                'required' => true,
-                'attr' => ['class' => 'form-control'],
+                'data' => new \DateTime(),
             ]
         );
 
         $builder->add(
-            'onetimeExecutionDate',
-            DateTimeType::class,
+            'streamDuration',
+            IntegerType::class,
             [
-                'label' => 'label-name',
-                'data' => new \DateTime(),
+                'label' => 'stream.form.label.detail.minutes_to_run',
+                'translation_domain' => 'schedule_create',
+                'data' => 90,
+                'attr' => ['class' => 'form-control', 'min' => 1],
             ]
         );
 

@@ -39,20 +39,20 @@ class UpdateScheduleType extends AbstractType
             ]
         );
 
-        $builder->add(
-            'command',
-            CommandChoiceType::class,
-            [
-                'label' => 'stream.form.label.detail.command',
-                'translation_domain' => 'schedule_create',
-                'required' => true,
-                'attr' => ['class' => 'form-control'],
-            ]
-        );
-
         $builder->addEventSubscriber(new OnetimeExecutionDateSubscriber());
 
         $builder->addEventSubscriber(new RecurringExecutionDateSubscriber());
+
+        $builder->add(
+            'streamDuration',
+            IntegerType::class,
+            [
+                'label' => 'stream.form.label.detail.minutes_to_run',
+                'translation_domain' => 'schedule_create',
+                'data' => 90,
+                'attr' => ['class' => 'form-control', 'min' => 1],
+            ]
+        );
 
         $builder->add(
             'runWithNextExecution',

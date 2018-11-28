@@ -1,6 +1,5 @@
 scheduler_list.title: 'Scheduled streams'
 scheduler_list.column.name: Name
-scheduler_list.column.command: Command
 scheduler_list.column.lastExecution: 'Last run'
 scheduler_list.column.actions: Actions
 scheduler_list.column.logging: "Logbook"
@@ -8,6 +7,9 @@ scheduler_list.column.scheduledExecution: 'Scheduled execution'
 scheduler_list.recurring_time_prefix: 'Every'
 scheduler_list.recurring_time_at: 'at'
 scheduler_list.run_with_next_execution: 'Next execution'
+scheduler_list.column.duration: Duration
+scheduler_list.schedule_duration_minutes: 'minutes'
+scheduler_list.running_until: 'Until:'
 monday: 'Monday'
 tuesday: 'Tuesday'
 wednesday: 'Wednesday'
