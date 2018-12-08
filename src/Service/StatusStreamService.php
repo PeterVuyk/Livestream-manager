@@ -3,10 +3,10 @@ declare(strict_types=1);
 
 namespace App\Service;
 
-class StatusStreamService implements StreamInterface
+class StatusStreamService
 {
-    public function process(): void
+    public function isRunning(): bool
     {
-        // TODO: Implement process() method.
+        return false;
     }
 }
