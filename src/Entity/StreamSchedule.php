@@ -55,12 +55,6 @@ class StreamSchedule
 
     /**
      * @var bool|null
-     * @ORM\Column(name="run_with_next_execution", type="boolean")
-     */
-    private $runWithNextExecution;
-
-    /**
-     * @var bool|null
      * @ORM\Column(name="disabled", type="boolean")
      */
     private $disabled;
@@ -138,22 +132,6 @@ class StreamSchedule
     public function setLastExecution(?\DateTime $lastExecution): void
     {
         $this->lastExecution = $lastExecution;
-    }
-
-    /**
-     * @return bool|null
-     */
-    public function getRunWithNextExecution(): ?bool
-    {
-        return $this->runWithNextExecution;
-    }
-
-    /**
-     * @param bool|null $runWithNextExecution
-     */
-    public function setRunWithNextExecution(?bool $runWithNextExecution): void
-    {
-        $this->runWithNextExecution = $runWithNextExecution;
     }
 
     /**
@@ -342,9 +320,6 @@ class StreamSchedule
     {
         if ($this->isWrecked() === true) {
             return false;
-        }
-        if ($this->getRunWithNextExecution() === true) {
-            return true;
         }
         if ($this->getLastExecution() instanceof \DateTime) {
             if ($this->getLastExecution() > new \DateTime('- 1 hour')) {

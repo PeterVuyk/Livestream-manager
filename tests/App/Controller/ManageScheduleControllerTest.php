@@ -78,32 +78,6 @@ class ManageScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
     }
 
-    public function testExecuteScheduleWithNextExecutionSuccess()
-    {
-        $this->routerMock->expects($this->once())->method('generate')->willReturn('<url>hi</url>');
-        $this->manageScheduleService->expects($this->once())
-            ->method('getScheduleById')->willReturn(new StreamSchedule());
-        $this->manageScheduleService->expects($this->once())
-            ->method('executeScheduleWithNextExecution');
-
-        $result = $this->manageScheduleController->executeScheduleWithNextExecution('id');
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
-    }
-
-    public function testExecuteScheduleWithNextExecutionFailed()
-    {
-        $this->routerMock->expects($this->once())->method('generate')->willReturn('<url>hi</url>');
-        $this->flashBagMock->expects($this->once())->method('add');
-
-        $this->manageScheduleService->expects($this->once())
-            ->method('getScheduleById')->willReturn(new StreamSchedule());
-        $this->manageScheduleService->expects($this->once())
-            ->method('executeScheduleWithNextExecution')->willThrowException(new ORMException());
-
-        $result = $this->manageScheduleController->executeScheduleWithNextExecution('id');
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
-    }
-
     public function testRemoveScheduleSuccess()
     {
         $this->routerMock->expects($this->once())->method('generate')->willReturn('<url>hi</url>');

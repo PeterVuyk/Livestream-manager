@@ -1,14 +1,1 @@
-livestream.start:
-    path: /livestream/start
-    controller: App\Controller\Api\LivestreamController:startLivestream
-    methods: [PUT]
-
-livestream.stop:
-    path: /livestream/stop
-    controller: App\Controller\Api\LivestreamController:stopLivestream
-    methods: [PUT]
-
-livestream.status:
-    path: /livestream/status
-    controller: App\Controller\Api\LivestreamController:getStatusLivestream
-    methods: [GET]
+#todo: Add api endpoints.

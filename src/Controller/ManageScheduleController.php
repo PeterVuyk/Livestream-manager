@@ -69,21 +69,6 @@ class ManageScheduleController extends Controller
      * @param string $scheduleId
      * @return RedirectResponse
      */
-    public function executeScheduleWithNextExecution(string $scheduleId)
-    {
-        try {
-            $schedule = $this->manageScheduleService->getScheduleById($scheduleId);
-            $this->manageScheduleService->executeScheduleWithNextExecution($schedule);
-        } catch (\Exception $exception) {
-            $this->flashBag->add(self::ERROR_MESSAGE, 'flash.manage_schedule.error.could_not_toggle_execution');
-        }
-        return new RedirectResponse($this->router->generate('scheduler_list'));
-    }
-
-    /**
-     * @param string $scheduleId
-     * @return RedirectResponse
-     */
     public function removeSchedule(string $scheduleId)
     {
         try {

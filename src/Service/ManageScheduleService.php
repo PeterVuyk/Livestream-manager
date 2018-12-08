@@ -62,17 +62,6 @@ class ManageScheduleService
      * @throws ORMException
      * @throws OptimisticLockException
      */
-    public function executeScheduleWithNextExecution(StreamSchedule $streamSchedule): void
-    {
-        $streamSchedule->setRunWithNextExecution(true);
-        $this->saveSchedule($streamSchedule);
-    }
-
-    /**
-     * @param StreamSchedule $streamSchedule
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
     public function unwreckSchedule(StreamSchedule $streamSchedule): void
     {
         $streamSchedule->setWrecked(false);

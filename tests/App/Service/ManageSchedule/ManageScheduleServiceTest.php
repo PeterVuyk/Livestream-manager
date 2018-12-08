@@ -37,7 +37,7 @@ class ManageScheduleServiceTest extends TestCase
     public function testGetOnetimeSchedules()
     {
         $this->streamScheduleRepository->expects($this->once())
-            ->method('getOnetimeScheduledItems')
+            ->method('getActiveOnetimeScheduledItems')
             ->willReturn([new StreamSchedule()]);
         $scheduledItems = $this->manageScheduleService->getOnetimeSchedules();
         $this->assertInstanceOf(StreamSchedule::class, $scheduledItems[0]);
@@ -62,17 +62,6 @@ class ManageScheduleServiceTest extends TestCase
         $schedule = new StreamSchedule();
         $schedule->setDisabled(false);
         $this->manageScheduleService->toggleDisablingSchedule($schedule);
-        $this->addToAssertionCount(1);
-    }
-
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function testExecuteScheduleWithNextExecution()
-    {
-        $this->streamScheduleRepository->expects($this->once())->method('save');
-        $this->manageScheduleService->executeScheduleWithNextExecution(new StreamSchedule());
         $this->addToAssertionCount(1);
     }
 

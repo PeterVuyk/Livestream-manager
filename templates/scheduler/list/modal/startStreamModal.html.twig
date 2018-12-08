@@ -1,0 +1,21 @@
+{% trans_default_domain 'modal' %}
+<div class="modal" id="js-start-stream-modal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">{{ 'start_stream.action.title_execute'|trans }}</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <p>{{ 'start_stream.confirm.execute'|trans }}</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'start_stream.action.cancel'|trans }}</button>
+                <button onclick="location.href='{{ path('start_stream') }}'"
+                        type="button" class="btn btn-primary">{{ 'start_stream.action.execute'|trans }}</button>
+            </div>
+        </div>
+    </div>
+</div>

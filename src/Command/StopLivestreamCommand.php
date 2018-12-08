@@ -38,8 +38,8 @@ class StopLivestreamCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $output->writeln('Process to start the livestream started.');
+        $output->writeln('Process to stop the livestream started.');
         $this->stopStreamService->process();
-        $output->writeln('Livestream started.');
+        $output->writeln('Livestream stoped.');
     }
 }

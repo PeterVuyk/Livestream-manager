@@ -62,16 +62,6 @@ class CreateOnetimeScheduleType extends AbstractType
         );
 
         $builder->add(
-            'runWithNextExecution',
-            CheckboxType::class,
-            [
-                'label' => 'stream.form.label.detail.run_with_next_execution',
-                'required' => false,
-                'translation_domain' => 'schedule_create',
-            ]
-        );
-
-        $builder->add(
             'disabled',
             CheckboxType::class,
             [

@@ -23,11 +23,6 @@ schedule_toggle_disabling:
   defaults: { _controller: App\Controller\ManageScheduleController:toggleDisablingSchedule }
   methods: [GET]
 
-schedule_execution:
-  path: /details/execution/{scheduleId}
-  defaults: { _controller: App\Controller\ManageScheduleController:executeScheduleWithNextExecution }
-  methods: [GET]
-
 schedule_remove:
   path: /details/remove/{scheduleId}
   defaults: { _controller: App\Controller\ManageScheduleController:removeSchedule }

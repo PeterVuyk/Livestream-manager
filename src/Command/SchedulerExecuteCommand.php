@@ -72,6 +72,7 @@ class SchedulerExecuteCommand extends Command
                 $executionEndTime = $streamSchedule->getExecutionEndTime();
                 if ($executionEndTime instanceof \DateTime && $executionEndTime <= new \DateTime()) {
                     $this->executeStopStream($streamSchedule, $input, $output);
+                    continue;
                 }
                 if ($streamSchedule->streamTobeExecuted() === true) {
                     $this->executeStartStream($streamSchedule, $input, $output);
@@ -129,11 +130,9 @@ class SchedulerExecuteCommand extends Command
     {
         try {
             $command = $this->getApplication()->find(StartLivestreamCommand::COMMAND_START_STREAM);
-            $command->mergeApplicationDefinition();
             $input->bind($command->getDefinition());
             $command->run($input, $output);
 
-            $streamSchedule->setRunWithNextExecution(false);
             $streamSchedule->setLastExecution(new \DateTime());
             $scheduleLog = new ScheduleLog($streamSchedule, true, 'Livestream successfully started');
             $streamSchedule->addScheduleLog($scheduleLog);
@@ -144,7 +143,6 @@ class SchedulerExecuteCommand extends Command
             $this->logger->error('Could not execute startStream command', ['exception' => $exception]);
             $streamSchedule->setIsRunning(false);
             $streamSchedule->setWrecked(true);
-            $streamSchedule->setRunWithNextExecution(false);
             $scheduleLog = new ScheduleLog($streamSchedule, false, $exception->getMessage());
             $streamSchedule->addScheduleLog($scheduleLog);
             throw CouldNotExecuteCommandException::couldNotStartLivestream($exception);

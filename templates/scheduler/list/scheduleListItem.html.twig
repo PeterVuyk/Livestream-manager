@@ -12,9 +12,7 @@
     </td>
     <td>{{ streamSchedule.name }}</td>
     <td>
-        {% if streamSchedule.runWithNextExecution == true %}
-            {{ 'scheduler_list.run_with_next_execution'|trans }}
-        {% elseif streamSchedule.isRecurring == false and isDateTime(streamSchedule.onetimeExecutionDate) %}
+        {% if streamSchedule.isRecurring == false and isDateTime(streamSchedule.onetimeExecutionDate) %}
             {{ streamSchedule.onetimeExecutionDate|date("D M j, G:i") }}
         {% elseif streamSchedule.isRecurring == true %}
             {{ 'scheduler_list.recurring_time_prefix'|trans }}&nbsp;
@@ -43,14 +41,12 @@
             <span class="fa fa-warning text-danger fa-lg"></span>
         {% endif %}
     </td>
-    <td>
+    <td style="min-width: 90px;">
         {% if scheduleLog is not null %}
             <a href="{{ path('schedule_view_logging', {'scheduleId': streamSchedule.id}) }}">
                 <span class="fa fa-eye fa-lg"></span>
             </a>
         {% endif %}
-    </td>
-    <td style="min-width: 90px;">
         {% if streamSchedule.wrecked == true and scheduleLog is not null and scheduleLog.runSuccessful == false %}
             <a href="#js-rerun-failed-schedule-modal-{{ streamSchedule.id }}" data-toggle="modal">
                 <span class="fa fa-undo text-warning fa-lg"></span>
@@ -65,10 +61,5 @@
             <span class="text-danger fa fa-trash fa-lg"></span>
         </a>
         {{ include('scheduler/list/modal/deleteModal.html.twig', {'scheduledItem': streamSchedule, 'path': 'schedule_remove'}) }}
-
-        <a href="#js-execute-scheduled-modal-{{ streamSchedule.id }}" data-toggle="modal">
-            <span class="text-{% if streamSchedule.runWithNextExecution == true %}muted{% else %}success{% endif %} fa fa-play fa-lg"></span>
-        </a>
-        {{ include('scheduler/list/modal/executeModal.html.twig', {'scheduledItem': streamSchedule, 'path': 'schedule_execution'}) }}
     </td>
 </tr>

@@ -33,13 +33,6 @@ class StreamScheduleTest extends TestCase
         $this->assertInstanceOf(\DateTime::class, $streamSchedule->getLastExecution());
     }
 
-    public function testRunWithNextExecution()
-    {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setRunWithNextExecution(true);
-        $this->assertSame(true, $streamSchedule->getRunWithNextExecution());
-    }
-
     public function testDisabled()
     {
         $streamSchedule = new StreamSchedule();
@@ -108,8 +101,6 @@ class StreamScheduleTest extends TestCase
     {
         $streamScheduleWrecked = new StreamSchedule();
         $streamScheduleWrecked->setWrecked(true);
-        $streamScheduleRunWithNextExecution = new StreamSchedule();
-        $streamScheduleRunWithNextExecution->setRunWithNextExecution(true);
         $streamScheduleNextExecution = new StreamSchedule();
         $streamScheduleNextExecution->setExecutionTime(new \DateTime('- 1 minute'));
         $streamScheduleNextExecution->setExecutionDay(date('l'));
@@ -124,9 +115,6 @@ class StreamScheduleTest extends TestCase
             [
                 'streamSchedule' => $streamScheduleWrecked,
                 'result' => false,
-            ], [
-                'streamSchedule' => $streamScheduleRunWithNextExecution,
-                'result' => true,
             ], [
                 'streamSchedule' => $streamScheduleAlreadyExecuted,
                 'result' => false,
