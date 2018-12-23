@@ -31,11 +31,15 @@ app.swagger_ui:
   defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
 
 start_stream:
-  path: /stream/start
+  path: /admin/stream/start
   defaults: { _controller: App\Controller\LivestreamController:startStream }
   methods: [GET]
 
 stop_stream:
-  path: /stream/stop
+  path: /admin/stream/stop
   defaults: { _controller: App\Controller\LivestreamController:stopStream }
   methods: [GET]
+
+camera_configuration_list:
+  path: /admin/configuration
+  defaults: { _controller: App\Controller\CameraConfigurationController:configurationList }

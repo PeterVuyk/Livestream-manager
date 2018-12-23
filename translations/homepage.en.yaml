@@ -1,5 +1,6 @@
 navigation.admin_home: Admin
 navigation.schedule: 'Schedule'
+navigation.camera_configuration: 'Configuration'
 navigation.users: Users
 navigation.user_list: 'Authorized users'
 navigation.register: 'Register user'
