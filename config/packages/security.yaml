@@ -12,19 +12,18 @@ security:
             pattern: ^/(_(profiler|wdt)|css|images|js)/
             security: false
         main:
-            anonymous: true
+            anonymous: ~
 #            pattern: ^/api(?!/doc$)
             pattern: ^/
             http_basic: true
             provider: our_db_provider
-            # https://symfony.com/doc/current/security.html#a-configuring-how-your-users-will-authenticate
-
             logout:
-                path: user_logout
-                target: home_page
-            # form_login: true
-            # https://symfony.com/doc/current/security/form_login_setup.html
+#                success_handler: logout_listener
+                success_handler: App\Controller\UserAuthenticationController
+                path: /logout
+                target: /
 
     access_control:
-#    - { path: ^/admin, roles: ROLE_USER }
-#    - { path: /.*, roles: ROLE_USER }
+    - { path: ^/admin, roles: ROLE_USER }
+    - { path: /.*, roles: IS_AUTHENTICATED_ANONYMOUSLY }
+

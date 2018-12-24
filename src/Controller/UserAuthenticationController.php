@@ -3,28 +3,18 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Http\Logout\LogoutSuccessHandlerInterface;
 
-class UserAuthenticationController
+class UserAuthenticationController implements LogoutSuccessHandlerInterface
 {
-    /** @var RouterInterface */
-    private $router;
-
     /**
-     * UserAuthenticationController constructor.
-     * @param RouterInterface $router
+     * @param Request $request
+     * @return Response
      */
-    public function __construct(RouterInterface $router)
+    public function onLogoutSuccess(Request $request): Response
     {
-        $this->router = $router;
-    }
-
-    /**
-     * @return RedirectResponse
-     */
-    public function logout()
-    {
-        return new RedirectResponse($this->router->generate('home'));
+        return new Response('', Response::HTTP_UNAUTHORIZED);
     }
 }

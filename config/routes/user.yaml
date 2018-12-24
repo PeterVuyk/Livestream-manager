@@ -1,7 +1,5 @@
 user_logout:
   path: /logout
-  defaults: { _controller: App\Controller\UserAuthenticationController:logout }
-  methods: [GET]
 
 user_list:
   path: /admin/users

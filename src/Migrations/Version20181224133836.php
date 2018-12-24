@@ -7,7 +7,7 @@ use Doctrine\DBAL\Migrations\AbortMigrationException;
 use Doctrine\DBAL\Schema\Schema;
 use Doctrine\Migrations\AbstractMigration;
 
-final class Version20181221170429 extends AbstractMigration
+final class Version20181224133836 extends AbstractMigration
 {
     /**
      * @param Schema $schema
@@ -17,7 +17,7 @@ final class Version20181221170429 extends AbstractMigration
     public function up(Schema $schema) : void
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-        $this->addSql('CREATE TABLE camera_configuration (`key` VARCHAR(255) NOT NULL, value LONGTEXT NOT NULL, UNIQUE INDEX `key` (`key`), PRIMARY KEY(`key`)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
+        $this->addSql('INSERT INTO `app_users` (`username`,`password`,`email`,`is_active`,`roles`) VALUES (\'temporary\',\'$2y$13$HFR9K9Mw0MtWpTxZaFkUn.fbhPbQQTpcE1t3fYWKDHi1nVoqGs1xO\',\'temporary@example.com\',1,\'a:1:{i:0;s:9:\"ROLE_USER\";}\');');
     }
 
     /**
@@ -28,6 +28,6 @@ final class Version20181221170429 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-        $this->addSql('DROP TABLE camera_configuration');
+        $this->addSql('DELETE FROM `livestream`.`app_users` WHERE `username`=\'temporary\';');
     }
 }
