@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Exception\CouldNotStartLivestreamException;
 use Psr\Log\LoggerInterface;
 
 class StartStreamService implements StreamInterface
@@ -32,62 +33,67 @@ class StartStreamService implements StreamInterface
         $this->logger = $logger;
     }
 
+    /**
+     * @throws CouldNotStartLivestreamException
+     */
     public function process(): void
     {
-        $this->cameraConfigurationService->getAllConfigurations();
-
-        if (!$this->isHostAvailable()) {
-            throw new \Exception();
-        }
-
         if ($this->statusStreamService->isRunning()) {
             $this->logger->warning('Stream tried to start while stream was already running');
             return;
         }
 
-        if (!file_exists('/run/shm')) {
-            if (!mkdir('/run/shm/hooks/') || !mkdir('/run/shm/rec/') || !mkdir('/run/shm/state/')) {
-                throw new \Exception();
-            }
+        if (!$this->isHostAvailable()) {
+            throw CouldNotStartLivestreamException::hostNotAvailable();
         }
-        if (!symlink('/home/pi/picam/archive', '/run/shm/rec/archive')) {
-            throw new \Exception();
-        };
 
+        $this->createPicamDirectories();
 
-        $execution = shell_exec(
+        $this->logger->info('Livestream is online');
+
+        exec(
             "/usr/local/bin/ffmpeg -i tcp://127.0.0.1:8181?listen \
             -af \"volume=24dB\" -c:v copy -ac 1 -ar 44100 -ab 192000 -map_channel 0.1.0 -map_channel 0.1.0 \
 			-f flv rtmp://live.dedeurzwolle.nl:1935/live/dienst | /home/pi/picam/picam --alsadev hw:1,0 --tcpout \
 			tcp://127.0.0.1:8181 --hflip --vflip - -r 44100 \
 			-a 192000 --volume 1.0 --videobitrate 1500000"
         );
-        if ($execution === null) {
-            throw new \Exception();
-        }
-    }
 
-    private function isHostAvailable(): bool
-    {
-        if ($socket =@ fsockopen('live.dedeurzwolle.nl', 80, $errno, $errstr, 30)) {
-            fclose($socket);
-            return true;
-        }
-        return false;
+        $this->logger->info('Livestream is streaming');
     }
 
     /**
-     * @return object \stdClass
+     * @throws CouldNotStartLivestreamException
      */
-    private function getConfigurations()
+    private function createPicamDirectories()
     {
-        $configurations = $this->cameraConfigurationService->getAllConfigurations();
-
-        $result = new \stdClass();
-        foreach ($configurations as $configuration) {
-            $key = $configuration->getKey();
-            $result->$key = $configuration->getValue();
+        if (!file_exists('/run/shm')) {
+            if (!mkdir('/run/shm/hooks/') || !mkdir('/run/shm/rec/') || !mkdir('/run/shm/state/')) {
+                throw CouldNotStartLivestreamException::couldNotCreateRequiredDirectories();
+            }
         }
-        return $result;
+        if (!symlink('/home/pi/picam/archive', '/run/shm/rec/archive')) {
+            throw CouldNotStartLivestreamException::couldNotCreateASymlink();
+        }
+    }
+
+    /**
+     * @return bool
+     */
+    private function isHostAvailable(): bool
+    {
+        $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
+        $attempts = 0;
+        do {
+            if ($socket =@ fsockopen('live.dedeurzwolle.nl', 80, $errno, $errstr, 30)) {
+                fclose($socket);
+                return true;
+            }
+            $this->logger->warning("host was not available, attempts: {$attempts}");
+            $attempts++;
+            sleep($configurations->sleepTime);
+        }
+        while ($attempts <= $configurations->retry);
+        return false;
     }
 }

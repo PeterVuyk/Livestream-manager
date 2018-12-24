@@ -53,4 +53,24 @@ class CameraConfigurationServiceTest extends TestCase
         $this->cameraConfigurationRepositoryMock->expects($this->once())->method('saveFromConfiguration');
         $this->cameraConfigurationService->saveConfigurations(new Configuration());
     }
+
+    public function testGetConfigurationsKeyValue()
+    {
+        $cameraConfiguration1 = new CameraConfiguration();
+        $cameraConfiguration1->setValue('value1');
+        $cameraConfiguration1->setKey('key1');
+        $cameraConfiguration2 = new CameraConfiguration();
+        $cameraConfiguration2->setValue('value2');
+        $cameraConfiguration2->setKey('key2');
+
+        $this->cameraConfigurationRepositoryMock->expects($this->once())
+            ->method('findAll')
+            ->willReturn([$cameraConfiguration1, $cameraConfiguration2]);
+        $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
+
+        $this->assertObjectHasAttribute('key1', $configurations);
+        $this->assertObjectHasAttribute('key2', $configurations);
+        $this->assertSame('value1', $configurations->key1);
+        $this->assertSame('value2', $configurations->key2);
+    }
 }

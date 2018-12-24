@@ -48,4 +48,19 @@ class CameraConfigurationService
     {
         $this->cameraConfigurationRepository->saveFromConfiguration($configuration->getCameraConfiguration()->toArray());
     }
+
+    /**
+     * @return object \stdClass
+     */
+    public function getConfigurationsKeyValue(): \stdClass
+    {
+        $configurations = $this->getAllConfigurations();
+
+        $result = new \stdClass();
+        foreach ($configurations as $configuration) {
+            $key = $configuration->getKey();
+            $result->$key = $configuration->getValue();
+        }
+        return $result;
+    }
 }
