@@ -5,6 +5,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\ScheduleLog;
 use App\Entity\StreamSchedule;
+use App\Entity\Weekdays;
 use PHPUnit\Framework\TestCase;
 
 class StreamScheduleTest extends TestCase
@@ -57,15 +58,15 @@ class StreamScheduleTest extends TestCase
     public function testExecutionDay()
     {
         $streamSchedule = new StreamSchedule();
-        $streamSchedule->setExecutionDay('monday');
-        $this->assertSame('monday', $streamSchedule->getExecutionDay());
+        $streamSchedule->setExecutionDay(1);
+        $this->assertSame(1, $streamSchedule->getExecutionDay());
     }
 
     public function testGetNextExecutionTime()
     {
         $streamSchedule = new StreamSchedule();
         $streamSchedule->setExecutionTime(new \DateTime());
-        $streamSchedule->setExecutionDay('monday');
+        $streamSchedule->setExecutionDay(1);
         $this->assertInstanceOf(\DateTime::class, $streamSchedule->getNextExecutionTime());
     }
 
@@ -99,17 +100,27 @@ class StreamScheduleTest extends TestCase
 
     public function streamTobeExecutedProvider()
     {
+        $daysOfTheWeek = [
+            'Monday' => 1,
+            'Tuesday' => 2,
+            'Wednesday' => 3,
+            'Thursday' => 4,
+            'Friday' => 5,
+            'Saturday' => 6,
+            'Sunday' => 7,
+        ];
+
         $streamScheduleWrecked = new StreamSchedule();
         $streamScheduleWrecked->setWrecked(true);
         $streamScheduleNextExecution = new StreamSchedule();
         $streamScheduleNextExecution->setExecutionTime(new \DateTime('- 1 minute'));
-        $streamScheduleNextExecution->setExecutionDay(date('l'));
+        $streamScheduleNextExecution->setExecutionDay($daysOfTheWeek[date('l')]);
         $streamScheduleNoExecution = new StreamSchedule();
         $streamScheduleNoExecution->setExecutionTime(new \DateTime('+ 1 minute'));
-        $streamScheduleNoExecution->setExecutionDay(date('l'));
+        $streamScheduleNoExecution->setExecutionDay($daysOfTheWeek[date('l')]);
         $streamScheduleAlreadyExecuted = new StreamSchedule();
         $streamScheduleAlreadyExecuted->setLastExecution(new \DateTime());
-        $streamScheduleAlreadyExecuted->setExecutionDay(date('l'));
+        $streamScheduleAlreadyExecuted->setExecutionDay($daysOfTheWeek[date('l')]);
 
         return [
             [

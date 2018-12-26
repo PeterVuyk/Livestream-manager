@@ -18,7 +18,6 @@ security:
             http_basic: true
             provider: our_db_provider
             logout:
-#                success_handler: logout_listener
                 success_handler: App\Controller\UserAuthenticationController
                 path: /logout
                 target: /

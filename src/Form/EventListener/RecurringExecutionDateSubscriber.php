@@ -4,9 +4,7 @@ declare(strict_types=1);
 namespace App\Form\EventListener;
 
 use App\Entity\StreamSchedule;
-use App\Entity\Weekdays;
-use App\Form\CreateRecurringScheduleType;
-use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
+use App\Form\WeekdayType;
 use Symfony\Component\Form\Extension\Core\Type\TimeType;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
@@ -34,9 +32,8 @@ class RecurringExecutionDateSubscriber implements EventSubscriberInterface
         if (!$streamSchedule || $streamSchedule->isRecurring() === true) {
             $form->add(
                 'executionDay',
-                ChoiceType::class,
+                WeekdayType::class,
                 [
-                    'choices' => CreateRecurringScheduleType::getDaysOfTheWeek(),
                     'label' => 'stream.form.label.detail.label.weekday_choice',
                     'translation_domain' => 'schedule_create',
                     'required' => true,

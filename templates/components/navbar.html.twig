@@ -5,6 +5,9 @@
             <li class="nav-item {% if active_page is defined and active_page == 'admin_home' %}active{% endif %}">
                 <a class="nav-link nav " href="{{ path('admin_page') }}">{{ 'navigation.admin_home'|trans }}</a>
             </li>
+            <li class="nav-item {% if active_page is defined and active_page == 'camera_configuration' %}active{% endif %}">
+                <a class="nav-link" href="{{ path('camera_configuration_list') }}">{{ 'navigation.camera_configuration'|trans }}</a>
+            </li>
             <li class="nav-item dropdown {% if active_page is defined and active_page == 'users' %}active{% endif %}">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                     {{ 'navigation.users'|trans }}&nbsp;<span class="caret"></span>
@@ -20,9 +23,6 @@
             </li>
             <li class="nav-item {% if active_page is defined and active_page == 'schedule' %}active{% endif %}">
                 <a class="nav-link" href="{{ path('scheduler_list') }}">{{ 'navigation.schedule'|trans }}</a>
-            </li>
-            <li class="nav-item {% if active_page is defined and active_page == 'camera_configuration' %}active{% endif %}">
-                <a class="nav-link" href="{{ path('camera_configuration_list') }}">{{ 'navigation.camera_configuration'|trans }}</a>
             </li>
         </ul>
         <ul class="navbar-nav pull-right">

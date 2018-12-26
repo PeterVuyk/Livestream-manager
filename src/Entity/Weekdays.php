@@ -3,27 +3,63 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Exception\InvalidWeekdayException;
+
 class Weekdays
 {
-    const ENUM_WEEK_DAYS = 'enumWeekDays';
-    const ENUM_MONDAY = 'monday';
-    const ENUM_TUESDAY = 'tuesday';
-    const ENUM_WEDNESDAY = 'wednesday';
-    const ENUM_THURSDAY = 'thursday';
-    const ENUM_FRIDAY = 'friday';
-    const ENUM_SATURDAY = 'saturday';
-    const ENUM_SUNDAY = 'sunday';
+    const MONDAY = 1;
+    const TUESDAY = 2;
+    const WEDNESDAY = 3;
+    const THURSDAY = 4;
+    const FRIDAY = 5;
+    const SATURDAY = 6;
+    const SUNDAY = 7;
 
-    public static function getDaysOfTheWeek()
+    /**
+     * @return array
+     */
+    public static function getDaysOfTheWeek(): array
     {
         return [
-            self::ENUM_MONDAY,
-            self::ENUM_TUESDAY,
-            self::ENUM_WEDNESDAY,
-            self::ENUM_THURSDAY,
-            self::ENUM_FRIDAY,
-            self::ENUM_SATURDAY,
-            self::ENUM_SUNDAY
+            self::MONDAY => 'monday',
+            self::TUESDAY => 'tuesday',
+            self::WEDNESDAY => 'wednesday',
+            self::THURSDAY => 'thursday',
+            self::FRIDAY => 'friday',
+            self::SATURDAY => 'saturday',
+            self::SUNDAY => 'sunday',
         ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getDaysOfTheWeekKeys(): array
+    {
+        return array_keys(self::getDaysOfTheWeek());
+    }
+
+    /**
+     * @param int $day
+     * @return bool
+     */
+    public static function validate(int $day): bool
+    {
+        if (in_array($day, self::getDaysOfTheWeekKeys())) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param int $day
+     * @return string
+     */
+    public static function getDayOfTheWeekById(int $day): string
+    {
+        if (!self::validate($day)) {
+            throw InvalidWeekdayException::invalidDayInput($day);
+        }
+        return self::getDaysOfTheWeek()[$day];
     }
 }

@@ -9,7 +9,6 @@ class CouldNotStartLivestreamException extends \Exception
     const COULD_NOT_CREATE_DIRS_MESSAGE = 'Could not create the required directories for picam, aborted';
     const COULD_NOT_CREATE_SYMLINK_MESSAGE = 'Could not create the required symlink for picam, aborted';
 
-
     public function __construct(string $reason, \Throwable $previous = null)
     {
         parent::__construct($reason, 0, $previous);

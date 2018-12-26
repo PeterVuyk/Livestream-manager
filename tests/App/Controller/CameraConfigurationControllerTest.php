@@ -56,7 +56,7 @@ class CameraConfigurationControllerTest extends TestCase
     public function testConfigurationList()
     {
         $this->cameraConfigurationServiceMock->expects($this->once())
-            ->method('getConfigurations')
+            ->method('getAllConfigurations')
             ->willReturn([new CameraConfiguration()]);
 
         $formInterfaceMock = $this->createMock(FormInterface::class);
@@ -74,7 +74,7 @@ class CameraConfigurationControllerTest extends TestCase
     public function testConfigurationListSubmitFormSuccess()
     {
         $this->cameraConfigurationServiceMock->expects($this->once())
-            ->method('getConfigurations')
+            ->method('getAllConfigurations')
             ->willReturn([new CameraConfiguration()]);
 
         $formInterfaceMock = $this->createMock(FormInterface::class);
@@ -96,7 +96,7 @@ class CameraConfigurationControllerTest extends TestCase
     public function testConfigurationListSubmitFormFailed()
     {
         $this->cameraConfigurationServiceMock->expects($this->once())
-            ->method('getConfigurations')
+            ->method('getAllConfigurations')
             ->willReturn([new CameraConfiguration()]);
 
         $formInterfaceMock = $this->createMock(FormInterface::class);
