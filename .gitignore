@@ -5,7 +5,6 @@
 /vendor/
 ###< symfony/framework-bundle ###
 
-.idea/
 /tests/_reports
 docker-data/logs/*
 !docker-data/logs/.gitkeep

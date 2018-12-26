@@ -7,6 +7,8 @@ use App\Entity\ScheduleLog;
 use App\Entity\StreamSchedule;
 use App\Exception\CouldNotExecuteCommandException;
 use App\Repository\StreamScheduleRepository;
+use App\Service\StartStreamService;
+use App\Service\StopStreamService;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Psr\Log\LoggerInterface;
@@ -16,7 +18,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SchedulerExecuteCommand extends Command
 {
-    const COMMAND_START_STREAM = 'scheduler:execute';
+    const COMMAND_SCHEDULER_EXECUTE = 'scheduler:execute';
 
     const ERROR_MESSAGE = '<error>%s - Aborted</error>';
     const INFO_MESSAGE = '<info>%s</info>';
@@ -24,27 +26,39 @@ class SchedulerExecuteCommand extends Command
     /** @var StreamScheduleRepository */
     private $streamScheduleRepository;
 
+    /** @var StartStreamService */
+    private $startStreamService;
+
+    /** @var StopStreamService */
+    private $stopStreamService;
+
     /** @var LoggerInterface */
     private $logger;
 
     /**
      * SchedulerExecuteCommand constructor.
      * @param StreamScheduleRepository $streamScheduleRepository
+     * @param StartStreamService $startStreamService
+     * @param StopStreamService $stopStreamService
      * @param LoggerInterface $logger
      */
     public function __construct(
         StreamScheduleRepository $streamScheduleRepository,
+        StartStreamService $startStreamService,
+        StopStreamService $stopStreamService,
         LoggerInterface $logger
     ) {
-        $this->streamScheduleRepository = $streamScheduleRepository;
-        $this->logger = $logger;
         parent::__construct();
+        $this->streamScheduleRepository = $streamScheduleRepository;
+        $this->startStreamService = $startStreamService;
+        $this->stopStreamService = $stopStreamService;
+        $this->logger = $logger;
     }
 
     protected function configure()
     {
         $this
-            ->setName(self::COMMAND_START_STREAM)
+            ->setName(self::COMMAND_SCHEDULER_EXECUTE)
             ->setDescription('Execute scheduled commands.');
     }
 
@@ -96,11 +110,7 @@ class SchedulerExecuteCommand extends Command
     private function executeStopStream(StreamSchedule $streamSchedule, InputInterface $input, OutputInterface $output)
     {
         try {
-            $command = $this->getApplication()->find(StopLivestreamCommand::COMMAND_STOP_STREAM);
-            $command->mergeApplicationDefinition();
-            $input->bind($command->getDefinition());
-            $command->run($input, $output);
-
+            $this->stopStreamService->process();
             $streamSchedule->setIsRunning(false);
             $scheduleLog = new ScheduleLog($streamSchedule, true, 'Livestream successfully stopped');
             $streamSchedule->addScheduleLog($scheduleLog);
@@ -129,10 +139,7 @@ class SchedulerExecuteCommand extends Command
     private function executeStartStream(StreamSchedule $streamSchedule, InputInterface $input, OutputInterface $output)
     {
         try {
-            $command = $this->getApplication()->find(StartLivestreamCommand::COMMAND_START_STREAM);
-            $input->bind($command->getDefinition());
-            $command->run($input, $output);
-
+            $this->startStreamService->process();
             $streamSchedule->setLastExecution(new \DateTime());
             $scheduleLog = new ScheduleLog($streamSchedule, true, 'Livestream successfully started');
             $streamSchedule->addScheduleLog($scheduleLog);

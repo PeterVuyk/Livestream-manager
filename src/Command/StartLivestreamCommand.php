@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Command;
 
+use App\Exception\CouldNotStartLivestreamException;
 use App\Service\StartStreamService;
 use App\Service\StatusStreamService;
 use Symfony\Component\Console\Command\Command;
@@ -41,6 +42,7 @@ class StartLivestreamCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @throws CouldNotStartLivestreamException
      */
     public function execute(InputInterface $input, OutputInterface $output): void
     {
