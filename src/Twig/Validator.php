@@ -30,14 +30,4 @@ class Validator extends AbstractExtension
         }
         return false;
     }
-
-    /**
-     * Returns the name of the extension.
-     *
-     * @return string The extension name
-     */
-    public function getName()
-    {
-        return self::IS_DATE_TIME;
-    }
 }

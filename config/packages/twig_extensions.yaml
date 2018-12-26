@@ -8,3 +8,8 @@ services:
         public: false
         tags:
         - { name: 'twig.extension' }
+
+    App\Twig\Weekday:
+        public: false
+        tags:
+        - { name: 'twig.extension' }
