@@ -72,6 +72,19 @@ class UserTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
+    public function testGetSalt()
+    {
+        $user = new User();
+        $this->assertNull($user->getSalt()); //When using BCrypt, salt is not needed because it salt its internally.
+    }
+
+    public function testEraseCredentials()
+    {
+        $user = new User();
+        $user->eraseCredentials(); //This function is not needed but required by the interface.
+        $this->addToAssertionCount(1);
+    }
+
     /**
      * @return User
      */

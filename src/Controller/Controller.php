@@ -5,7 +5,7 @@ namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
 
-class Controller
+abstract class Controller
 {
     protected const SUCCESS_MESSAGE = 'success';
     protected const ERROR_MESSAGE = 'error';

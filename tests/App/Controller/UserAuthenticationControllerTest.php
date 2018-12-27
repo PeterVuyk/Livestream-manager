@@ -20,7 +20,7 @@ class UserAuthenticationControllerTest extends TestCase
 
     public function testOnLogoutSuccess()
     {
-        $result = $this->userAuthenticationController->onLogoutSuccess(new Request());
-        $this->assertSame(Response::HTTP_UNAUTHORIZED, $result->getStatusCode());
+        $response = $this->userAuthenticationController->onLogoutSuccess(new Request());
+        $this->assertSame(Response::HTTP_UNAUTHORIZED, $response->getStatusCode());
     }
 }

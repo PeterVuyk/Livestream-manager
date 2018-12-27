@@ -51,11 +51,9 @@ class StreamScheduleRepository extends ServiceEntityRepository
     {
         return $this->createQueryBuilder('s')
             ->where('s.onetimeExecutionDate IS NOT NULL')
-//            ->andWhere('s.onetimeExecutionDate > :last')
             ->andWhere('s.executionDay IS NULL')
             ->andWhere('s.executionTime IS NULL')
             ->orderBy('s.onetimeExecutionDate', 'ASC')
-//            ->setParameter('last', new \DateTime('-3 hours'), Type::DATETIME)
             ->getQuery()
             ->getResult();
     }

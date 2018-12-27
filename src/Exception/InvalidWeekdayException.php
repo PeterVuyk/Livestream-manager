@@ -5,7 +5,7 @@ namespace App\Exception;
 
 class InvalidWeekdayException extends \InvalidArgumentException
 {
-    const INVALID_DAY_MESSAGE = 'Requested day of the week by id does not exist, identifier: %d';
+    const INVALID_DAY_MESSAGE = 'Invalid executionDay input, day: %d';
 
     public function __construct(string $reason, \Throwable $previous = null)
     {

@@ -41,15 +41,15 @@ class LivestreamControllerTest extends TestCase
     {
         $this->startStreamServiceMock->expects($this->once())->method('process');
         $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');
-        $result = $this->livestreamController->startStream();
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->livestreamController->startStream();
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
     public function testStopStream()
     {
         $this->stopStreamServiceMock->expects($this->once())->method('process');
         $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');
-        $result = $this->livestreamController->stopStream();
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->livestreamController->stopStream();
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 }

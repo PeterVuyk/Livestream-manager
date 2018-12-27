@@ -12,6 +12,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
 
@@ -26,23 +27,29 @@ class UserManagementController extends Controller
     /** @var RouterInterface */
     private $router;
 
+    /** @var FlashBagInterface */
+    private $flashBag;
+
     /**
      * UserManagementController constructor.
      * @param \Twig_Environment $twig
      * @param UserService $userService
      * @param FormFactoryInterface $formFactory
      * @param RouterInterface $router
+     * @param FlashBagInterface $flashBag
      */
     public function __construct(
         \Twig_Environment $twig,
         UserService $userService,
         FormFactoryInterface $formFactory,
-        RouterInterface $router
+        RouterInterface $router,
+        FlashBagInterface $flashBag
     ) {
         parent::__construct($twig);
         $this->userService = $userService;
         $this->formFactory = $formFactory;
         $this->router = $router;
+        $this->flashBag = $flashBag;
     }
 
     /**
@@ -57,34 +64,28 @@ class UserManagementController extends Controller
 
     /**
      * @param int $userId
-     * @param Request $request
      * @return RedirectResponse
      */
-    public function deleteUser(int $userId, Request $request)
+    public function deleteUser(int $userId)
     {
         try {
             $this->userService->removeUser($userId);
         } catch (\Exception $exception) {
-            /** @var Session $session */
-            $session = $request->getSession();
-            $session->getFlashBag()->add(self::ERROR_MESSAGE, 'flash.user_management.error.could_not_remove_user');
+            $this->flashBag->add(self::ERROR_MESSAGE, 'flash.user_management.error.could_not_remove_user');
         }
         return new RedirectResponse($this->router->generate('user_list'));
     }
 
     /**
      * @param int $userId
-     * @param Request $request
      * @return RedirectResponse
      */
-    public function toggleDisablingUser(int $userId, Request $request)
+    public function toggleDisablingUser(int $userId)
     {
         try {
             $this->userService->toggleDisablingUser($userId);
         } catch (\Exception $exception) {
-            /** @var Session $session */
-            $session = $request->getSession();
-            $session->getFlashBag()->add(self::ERROR_MESSAGE, 'flash.user_management.error.failed_disabling_user');
+            $this->flashBag->add(self::ERROR_MESSAGE, 'flash.user_management.error.failed_disabling_user');
         }
 
         return new RedirectResponse($this->router->generate('user_list'));
@@ -97,8 +98,6 @@ class UserManagementController extends Controller
      */
     public function userDetails(int $userId, Request $request)
     {
-        /** @var Session $session */
-        $session = $request->getSession();
         $user = $this->userService->getUserById($userId);
         if (!$user instanceof User) {
             return new RedirectResponse($this->router->generate('user_list'));
@@ -108,9 +107,9 @@ class UserManagementController extends Controller
         if ($form->isSubmitted() && $form->isValid()) {
             try {
                 $this->userService->updateUser($form->getData());
-                $session->getFlashBag()->add(self::SUCCESS_MESSAGE, 'flash.user_management.success.user_created');
+                $this->flashBag->add(self::SUCCESS_MESSAGE, 'flash.user_management.success.user_created');
             } catch (ORMException | OptimisticLockException $exception) {
-                $session->getFlashBag()->add(self::ERROR_MESSAGE, 'flash.user_management.error.failed_saving_user');
+                $this->flashBag->add(self::ERROR_MESSAGE, 'flash.user_management.error.failed_saving_user');
             }
             return new RedirectResponse($request->getUri());
         }

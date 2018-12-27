@@ -60,8 +60,8 @@ class ManageScheduleControllerTest extends TestCase
         $this->manageScheduleService->expects($this->once())
             ->method('toggleDisablingSchedule');
 
-        $result = $this->manageScheduleController->toggleDisablingSchedule('id');
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->manageScheduleController->toggleDisablingSchedule('id');
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
     public function testToggleDisablingScheduleFailed()
@@ -74,8 +74,8 @@ class ManageScheduleControllerTest extends TestCase
 
         $this->flashBagMock->expects($this->once())->method('add');
 
-        $result = $this->manageScheduleController->toggleDisablingSchedule('id');
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->manageScheduleController->toggleDisablingSchedule('id');
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
     public function testRemoveScheduleSuccess()
@@ -86,8 +86,8 @@ class ManageScheduleControllerTest extends TestCase
         $this->manageScheduleService->expects($this->once())
             ->method('removeSchedule');
 
-        $result = $this->manageScheduleController->removeSchedule('id');
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->manageScheduleController->removeSchedule('id');
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
     public function testRemoveScheduleFailed()
@@ -99,8 +99,8 @@ class ManageScheduleControllerTest extends TestCase
         $this->manageScheduleService->expects($this->once())
             ->method('removeSchedule')->willThrowException(new ORMException());
 
-        $result = $this->manageScheduleController->removeSchedule('id');
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->manageScheduleController->removeSchedule('id');
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
     public function testUnwreckScheduleSuccess()
@@ -111,8 +111,8 @@ class ManageScheduleControllerTest extends TestCase
         $this->manageScheduleService->expects($this->once())
             ->method('unwreckSchedule');
 
-        $result = $this->manageScheduleController->unwreckSchedule('id');
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->manageScheduleController->unwreckSchedule('id');
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
     public function testUnwreckScheduleFailed()
@@ -125,8 +125,8 @@ class ManageScheduleControllerTest extends TestCase
         $this->manageScheduleService->expects($this->once())
             ->method('unwreckSchedule')->willThrowException(new ORMException());
 
-        $result = $this->manageScheduleController->unwreckSchedule('id');
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->manageScheduleController->unwreckSchedule('id');
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
     public function testEditStreamOpeningPage()
@@ -145,8 +145,8 @@ class ManageScheduleControllerTest extends TestCase
 
         $this->twigMock = $this->createMock(\Twig_Environment::class);
 
-        $result = $this->manageScheduleController->editSchedule('id', new Request());
-        $this->assertSame(Response::HTTP_OK, $result->getStatusCode());
+        $response = $this->manageScheduleController->editSchedule('id', new Request());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }
 
     public function testEditStreamEditWithSuccess()
@@ -167,8 +167,19 @@ class ManageScheduleControllerTest extends TestCase
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
-        $result = $this->manageScheduleController->editSchedule('id', new Request());
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->manageScheduleController->editSchedule('id', new Request());
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
+    }
+
+    public function testEditScheduleCouldNotGetScheduleById()
+    {
+        $this->manageScheduleService->expects($this->once())->method('getScheduleById')->willReturn(null);
+        $this->flashBagMock->expects($this->once())->method('add');
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('link');
+        $this->formFactoryMock->expects($this->never())->method('create');
+
+        $response = $this->manageScheduleController->editSchedule('scheduleId', new Request());
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
     public function testEditStreamEditFailed()
@@ -191,7 +202,7 @@ class ManageScheduleControllerTest extends TestCase
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
-        $result = $this->manageScheduleController->editSchedule('id', new Request());
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->manageScheduleController->editSchedule('id', new Request());
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 }

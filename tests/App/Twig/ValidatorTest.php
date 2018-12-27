@@ -28,6 +28,6 @@ class ValidatorTest extends TestCase
 
     public function testIsDateTimeTrue()
     {
-        $this->assertFalse($this->validator->isDateTime('2008-03-09 16:05:07.123'));
+        $this->assertTrue($this->validator->isDateTime(new \DateTime()));
     }
 }

@@ -49,8 +49,8 @@ class ScheduleLogBookControllerTest extends TestCase
             ->method('getScheduleById')
             ->willReturn(new StreamSchedule());
 
-        $result = $this->streamLoggingController->viewLogging('id');
-        $this->assertSame(Response::HTTP_OK, $result->getStatusCode());
+        $response = $this->streamLoggingController->viewLogging('id');
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }
 
     public function testViewLoggingFailed()
@@ -61,7 +61,7 @@ class ScheduleLogBookControllerTest extends TestCase
         $this->flashBagMock->expects($this->once())->method('add');
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
-        $result = $this->streamLoggingController->viewLogging('id');
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->streamLoggingController->viewLogging('id');
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 }

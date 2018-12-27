@@ -6,6 +6,7 @@ namespace App\Tests\App\Controller;
 use App\Controller\ScheduleController;
 use App\Entity\StreamSchedule;
 use App\Service\ManageScheduleService;
+use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -58,8 +59,8 @@ class ScheduleControllerTest extends TestCase
         $this->manageScheduleService->expects($this->once())
             ->method('getRecurringSchedules')->willReturn([new StreamSchedule()]);
         $this->twigMock->expects($this->once())->method('render')->willReturn('<p>hi</p>');
-        $result = $this->scheduleController->list();
-        $this->assertSame(Response::HTTP_OK, $result->getStatusCode());
+        $response = $this->scheduleController->list();
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }
 
     public function testCreateScheduleSuccess()
@@ -77,8 +78,8 @@ class ScheduleControllerTest extends TestCase
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
-        $result = $this->scheduleController->createRecurringSchedule(new Request());
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->scheduleController->createRecurringSchedule(new Request());
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
     public function testCreateScheduleFailed()
@@ -98,8 +99,8 @@ class ScheduleControllerTest extends TestCase
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
-        $result = $this->scheduleController->createRecurringSchedule(new Request());
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->scheduleController->createRecurringSchedule(new Request());
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
     public function testScheduleOpeningPage()
@@ -112,7 +113,57 @@ class ScheduleControllerTest extends TestCase
 
         $this->twigMock = $this->createMock(\Twig_Environment::class);
 
-        $result = $this->scheduleController->createRecurringSchedule(new Request());
-        $this->assertSame(Response::HTTP_OK, $result->getStatusCode());
+        $response = $this->scheduleController->createRecurringSchedule(new Request());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+    }
+
+    public function testCreateOnetimeScheduleOpeningPage()
+    {
+        $formInterface = $this->createMock(FormInterface::class);
+        $formInterface->expects($this->once())->method('handleRequest');
+        $formInterface->expects($this->once())->method('createView');
+        $formInterface->expects($this->once())->method('isSubmitted')->willReturn(false);
+        $this->formFactoryMock->expects($this->once())->method('create')->willReturn($formInterface);
+
+        $this->twigMock->expects($this->once())->method('render')->willReturn('<p>hi</p>');
+
+        $response = $this->scheduleController->createOnetimeSchedule(new Request());
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+    }
+
+    public function testCreateOnetimeScheduleSubmittingFormSuccess()
+    {
+        $formInterface = $this->createMock(FormInterface::class);
+        $formInterface->expects($this->once())->method('handleRequest');
+        $formInterface->expects($this->once())->method('isSubmitted')->willReturn(true);
+        $formInterface->expects($this->once())->method('isValid')->willReturn(true);
+        $formInterface->expects($this->once())->method('getData')->willReturn(new StreamSchedule());
+        $this->formFactoryMock->expects($this->once())->method('create')->willReturn($formInterface);
+
+        $this->manageScheduleService->expects($this->once())->method('saveSchedule');
+        $this->flashBagMock->expects($this->once())->method('add');
+
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $response = $this->scheduleController->createOnetimeSchedule(new Request());
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
+    }
+
+    public function testCreateOnetimeScheduleSubmittingFormFailed()
+    {
+        $formInterface = $this->createMock(FormInterface::class);
+        $formInterface->expects($this->once())->method('handleRequest');
+        $formInterface->expects($this->once())->method('isSubmitted')->willReturn(true);
+        $formInterface->expects($this->once())->method('isValid')->willReturn(true);
+        $formInterface->expects($this->once())->method('getData')->willReturn(new StreamSchedule());
+        $this->formFactoryMock->expects($this->once())->method('create')->willReturn($formInterface);
+
+        $this->manageScheduleService->expects($this->once())->method('saveSchedule')->willThrowException(new ORMException());
+        $this->flashBagMock->expects($this->once())->method('add');
+
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
+
+        $response = $this->scheduleController->createOnetimeSchedule(new Request());
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 }

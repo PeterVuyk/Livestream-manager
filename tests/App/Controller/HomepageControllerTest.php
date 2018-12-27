@@ -25,14 +25,14 @@ class HomepageControllerTest extends TestCase
     public function testHome()
     {
         $this->twig->expects($this->once())->method('render')->willReturn('<p>hi</p>');
-        $result = $this->homepageController->home();
-        $this->assertSame(Response::HTTP_OK, $result->getStatusCode());
+        $response = $this->homepageController->home();
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }
 
     public function testAdmin()
     {
         $this->twig->expects($this->once())->method('render')->willReturn('<p>hi</p>');
-        $result = $this->homepageController->admin();
-        $this->assertSame(Response::HTTP_OK, $result->getStatusCode());
+        $response = $this->homepageController->admin();
+        $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }
 }

@@ -5,6 +5,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\ScheduleLog;
 use App\Entity\StreamSchedule;
+use App\Exception\InvalidWeekdayException;
 use App\Entity\Weekdays;
 use PHPUnit\Framework\TestCase;
 
@@ -55,19 +56,52 @@ class StreamScheduleTest extends TestCase
         $this->assertInstanceOf(\DateTime::class, $streamSchedule->getExecutionTime());
     }
 
-    public function testExecutionDay()
+    public function testExecutionDaySuccess()
     {
         $streamSchedule = new StreamSchedule();
         $streamSchedule->setExecutionDay(1);
         $this->assertSame(1, $streamSchedule->getExecutionDay());
     }
 
-    public function testGetNextExecutionTime()
+    public function testSetExecutionDayFailed()
     {
+        $this->expectException(InvalidWeekdayException::class);
         $streamSchedule = new StreamSchedule();
-        $streamSchedule->setExecutionTime(new \DateTime());
-        $streamSchedule->setExecutionDay(1);
-        $this->assertInstanceOf(\DateTime::class, $streamSchedule->getNextExecutionTime());
+        $streamSchedule->setExecutionDay(999);
+    }
+
+    /**
+     * @param StreamSchedule $streamSchedule
+     * @param mixed|null $result
+     * @dataProvider getNextExecutionTimeProvider
+     */
+    public function testGetNextExecutionTime(StreamSchedule $streamSchedule, $result)
+    {
+        if ($result === null) {
+            $this->assertSame($result, $streamSchedule->getNextExecutionTime());
+        } elseif (is_string($result)) {
+            $this->assertInstanceOf($result, $streamSchedule->getNextExecutionTime());
+        }
+    }
+
+    public function getNextExecutionTimeProvider()
+    {
+        $streamSchedule1 = new StreamSchedule();
+        $streamSchedule1->setExecutionTime(new \DateTime());
+        $streamSchedule1->setExecutionDay(Weekdays::THURSDAY);
+
+        $streamSchedule2 = new StreamSchedule();
+        $streamSchedule2->setExecutionTime(new \DateTime());
+
+        return [
+            [
+                'streamSchedule' => $streamSchedule1,
+                'result' => \DateTime::class,
+            ], [
+                'streamSchedule' => $streamSchedule2,
+                'result' => null,
+            ],
+        ];
     }
 
     public function testStreamSchedule()
@@ -75,6 +109,31 @@ class StreamScheduleTest extends TestCase
         $streamSchedule = new StreamSchedule();
         $streamSchedule->setStreamDuration(3);
         $this->assertSame(3, $streamSchedule->getStreamDuration());
+    }
+
+    /**
+     * @dataProvider isRecurringProvider
+     * @param StreamSchedule $streamSchedule
+     * @param bool $isRecurring
+     */
+    public function testIsRecurring(StreamSchedule $streamSchedule, bool $isRecurring)
+    {
+        $this->assertSame($isRecurring, $streamSchedule->isRecurring());
+    }
+
+    public function isRecurringProvider()
+    {
+        $onetimeSchedule = new StreamSchedule();
+        $onetimeSchedule->setOnetimeExecutionDate(new \DateTime());
+        return [
+            [
+                'streamSchedule' => new StreamSchedule(),
+                'isRecurring' => true,
+            ], [
+                'streamSchedule' => $onetimeSchedule,
+                'isRecurring' => false,
+            ]
+        ];
     }
 
     /**
@@ -154,7 +213,7 @@ class StreamScheduleTest extends TestCase
     {
         $streamScheduleNotRunning = new StreamSchedule();
         $streamScheduleNotRunning->setWrecked(false);
-        $streamScheduleNotRunning->setIsRunning(true);
+        $streamScheduleNotRunning->setIsRunning(false);
         $streamScheduleNoStreamDuration = new StreamSchedule();
         $streamScheduleNoStreamDuration->setWrecked(false);
         $streamScheduleNoStreamDuration->setIsRunning(true);

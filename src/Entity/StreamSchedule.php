@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Exception\InvalidWeekdayException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
 use Ramsey\Uuid\Uuid;
@@ -197,7 +198,7 @@ class StreamSchedule
     public function setExecutionDay(int $executionDay): void
     {
         if (!Weekdays::validate($executionDay)) {
-            throw new \InvalidArgumentException("Invalid executionDay input: {$executionDay}");
+            throw InvalidWeekdayException::invalidDayInput($executionDay);
         }
         $this->executionDay = $executionDay;
     }

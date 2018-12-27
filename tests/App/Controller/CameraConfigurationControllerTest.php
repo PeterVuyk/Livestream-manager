@@ -89,8 +89,8 @@ class CameraConfigurationControllerTest extends TestCase
         $this->flashBagMock->expects($this->once())->method('add');
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
-        $result = $this->cameraConfigurationController->configurationList(new Request());
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->cameraConfigurationController->configurationList(new Request());
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
     public function testConfigurationListSubmitFormFailed()
@@ -113,7 +113,7 @@ class CameraConfigurationControllerTest extends TestCase
         $this->flashBagMock->expects($this->once())->method('add');
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
-        $result = $this->cameraConfigurationController->configurationList(new Request());
-        $this->assertSame(Response::HTTP_FOUND, $result->getStatusCode());
+        $response = $this->cameraConfigurationController->configurationList(new Request());
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 }

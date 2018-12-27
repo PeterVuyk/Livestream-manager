@@ -113,4 +113,22 @@ class StreamScheduleRepositoryTest extends TestCase
         $unitOfWorkMock->expects($this->once())->method('getEntityPersister')->willReturn($entityPersisterMock);
         $this->entityManager->expects($this->once())->method('getUnitOfWork')->willReturn($unitOfWorkMock);
     }
+
+    public function testGetActiveOnetimeScheduledItems()
+    {
+        $abstractQueryMock = $this->createMock(AbstractQuery::class);
+        $queryBuilderMock = $this->createMock(QueryBuilder::class);
+        $this->entityManager->expects($this->once())
+            ->method('createQueryBuilder')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects($this->once())->method('select')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects($this->once())->method('from')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects($this->once())->method('where')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects($this->exactly(2))->method('andWhere')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects($this->once())->method('orderBy')->willReturn($queryBuilderMock);
+        $queryBuilderMock->expects($this->once())->method('getQuery')->willReturn($abstractQueryMock);
+        $abstractQueryMock->expects($this->once())->method('getResult')->willReturn([new StreamSchedule()]);
+
+        $streamSchedules =$this->streamScheduleRepository->getActiveOnetimeScheduledItems();
+        $this->assertInstanceOf(StreamSchedule::class, $streamSchedules[0]);
+    }
 }
