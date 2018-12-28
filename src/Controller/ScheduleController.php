@@ -65,7 +65,6 @@ class ScheduleController extends Controller
     }
 
     /**
-     * @todo: this and onetime schedule looks the same. make one function...
      * @param Request $request
      * @return RedirectResponse|Response
      */

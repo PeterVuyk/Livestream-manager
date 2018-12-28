@@ -26,23 +26,23 @@
             </li>
         </ul>
         <ul class="navbar-nav pull-right">
-            <li class="nav-item">
-                <a class="nav-link" href="#js-stop-stream-modal" data-toggle="modal">
-                    <span class="text-danger fa fa-stop fa-lg"></span>
-                </a>
-            </li>
-            {{ include('scheduler/list/modal/stopStreamModal.html.twig') }}
-            <li class="nav-item">
-                <a class="nav-link" href="#js-start-stream-modal" data-toggle="modal">
-                    <span class="text-success fa fa-play fa-lg"></span>
-                </a>
-            </li>
-            {{ include('scheduler/list/modal/startStreamModal.html.twig') }}
             {% if app.user is null %}
                 <li class="nav-item">
                     <a class="nav-link" href="{{ path('admin_page') }}">{{ 'navigation.login_path'|trans }}</a>
                 </li>
             {% else %}
+                <li class="nav-item">
+                    <a class="nav-link" href="#js-stop-stream-modal" data-toggle="modal">
+                        <span class="text-danger fa fa-stop fa-lg"></span>
+                    </a>
+                </li>
+                {{ include('scheduler/list/modal/stopStreamModal.html.twig') }}
+                <li class="nav-item">
+                    <a class="nav-link" href="#js-start-stream-modal" data-toggle="modal">
+                        <span class="text-success fa fa-play fa-lg"></span>
+                    </a>
+                </li>
+                {{ include('scheduler/list/modal/startStreamModal.html.twig') }}
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                         {{ 'navigation.account_name'|trans }}{{ app.user.username }}&nbsp;<span class="caret"></span>

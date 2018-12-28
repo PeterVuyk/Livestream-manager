@@ -197,6 +197,9 @@
             "ref": "b5026d7ffdb43b4d66f4cc091b1e6f94e6023986"
         }
     },
+    "symfony/contracts": {
+        "version": "v1.0.2"
+    },
     "symfony/debug": {
         "version": "v4.1.7"
     },
@@ -263,7 +266,7 @@
             "repo": "github.com/symfony/recipes",
             "branch": "master",
             "version": "4.1",
-            "ref": "e637a1337f5faf0b2529b1c9a47de5e8286679f0"
+            "ref": "0e548dd90adba18fabd4ef419b14d361fe4d6c74"
         }
     },
     "symfony/polyfill-intl-icu": {
@@ -293,9 +296,6 @@
             "ref": "5f514d9d3b8a8aac3d62ae6a86b18b90ed0c7826"
         }
     },
-    "symfony/security": {
-        "version": "v4.1.7"
-    },
     "symfony/security-bundle": {
         "version": "3.3",
         "recipe": {
@@ -304,6 +304,18 @@
             "version": "3.3",
             "ref": "f8a63faa0d9521526499c0a8f403c9964ecb0527"
         }
+    },
+    "symfony/security-core": {
+        "version": "v4.2.1"
+    },
+    "symfony/security-csrf": {
+        "version": "v4.2.1"
+    },
+    "symfony/security-guard": {
+        "version": "v4.2.1"
+    },
+    "symfony/security-http": {
+        "version": "v4.2.1"
     },
     "symfony/stopwatch": {
         "version": "v4.1.7"
@@ -340,6 +352,9 @@
     },
     "symfony/var-dumper": {
         "version": "v4.1.7"
+    },
+    "symfony/var-exporter": {
+        "version": "v4.2.1"
     },
     "symfony/web-profiler-bundle": {
         "version": "3.3",
