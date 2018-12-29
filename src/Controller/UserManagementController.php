@@ -70,6 +70,7 @@ class UserManagementController extends Controller
     {
         try {
             $this->userService->removeUser($userId);
+            $this->flashBag->add(self::SUCCESS_MESSAGE, 'flash.user_management.error.user_removed');
         } catch (\Exception $exception) {
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.user_management.error.could_not_remove_user');
         }

@@ -2,7 +2,7 @@
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>Livestream - {% block title %}{% endblock %}</title>
+        <title>Livestream - {% block title %}manage{% endblock %}</title>
         {% block stylesheets %}
             <link rel="stylesheet" href="{{ asset('build/app.css') }}">
         {% endblock %}
@@ -16,7 +16,7 @@
             <div class="container">
                 <div class="row">
                     <div class="col-md-12">
-                        <h2>{% block pageTitle %}{% endblock pageTitle %}</h2>
+                        {% block pageTitle %}{% endblock pageTitle %}
                         {% include 'components/flash.html.twig' %}
                         {% block content %}{% endblock content %}
                     </div>

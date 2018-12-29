@@ -1,6 +1,3 @@
-user_logout:
-  path: /logout
-
 user_list:
   path: /admin/users
   defaults: { _controller: App\Controller\UserManagementController:usersList }
@@ -19,4 +16,14 @@ user_toggle_disabling:
 user_delete:
   path: /admin/users/delete/{userId}
   defaults: { _controller: App\Controller\UserManagementController:deleteUser }
+  methods: [GET]
+
+user_registration:
+  path: /admin/registration
+  defaults: { _controller: FOSUserBundle:Registration:register }
+  methods: [GET, POST]
+
+fos_user_registration_confirmed:
+  path: /admin/users
+  defaults: { _controller: App\Controller\UserManagementController:usersList }
   methods: [GET]

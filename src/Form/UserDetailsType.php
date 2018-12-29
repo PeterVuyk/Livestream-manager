@@ -41,7 +41,7 @@ class UserDetailsType extends AbstractType
                 ]
             )
             ->add(
-                'active',
+                'enabled',
                 CheckBoxType::class,
                 [
                     'label' => 'user_details.label_is_active',

@@ -9,9 +9,13 @@ user_details.label_is_active: Active
 user_details.submit_button: Update
 user_details.title: 'User details'
 user_registration.title: 'Register user'
+user_login.title: 'Login'
 registration_form.label_username: 'Username:'
 registration_form.label_email: 'Email:'
 registration_form.label_password: 'Password:'
 registration_form.label_repeat_password: 'Repeat password:'
 registration_form.submit_button: Register
-
+registration_form.cancel_button: Cancel
+security.login.username: 'Username:'
+security.login.password: 'Password:'
+security.login.submit: 'Login'

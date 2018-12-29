@@ -2,9 +2,10 @@
 {% set active_page = 'users' %}
 {% trans_default_domain 'users' %}
 {% block title %}{{ 'users_list.page_title'|trans }}{% endblock title %}
-{% block pageTitle %}{{ 'users_list.page_title'|trans }}{% endblock pageTitle %}
 
 {% block content %}
+    <h2>{{ 'users_list.page_title'|trans }}</h2>
+    {% include 'components/flash.html.twig' %}
     <table class="table">
         <thead>
         <tr>
@@ -16,10 +17,10 @@
         </thead>
         <tbody>
         {% for user in users %}
-            <tr {% if user.isActive == false %}class="text-muted" {% endif %}>
+            <tr {% if user.isEnabled == false %}class="text-muted" {% endif %}>
                 <td>
                     <a href="{{ path('user_toggle_disabling', {'userId': user.id}) }}" >
-                        {% if user.isActive == true %}
+                        {% if user.isEnabled == true %}
                             <span class="text-success fa fa-power-off fa-lg"></span> <span class="sr-only">&nbsp;</span>
                         {% else %}
                             <span class="text-danger fa fa-power-off fa-lg"></span> <span class="sr-only">&nbsp;</span>
@@ -41,5 +42,5 @@
         {% endfor %}
         </tbody>
     </table>
-    <a href="{{ path('registration') }}" class="btn btn-primary pull-right" role="button">{{ 'users_list.registration_button'|trans }}</a>
+    <a href="{{ path('user_registration') }}" class="btn btn-primary pull-right" role="button">{{ 'users_list.registration_button'|trans }}</a>
 {% endblock content %}

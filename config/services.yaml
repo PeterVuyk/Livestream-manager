@@ -1,5 +1,6 @@
 parameters:
     locale: 'en'
+    mailer_user: 'pvuyky@gmail.com'
 
 services:
     _defaults:
@@ -14,3 +15,7 @@ services:
     App\Controller\:
         resource: '../src/Controller'
         tags: ['controller.service_arguments']
+
+    FOS\UserBundle\Controller\RegistrationController:
+        arguments:
+            $formFactory: '@fos_user.registration.form.factory'

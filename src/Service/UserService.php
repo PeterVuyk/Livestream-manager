@@ -8,37 +8,19 @@ use App\Exception\UserNotFoundException;
 use App\Repository\UserRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserService
 {
-    /** @var UserPasswordEncoderInterface */
-    private $passwordEncoder;
-
     /** @var UserRepository */
     private $userRepository;
 
     /**
      * UserService constructor.
-     * @param UserPasswordEncoderInterface $passwordEncoder
      * @param UserRepository $userRepository
      */
-    public function __construct(UserPasswordEncoderInterface $passwordEncoder, UserRepository $userRepository)
+    public function __construct(UserRepository $userRepository)
     {
-        $this->passwordEncoder = $passwordEncoder;
         $this->userRepository = $userRepository;
-    }
-
-    /**
-     * @param User $user
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function createUser(User $user): void
-    {
-        $password = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
-        $user->setPassword($password);
-        $this->userRepository->save($user);
     }
 
     /**
@@ -68,7 +50,7 @@ class UserService
         if (!$user instanceof User) {
             throw UserNotFoundException::couldNotToggleDisablingUser($userId);
         }
-        $user->setActive(!$user->isActive());
+        $user->setEnabled(!$user->isEnabled());
         $this->updateUser($user);
     }
 

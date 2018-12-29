@@ -1,9 +1,10 @@
 {% extends "base.html.twig" %}
 {% trans_default_domain 'logbook' %}
 {% block title %}{{ 'schedule_logging.list.title'|trans }}{% endblock title %}
-{% block pageTitle %}{{ 'schedule_logging.list.title'|trans }}&nbsp;-&nbsp;{{ streamSchedule.name }}{% endblock pageTitle %}
 
 {% block content %}
+    <h2>{{ 'schedule_logging.list.title'|trans }}</h2>
+    {% include 'components/flash.html.twig' %}
     <div class="table-responsive table-stripped">
         <table class="table">
             <thead>

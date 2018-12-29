@@ -1,8 +1,9 @@
 {% extends "base.html.twig" %}
 {% trans_default_domain 'users' %}
 {% block title %}{{ 'user_details.title'|trans }}{% endblock title %}
-{% block pageTitle %}{{ 'user_details.title'|trans }}{% endblock pageTitle %}
 
 {% block content %}
+    <h2>{{ 'user_details.title'|trans }}</h2>
+    {% include 'components/flash.html.twig' %}
     {{ form(form) }}
 {% endblock content %}

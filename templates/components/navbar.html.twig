@@ -14,11 +14,11 @@
                 </a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="{{ path('user_list') }}">{{ 'navigation.user_list'|trans }}</a>
-                    <a class="dropdown-item" href="{{ path('registration') }}">{{ 'navigation.register'|trans }}</a>
+                    <a class="dropdown-item" href="{{ path('user_registration') }}">{{ 'navigation.register'|trans }}</a>
                 </div>
                 <ul class="dropdown-menu">
                     <li class="nav-item"><a class="nav-link" href="{{ path('user_list') }}">{{ 'navigation.user_list'|trans }}</a></li>
-                    <li class="nav-item"><a class="nav-link" href="{{ path('registration') }}">{{ 'navigation.register'|trans }}</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{{ path('user_registration') }}">{{ 'navigation.register'|trans }}</a></li>
                 </ul>
             </li>
             <li class="nav-item {% if active_page is defined and active_page == 'schedule' %}active{% endif %}">
@@ -28,7 +28,7 @@
         <ul class="navbar-nav pull-right">
             {% if app.user is null %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('admin_page') }}">{{ 'navigation.login_path'|trans }}</a>
+                    <a class="nav-link" href="{{ path('fos_user_security_login') }}">{{ 'navigation.login_path'|trans }}</a>
                 </li>
             {% else %}
                 <li class="nav-item">
@@ -51,7 +51,7 @@
                         <a class="dropdown-item" href="{{ path('user_details', {userId: app.user.id}) }}">
                             {{ 'navigation.personal_details'|trans }}
                         </a>
-                        <a class="dropdown-item" href="{{ path('user_logout') }}">
+                        <a class="dropdown-item" href="{{ path('fos_user_security_logout') }}">
                             {{ 'navigation.sign_out'|trans }}
                         </a>
                     </div>

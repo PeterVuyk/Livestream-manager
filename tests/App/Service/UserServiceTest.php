@@ -11,24 +11,19 @@ use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserServiceTest extends TestCase
 {
     /** @var UserService */
     private $userService;
 
-    /** @var MockObject|UserPasswordEncoderInterface */
-    private $passwordEncoder;
-
     /** @var MockObject|UserRepository */
     private $userRepository;
 
     public function setUp()
     {
-        $passwordEncoder = $this->passwordEncoder = $this->createMock(UserPasswordEncoderInterface::class);
-        $userRepository = $this->userRepository = $this->createMock(UserRepository::class);
-        $this->userService = new UserService($passwordEncoder, $userRepository);
+        $this->userRepository = $this->createMock(UserRepository::class);
+        $this->userService = new UserService($this->userRepository);
     }
 
     /**
@@ -39,7 +34,7 @@ class UserServiceTest extends TestCase
     public function testToggleDisablingUserSuccess()
     {
         $user = new User();
-        $user->setActive(true);
+        $user->setEnabled(true);
         $this->userRepository->expects($this->once())->method('findOneBy')->willReturn($user);
         $this->userRepository->expects($this->once())->method('save');
 
@@ -87,30 +82,6 @@ class UserServiceTest extends TestCase
         $this->userRepository->expects($this->once())->method('findOneBy')->willReturn(null);
 
         $this->userService->removeUser(4);
-    }
-
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function testCreateUserSuccess()
-    {
-        $this->passwordEncoder->expects($this->once())->method('encodePassword')->willReturn('password');
-        $this->userRepository->expects($this->once())->method('save');
-        $this->userService->createUser(new User());
-        $this->addToAssertionCount(1);
-    }
-
-    /**
-     * @throws ORMException
-     * @throws OptimisticLockException
-     */
-    public function testCreateUserFailed()
-    {
-        $this->expectException(ORMException::class);
-        $this->passwordEncoder->expects($this->once())->method('encodePassword')->willReturn('password');
-        $this->userRepository->expects($this->once())->method('save')->willThrowException(new ORMException());
-        $this->userService->createUser(new User());
     }
 
     public function testGetAllUsers()

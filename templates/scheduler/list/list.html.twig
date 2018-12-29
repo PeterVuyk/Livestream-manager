@@ -2,9 +2,10 @@
 {% set active_page = 'schedule' %}
 {% trans_default_domain 'schedule_list' %}
 {% block title %}{{ 'scheduler_list.title'|trans }}{% endblock title %}
-{% block pageTitle %}{{ 'scheduler_list.title'|trans }}{% endblock pageTitle %}
 
 {% block content %}
+    <h2>{{ 'scheduler_list.title'|trans }}</h2>
+    {% include 'components/flash.html.twig' %}
     <table class="table">
         <thead>
             <tr>

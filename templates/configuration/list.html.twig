@@ -2,9 +2,10 @@
 {% set active_page = 'camera_configuration' %}
 {% trans_default_domain 'camera_configuration' %}
 {% block title %}{{ 'camera_configuration_list.page_title'|trans }}{% endblock title %}
-{% block pageTitle %}{{ 'camera_configuration_list.page_title'|trans }}{% endblock pageTitle %}
 
 {% block content %}
+    <h2>{{ 'camera_configuration_list.page_title'|trans }}</h2>
+    {% include 'components/flash.html.twig' %}
     {{ form_start(form) }}
     {% for cameraConfiguration in form.cameraConfiguration %}
         <div class="form-group">

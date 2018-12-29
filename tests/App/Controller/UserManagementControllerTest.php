@@ -64,7 +64,7 @@ class UserManagementControllerTest extends TestCase
     public function testDeleteUserSuccess()
     {
         $this->userServiceMock->expects($this->once())->method('removeUser');
-        $this->flashBagMock->expects($this->never())->method('add');
+        $this->flashBagMock->expects($this->once())->method('add');
         $this->routerMock->expects($this->once())->method('generate')->willReturn('direction');
 
         $response = $this->userManagementController->deleteUser(1);
