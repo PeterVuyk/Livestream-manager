@@ -25,10 +25,33 @@ class User extends BaseUser
      */
     protected $id;
 
+    /**
+     * @var string
+     * @ORM\Column(name="locale", type="string", length=5)
+     */
+    private $locale;
+
     public function __construct()
     {
         parent::__construct();
         $this->roles = array(self::ROLE_USER);
         $this->enabled = true;
+        $this->locale = 'en';
+    }
+
+    /**
+     * @return string
+     */
+    public function getLocale(): string
+    {
+        return $this->locale;
+    }
+
+    /**
+     * @param string $locale
+     */
+    public function setLocale(string $locale): void
+    {
+        $this->locale = $locale;
     }
 }

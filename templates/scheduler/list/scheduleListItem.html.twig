@@ -15,10 +15,10 @@
         {% if streamSchedule.isRecurring == false and isDateTime(streamSchedule.onetimeExecutionDate) %}
             {{ streamSchedule.onetimeExecutionDate|date("D M j, G:i") }}
         {% elseif streamSchedule.isRecurring == true %}
-            {{ 'scheduler_list.recurring_time_prefix'|trans }}&nbsp;
-            {{ getWeekday(streamSchedule.executionDay)|trans }}&nbsp;
-            {{ 'scheduler_list.recurring_time_at'|trans }}&nbsp;
-            {{ streamSchedule.executionTime|date("G:i") }}&nbsp;
+            {{ 'scheduler_list.recurring_time_prefix'|trans }}
+            {{ getWeekday(streamSchedule.executionDay)|trans }}
+            {{ 'scheduler_list.recurring_time_at'|trans }}
+            {{ streamSchedule.executionTime|date("G:i") }}
         {% endif %}
     </td>
     <td>

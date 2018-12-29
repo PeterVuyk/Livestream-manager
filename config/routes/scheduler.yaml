@@ -1,20 +1,28 @@
 scheduler_list:
-  path: /list
+  path:
+    en: /list
+    nl: /lijst
   defaults: { _controller: App\Controller\ScheduleController:list }
   methods: [GET]
 
 schedule_create_recurring:
-  path: /details/create-recurring
+  path:
+    en: /details/create-recurring
+    nl: /details/voeg-terugkerende-toe
   defaults: { _controller: App\Controller\ScheduleController:createRecurringSchedule }
   methods: [GET, POST]
 
 schedule_create_onetime:
-  path: /details/create-onetime
+  path:
+    en: /details/create-onetime
+    nl: /details/voeg-eenmalige-toe
   defaults: { _controller: App\Controller\ScheduleController:createOnetimeSchedule }
   methods: [GET, POST]
 
 schedule_edit:
-  path: /details/edit-stream/{scheduleId}
+  path:
+    en: /details/edit-stream/{scheduleId}
+    nl: /details/wijzig-stream/{scheduleId}
   defaults: { _controller: App\Controller\ManageScheduleController:editSchedule }
   methods: [GET, POST]
 
@@ -35,5 +43,7 @@ schedule_unwreck:
 
 schedule_view_logging:
   defaults: { _controller: App\Controller\ScheduleLogBookController:viewLogging }
-  path: /details/logging/{scheduleId}
+  path:
+    en: /details/logbook/{scheduleId}
+    nl: /details/logboek/{scheduleId}
   methods: [GET]

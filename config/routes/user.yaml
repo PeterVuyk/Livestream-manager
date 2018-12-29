@@ -1,25 +1,27 @@
 user_list:
-  path: /admin/users
+  path: /users
   defaults: { _controller: App\Controller\UserManagementController:usersList }
   methods: [GET]
 
 user_details:
-  path: /admin/details/{userId}
+  path: /details/{userId}
   defaults: { _controller: App\Controller\UserManagementController:userDetails }
   methods: [GET, POST]
 
 user_toggle_disabling:
-  path: /admin/users/disable/{userId}
+  path: /users/disable/{userId}
   defaults: { _controller: App\Controller\UserManagementController:toggleDisablingUser }
   methods: [GET]
 
 user_delete:
-  path: /admin/users/delete/{userId}
+  path: /users/delete/{userId}
   defaults: { _controller: App\Controller\UserManagementController:deleteUser }
   methods: [GET]
 
 user_registration:
-  path: /admin/registration
+  path:
+    en: /registration
+    nl: /registratie
   defaults: { _controller: FOSUserBundle:Registration:register }
   methods: [GET, POST]
 

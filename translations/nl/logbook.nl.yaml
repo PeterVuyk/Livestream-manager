@@ -1,0 +1,6 @@
+schedule_logging.list.title: 'Schema logboek'
+schedule_logging.stream_status: 'Uitvoer status'
+schedule_logging.stream_message: 'Message'
+schedule_logging.stream_time_executed: 'Executie tijd'
+schedule_logging.run_failed: 'Mislukt'
+schedule_logging.run_success: 'Success'

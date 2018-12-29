@@ -1,4 +1,4 @@
-schedule_logging.list.title: 'Schedule logging'
+schedule_logging.list.title: 'Schedule logboek'
 schedule_logging.stream_status: 'Run status'
 schedule_logging.stream_message: 'Message'
 schedule_logging.stream_time_executed: 'Execution time'

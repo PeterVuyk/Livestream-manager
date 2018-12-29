@@ -1,0 +1,20 @@
+users_list.column_username: Gebruikersnaam
+users_list.column_email: Email
+users_list.column_action: Acties
+users_list.page_title: 'Geautoriseerde gebruikers'
+users_list.registration_button: 'Voeg gebruiker toe'
+user_details.label_email: 'Email:'
+user_details.label_username: 'Gebruikersnaam:'
+user_details.label_is_active: Activeer
+user_details.submit_button: Wijzig
+user_details.title: 'Gebruikersdetails'
+user_registration.title: 'Registreer gebruiker'
+user_login.title: 'Inloggen'
+registration_form.submit_button: Registreer
+registration_form.cancel_button: Cancel
+user.form.local_type.dutch: 'Nederlands'
+user.form.local_type.english: 'Engels'
+user.form.locale_type.label_locale: 'Taal:'
+security.login.username: 'Gebruikersnaam:'
+security.login.password: 'Wachtwoord:'
+security.login.submit: 'Inloggen'

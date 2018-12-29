@@ -10,7 +10,7 @@
             </li>
             <li class="nav-item dropdown {% if active_page is defined and active_page == 'users' %}active{% endif %}">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                    {{ 'navigation.users'|trans }}&nbsp;<span class="caret"></span>
+                    {{ 'navigation.users'|trans }}<span class="caret"></span>
                 </a>
                 <div class="dropdown-menu">
                     <a class="dropdown-item" href="{{ path('user_list') }}">{{ 'navigation.user_list'|trans }}</a>
@@ -26,11 +26,7 @@
             </li>
         </ul>
         <ul class="navbar-nav pull-right">
-            {% if app.user is null %}
-                <li class="nav-item">
-                    <a class="nav-link" href="{{ path('fos_user_security_login') }}">{{ 'navigation.login_path'|trans }}</a>
-                </li>
-            {% else %}
+            {% if app.user is not null %}
                 <li class="nav-item">
                     <a class="nav-link" href="#js-stop-stream-modal" data-toggle="modal">
                         <span class="text-danger fa fa-stop fa-lg"></span>
@@ -43,9 +39,15 @@
                     </a>
                 </li>
                 {{ include('scheduler/list/modal/startStreamModal.html.twig') }}
+            {% endif %}
+            {% if app.user is null %}
+                <li class="nav-item">
+                    <a class="nav-link" href="{{ path('user_security_login') }}">{{ 'navigation.login_path'|trans }}</a>
+                </li>
+            {% else %}
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        {{ 'navigation.account_name'|trans }}{{ app.user.username }}&nbsp;<span class="caret"></span>
+                        {{ 'navigation.account_name'|trans }}{{ app.user.username }}<span class="caret"></span>
                     </a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="{{ path('user_details', {userId: app.user.id}) }}">

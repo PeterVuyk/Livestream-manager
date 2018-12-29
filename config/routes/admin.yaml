@@ -1,0 +1,30 @@
+user:
+  prefix: /
+  resource: "user.yaml"
+
+scheduler:
+  prefix:
+    en: /schedule/
+    nl: /schema/
+  resource: "scheduler.yaml"
+
+admin_page:
+  path: /
+  defaults: { _controller: App\Controller\HomepageController:admin }
+  methods: [GET]
+
+start_stream:
+  path: /stream/start
+  defaults: { _controller: App\Controller\LivestreamController:startStream }
+  methods: [GET]
+
+stop_stream:
+  path: /stream/stop
+  defaults: { _controller: App\Controller\LivestreamController:stopStream }
+  methods: [GET]
+
+camera_configuration_list:
+  path:
+    en: /configuration
+    nl: /configuratie
+  defaults: { _controller: App\Controller\CameraConfigurationController:configurationList }

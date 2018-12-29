@@ -1,4 +1,5 @@
 parameters:
+    app.locales: 'en|nl'
     locale: 'en'
     mailer_user: 'pvuyky@gmail.com'
 

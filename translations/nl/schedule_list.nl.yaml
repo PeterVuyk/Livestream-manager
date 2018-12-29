@@ -1,0 +1,22 @@
+scheduler_list.title: 'Ingeplande streams'
+scheduler_list.column.name: Naam
+scheduler_list.column.lastExecution: 'Laatste ronde'
+scheduler_list.column.actions: Acties
+scheduler_list.column.scheduledExecution: 'Ingeplande uitvoering'
+scheduler_list.recurring_time_prefix: 'Elke'
+scheduler_list.recurring_time_at: 'om'
+scheduler_list.column.duration: duur
+scheduler_list.schedule_duration_minutes: 'minuten'
+scheduler_list.running_until: 'Tot:'
+schedule_list.weekday.monday: 'maandag'
+schedule_list.weekday.tuesday: 'dinsdag'
+schedule_list.weekday.wednesday: 'woensdag'
+schedule_list.weekday.thursday: 'donderdag'
+schedule_list.weekday.friday: 'vrijdag'
+schedule_list.weekday.saturday: 'zaterdag'
+schedule_list.weekday.sunday: 'zondag'
+schedule.action.edit: 'Bewerk schema'
+schedule.action.new_recurring: 'Voeg terugkerende toe'
+schedule.action.new_onetime: 'Voeg eenmalige toe'
+scheduler_list.one_time_divider: 'Eenmalige:'
+scheduler_list.recurring_divider: 'Terugkerende:'

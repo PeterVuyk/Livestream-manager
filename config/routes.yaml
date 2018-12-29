@@ -2,42 +2,28 @@ api:
   prefix: /api/v1
   resource: "routes/routes_api.yaml"
 
-user:
-  prefix: /
-  resource: "routes/user.yaml"
-
-scheduler:
-  prefix: /admin/schedule/
-  resource: "routes/scheduler.yaml"
-
 fos_user_security:
   resource: "@FOSUserBundle/Resources/config/routing/security.xml"
+
+user_security_login:
+  path: /{_locale}/login
+  defaults: { _controller: fos_user.security.controller:loginAction, _locale: '%locale%' }
+  requirements:
+    _locale: '%app.locales%'
+
+admin:
+  prefix: /{_locale}/admin
+  resource: "routes/admin.yaml"
+  defaults:   { _locale: '%locale%' }
+  requirements:
+    _locale: '%app.locales%'
 
 home_page:
   path: /
   defaults: { _controller: App\Controller\HomepageController:home }
   methods: [GET]
 
-admin_page:
-  path: /admin
-  defaults: { _controller: App\Controller\HomepageController:admin }
-  methods: [GET]
-
 app.swagger_ui:
   path: /api/doc
   methods: GET
   defaults: { _controller: nelmio_api_doc.controller.swagger_ui }
-
-start_stream:
-  path: /admin/stream/start
-  defaults: { _controller: App\Controller\LivestreamController:startStream }
-  methods: [GET]
-
-stop_stream:
-  path: /admin/stream/stop
-  defaults: { _controller: App\Controller\LivestreamController:stopStream }
-  methods: [GET]
-
-camera_configuration_list:
-  path: /admin/configuration
-  defaults: { _controller: App\Controller\CameraConfigurationController:configurationList }

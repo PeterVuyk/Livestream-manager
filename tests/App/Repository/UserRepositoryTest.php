@@ -35,27 +35,6 @@ class UserRepositoryTest extends TestCase
     }
 
     /**
-     * @throws NonUniqueResultException
-     */
-    public function testLoadUserByUsername()
-    {
-
-        $queryMock = $this->createMock(AbstractQuery::class);
-        $queryMock->expects($this->once())->method('getOneOrNullResult')->willReturn(new User());
-        $queryBuilderMock = $this->createMock(QueryBuilder::class);
-        $queryBuilderMock->expects($this->once())->method('select')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('from')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('where')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('andWhere')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->exactly(2))->method('setParameter')->willReturn($queryBuilderMock);
-        $queryBuilderMock->expects($this->once())->method('getQuery')->willReturn($queryMock);
-        $this->entityManager->expects($this->once())->method('createQueryBuilder')->willReturn($queryBuilderMock);
-
-        $user = $this->userRepository->loadUserByUsername('username');
-        $this->assertInstanceOf(User::class, $user);
-    }
-
-    /**
      * @throws ORMException
      * @throws OptimisticLockException
      */
