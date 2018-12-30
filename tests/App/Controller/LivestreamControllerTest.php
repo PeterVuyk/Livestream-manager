@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Controller;
+namespace App\Tests\Controller;
 
 use App\Controller\LivestreamController;
 use App\Service\StartStreamService;
@@ -11,6 +11,14 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * @coversDefaultClass \App\Controller\LivestreamController
+ * @covers ::<!public>
+ * @covers ::__construct
+ * @uses \App\Controller\Controller
+ * @uses \App\Service\StartStreamService
+ * @uses \App\Service\StopStreamService
+ */
 class LivestreamControllerTest extends TestCase
 {
     /** @var StartStreamService|MockObject */
@@ -37,6 +45,9 @@ class LivestreamControllerTest extends TestCase
         );
     }
 
+    /**
+     * @covers ::startStream
+     */
     public function testStartStream()
     {
         $this->startStreamServiceMock->expects($this->once())->method('process');
@@ -45,6 +56,9 @@ class LivestreamControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::stopStream
+     */
     public function testStopStream()
     {
         $this->stopStreamServiceMock->expects($this->once())->method('process');

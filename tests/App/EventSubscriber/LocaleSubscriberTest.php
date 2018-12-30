@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\EventSubscriber;
+namespace App\Tests\EventSubscriber;
 
 use App\EventSubscriber\LocaleSubscriber;
-use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\ParameterBag;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,6 +11,11 @@ use Symfony\Component\HttpFoundation\Session\SessionInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
 
+/**
+ * @coversDefaultClass \App\EventSubscriber\LocaleSubscriber
+ * @covers ::<!public>
+ * @covers ::__construct()
+ */
 class LocaleSubscriberTest extends TestCase
 {
     /** @var LocaleSubscriber */
@@ -22,6 +26,9 @@ class LocaleSubscriberTest extends TestCase
         $this->localeSubscriber = new LocaleSubscriber('en');
     }
 
+    /**
+     * @covers ::onKernelRequest
+     */
     public function testOnKernelRequestHasNoPreviousSession()
     {
         $requestMock = $this->createMock(Request::class);
@@ -33,6 +40,9 @@ class LocaleSubscriberTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
+    /**
+     * @covers ::onKernelRequest
+     */
     public function testOnKernelRequestHasPreviousSessionSetLocale()
     {
         $sessionMock = $this->createMock(SessionInterface::class);
@@ -50,6 +60,9 @@ class LocaleSubscriberTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
+    /**
+     * @covers ::onKernelRequest
+     */
     public function testOnKernelRequestHasPreviousSessionSetLocaleFromSession()
     {
         $sessionMock = $this->createMock(SessionInterface::class);
@@ -66,6 +79,9 @@ class LocaleSubscriberTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
+    /**
+     * @covers ::getSubscribedEvents
+     */
     public function testGetSubscribedEvents()
     {
         $this->assertArrayHasKey(KernelEvents::REQUEST, LocaleSubscriber::getSubscribedEvents());

@@ -8,6 +8,11 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @coversDefaultClass \App\Controller\HomepageController
+ * @covers ::<!public>
+ * @covers ::__construct
+ */
 class HomepageControllerTest extends TestCase
 {
     /** @var HomepageController */
@@ -22,6 +27,9 @@ class HomepageControllerTest extends TestCase
         $this->homepageController = new HomepageController($this->twig);
     }
 
+    /**
+     * @covers ::home
+     */
     public function testHome()
     {
         $this->twig->expects($this->once())->method('render')->willReturn('<p>hi</p>');
@@ -29,6 +37,9 @@ class HomepageControllerTest extends TestCase
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::admin
+     */
     public function testAdmin()
     {
         $this->twig->expects($this->once())->method('render')->willReturn('<p>hi</p>');

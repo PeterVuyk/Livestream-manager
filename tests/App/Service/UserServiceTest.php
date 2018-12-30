@@ -12,6 +12,12 @@ use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \App\Service\UserService
+ * @covers ::<!public>
+ * @covers ::__construct()
+ * @uses \App\Entity\User
+ */
 class UserServiceTest extends TestCase
 {
     /** @var UserService */
@@ -30,6 +36,8 @@ class UserServiceTest extends TestCase
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UserNotFoundException
+     * @covers ::toggleDisablingUser
+     * @uses \App\Service\UserService
      */
     public function testToggleDisablingUserSuccess()
     {
@@ -46,6 +54,8 @@ class UserServiceTest extends TestCase
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UserNotFoundException
+     * @covers ::toggleDisablingUser
+     * @uses \App\Service\UserService
      */
     public function testToggleDisablingUserNoUserFound()
     {
@@ -60,6 +70,8 @@ class UserServiceTest extends TestCase
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UserNotFoundException
+     * @covers ::removeUser
+     * @uses \App\Service\UserService
      */
     public function testRemoveUserSuccess()
     {
@@ -74,6 +86,8 @@ class UserServiceTest extends TestCase
      * @throws ORMException
      * @throws OptimisticLockException
      * @throws UserNotFoundException
+     * @covers ::removeUser
+     * @uses \App\Service\UserService
      */
     public function testRemoveUserNoUserFound()
     {
@@ -84,12 +98,18 @@ class UserServiceTest extends TestCase
         $this->userService->removeUser(4);
     }
 
+    /**
+     * @covers ::getAllUsers
+     */
     public function testGetAllUsers()
     {
         $this->userRepository->expects($this->once())->method('findAll')->willReturn([new User()]);
         $this->assertInstanceOf(User::class, $this->userService->getAllUsers()[0]);
     }
 
+    /**
+     * @covers ::getUserById
+     */
     public function testGetUserById()
     {
         $this->userRepository->expects($this->once())->method('findOneBy')->willReturn(new User());

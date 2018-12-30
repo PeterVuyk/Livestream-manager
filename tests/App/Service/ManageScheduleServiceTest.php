@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Service\ManageSchedule;
+namespace App\Tests\Service;
 
 use App\Entity\StreamSchedule;
 use App\Repository\StreamScheduleRepository;
@@ -11,6 +11,12 @@ use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \App\Service\ManageScheduleService
+ * @covers ::<!public>
+ * @covers ::__construct()
+ * @uses \App\Entity\StreamSchedule
+ */
 class ManageScheduleServiceTest extends TestCase
 {
     /** @var ManageScheduleService */
@@ -25,6 +31,9 @@ class ManageScheduleServiceTest extends TestCase
         $this->manageScheduleService = new ManageScheduleService($this->streamScheduleRepository);
     }
 
+    /**
+     * @covers ::getRecurringSchedules
+     */
     public function testGetRecurringSchedules()
     {
         $this->streamScheduleRepository->expects($this->once())
@@ -34,6 +43,9 @@ class ManageScheduleServiceTest extends TestCase
         $this->assertInstanceOf(StreamSchedule::class, $scheduledItems[0]);
     }
 
+    /**
+     * @covers ::getOnetimeSchedules
+     */
     public function testGetOnetimeSchedules()
     {
         $this->streamScheduleRepository->expects($this->once())
@@ -43,6 +55,9 @@ class ManageScheduleServiceTest extends TestCase
         $this->assertInstanceOf(StreamSchedule::class, $scheduledItems[0]);
     }
 
+    /**
+     * @covers ::getScheduleById
+     */
     public function testGetScheduleById()
     {
         $this->streamScheduleRepository->expects($this->once())
@@ -55,6 +70,8 @@ class ManageScheduleServiceTest extends TestCase
     /**
      * @throws ORMException
      * @throws OptimisticLockException
+     * @covers ::toggleDisablingSchedule
+     * @uses \App\Service\ManageScheduleService
      */
     public function testToggleDisablingSchedule()
     {
@@ -68,6 +85,8 @@ class ManageScheduleServiceTest extends TestCase
     /**
      * @throws ORMException
      * @throws OptimisticLockException
+     * @covers ::unwreckSchedule
+     * @uses \App\Service\ManageScheduleService
      */
     public function testUnwreckSchedule()
     {
@@ -78,6 +97,7 @@ class ManageScheduleServiceTest extends TestCase
 
     /**
      * @throws ORMException
+     * @covers ::removeSchedule
      */
     public function testRemoveScheduleSuccess()
     {
@@ -89,6 +109,7 @@ class ManageScheduleServiceTest extends TestCase
     /**
      * @throws ORMException
      * @throws OptimisticLockException
+     * @covers ::saveSchedule
      */
     public function testSaveScheduleSuccess()
     {

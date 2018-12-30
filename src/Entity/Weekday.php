@@ -5,7 +5,7 @@ namespace App\Entity;
 
 use App\Exception\InvalidWeekdayException;
 
-class Weekdays
+class Weekday
 {
     const MONDAY = 1;
     const TUESDAY = 2;

@@ -30,7 +30,7 @@ class StreamSchedule
     private $name;
 
     /**
-     * @assert\Choice(callback={"App\Entity\Weekdays", "getDaysOfTheWeekKeys"})
+     * @assert\Choice(callback={"App\Entity\Weekday", "getDaysOfTheWeekKeys"})
      * @var int|null
      * @ORM\Column(name="execution_day", type="integer", unique=false, nullable=true)
      */
@@ -197,7 +197,7 @@ class StreamSchedule
      */
     public function setExecutionDay(int $executionDay): void
     {
-        if (!Weekdays::validate($executionDay)) {
+        if (!Weekday::validate($executionDay)) {
             throw InvalidWeekdayException::invalidDayInput($executionDay);
         }
         $this->executionDay = $executionDay;
@@ -291,7 +291,7 @@ class StreamSchedule
             return null;
         }
 
-        $nextExecution = new \DateTime(WeekDays::getDayOfTheWeekById($this->getExecutionDay()));
+        $nextExecution = new \DateTime(Weekday::getDayOfTheWeekById($this->getExecutionDay()));
         $nextExecution->modify($this->getExecutionTime()->format("H:i"));
         return $nextExecution;
     }

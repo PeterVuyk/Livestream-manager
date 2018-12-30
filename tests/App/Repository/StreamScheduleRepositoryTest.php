@@ -17,6 +17,12 @@ use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
 
+/**
+ * @coversDefaultClass \App\Repository\StreamScheduleRepository
+ * @covers ::<!public>
+ * @covers ::__construct()
+ * @uses \App\Entity\StreamSchedule
+ */
 class StreamScheduleRepositoryTest extends TestCase
 {
     /** @var StreamScheduleRepository */
@@ -38,6 +44,7 @@ class StreamScheduleRepositoryTest extends TestCase
     /**
      * @throws ORMException
      * @throws OptimisticLockException
+     * @covers ::save
      */
     public function testSave()
     {
@@ -48,6 +55,7 @@ class StreamScheduleRepositoryTest extends TestCase
 
     /**
      * @throws ORMException
+     * @covers ::remove
      */
     public function testRemove()
     {
@@ -56,13 +64,19 @@ class StreamScheduleRepositoryTest extends TestCase
         $this->streamScheduleRepository->remove(new StreamSchedule());
     }
 
-    public function testFindActiveCommands()
+    /**
+     * @covers ::findActiveSchedules
+     */
+    public function testFindActiveSchedules()
     {
         $this->loadInvoked([new StreamSchedule()]);
-        $streamSchedules = $this->streamScheduleRepository->findActiveCommands();
+        $streamSchedules = $this->streamScheduleRepository->findActiveSchedules();
         $this->assertInstanceOf(StreamSchedule::class, $streamSchedules[0]);
     }
 
+    /**
+     * @covers ::getRecurringScheduledItems
+     */
     public function testGetRecurringScheduledItems()
     {
         $abstractQueryMock = $this->createMock(AbstractQuery::class);
@@ -80,6 +94,9 @@ class StreamScheduleRepositoryTest extends TestCase
         $this->assertInstanceOf(StreamSchedule::class, $streamSchedules[0]);
     }
 
+    /**
+     * @covers ::getRecurringScheduledItems
+     */
     public function testGetOnetimeScheduledItems()
     {
         $abstractQueryMock = $this->createMock(AbstractQuery::class);
@@ -93,10 +110,13 @@ class StreamScheduleRepositoryTest extends TestCase
         $queryBuilderMock->expects($this->once())->method('getQuery')->willReturn($abstractQueryMock);
         $abstractQueryMock->expects($this->once())->method('getResult')->willReturn([new StreamSchedule()]);
 
-        $streamSchedules =$this->streamScheduleRepository->getRecurringScheduledItems();
+        $streamSchedules = $this->streamScheduleRepository->getRecurringScheduledItems();
         $this->assertInstanceOf(StreamSchedule::class, $streamSchedules[0]);
     }
 
+    /**
+     * @covers ::getScheduledItem
+     */
     public function testGetScheduledItem()
     {
         $this->loadInvoked(new StreamSchedule());
@@ -104,16 +124,9 @@ class StreamScheduleRepositoryTest extends TestCase
         $this->assertInstanceOf(StreamSchedule::class, $streamSchedule);
     }
 
-    private function loadInvoked($returnedValue)
-    {
-        $method = (is_array($returnedValue)) ? 'loadAll': 'load';
-        $entityPersisterMock = $this->createMock(EntityPersister::class);
-        $entityPersisterMock->expects($this->once())->method($method)->willReturn($returnedValue);
-        $unitOfWorkMock = $this->createMock(UnitOfWork::class);
-        $unitOfWorkMock->expects($this->once())->method('getEntityPersister')->willReturn($entityPersisterMock);
-        $this->entityManager->expects($this->once())->method('getUnitOfWork')->willReturn($unitOfWorkMock);
-    }
-
+    /**
+     * @covers ::getActiveOnetimeScheduledItems
+     */
     public function testGetActiveOnetimeScheduledItems()
     {
         $abstractQueryMock = $this->createMock(AbstractQuery::class);
@@ -130,5 +143,15 @@ class StreamScheduleRepositoryTest extends TestCase
 
         $streamSchedules =$this->streamScheduleRepository->getActiveOnetimeScheduledItems();
         $this->assertInstanceOf(StreamSchedule::class, $streamSchedules[0]);
+    }
+
+    private function loadInvoked($returnedValue)
+    {
+        $method = (is_array($returnedValue)) ? 'loadAll': 'load';
+        $entityPersisterMock = $this->createMock(EntityPersister::class);
+        $entityPersisterMock->expects($this->once())->method($method)->willReturn($returnedValue);
+        $unitOfWorkMock = $this->createMock(UnitOfWork::class);
+        $unitOfWorkMock->expects($this->once())->method('getEntityPersister')->willReturn($entityPersisterMock);
+        $this->entityManager->expects($this->once())->method('getUnitOfWork')->willReturn($unitOfWorkMock);
     }
 }

@@ -80,7 +80,7 @@ class SchedulerExecuteCommand extends Command
      */
     private function processSchedules(InputInterface $input, OutputInterface $output)
     {
-        $streamSchedules = $this->streamScheduleRepository->findActiveCommands();
+        $streamSchedules = $this->streamScheduleRepository->findActiveSchedules();
         foreach ($streamSchedules as $streamSchedule) {
             try {
                 $executionEndTime = $streamSchedule->getExecutionEndTime();

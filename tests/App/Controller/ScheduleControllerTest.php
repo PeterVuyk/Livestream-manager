@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Controller;
+namespace App\Tests\Controller;
 
 use App\Controller\ScheduleController;
 use App\Entity\StreamSchedule;
@@ -16,6 +16,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * @coversDefaultClass \App\Controller\ScheduleController
+ * @covers ::<!public>
+ * @covers ::__construct
+ * @uses \App\Controller\Controller
+ * @uses \App\Service\ManageScheduleService
+ * @uses \App\Entity\StreamSchedule
+ */
 class ScheduleControllerTest extends TestCase
 {
     /** @var ScheduleController */
@@ -52,6 +60,9 @@ class ScheduleControllerTest extends TestCase
         );
     }
 
+    /**
+     * @covers ::list
+     */
     public function testList()
     {
         $this->manageScheduleService->expects($this->once())
@@ -63,7 +74,10 @@ class ScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }
 
-    public function testCreateScheduleSuccess()
+    /**
+     * @covers ::createRecurringSchedule
+     */
+    public function testCreateRecurringScheduleSuccess()
     {
         $formInterfaceMock = $this->createMock(FormInterface::class);
         $formInterfaceMock->expects($this->once())->method('handleRequest');
@@ -82,6 +96,9 @@ class ScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::createRecurringSchedule
+     */
     public function testCreateScheduleFailed()
     {
         $formInterfaceMock = $this->createMock(FormInterface::class);
@@ -103,6 +120,9 @@ class ScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::createRecurringSchedule
+     */
     public function testScheduleOpeningPage()
     {
         $formInterfaceMock = $this->createMock(FormInterface::class);
@@ -117,6 +137,9 @@ class ScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::createOnetimeSchedule
+     */
     public function testCreateOnetimeScheduleOpeningPage()
     {
         $formInterface = $this->createMock(FormInterface::class);
@@ -131,6 +154,9 @@ class ScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::createOnetimeSchedule
+     */
     public function testCreateOnetimeScheduleSubmittingFormSuccess()
     {
         $formInterface = $this->createMock(FormInterface::class);
@@ -149,6 +175,9 @@ class ScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::createOnetimeSchedule
+     */
     public function testCreateOnetimeScheduleSubmittingFormFailed()
     {
         $formInterface = $this->createMock(FormInterface::class);

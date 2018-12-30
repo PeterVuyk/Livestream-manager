@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Controller;
+namespace App\Tests\Controller;
 
 use App\Controller\ManageScheduleController;
 use App\Entity\StreamSchedule;
@@ -16,6 +16,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * @coversDefaultClass \App\Controller\ManageScheduleController
+ * @covers ::<!public>
+ * @covers ::__construct
+ * @uses \App\Controller\Controller
+ * @uses \App\Service\ManageScheduleService
+ * @uses \App\Entity\StreamSchedule
+ */
 class ManageScheduleControllerTest extends TestCase
 {
     /** @var ManageScheduleController */
@@ -52,6 +60,9 @@ class ManageScheduleControllerTest extends TestCase
         );
     }
 
+    /**
+     * @covers ::toggleDisablingSchedule
+     */
     public function testToggleDisablingScheduleSuccess()
     {
         $this->routerMock->expects($this->once())->method('generate')->willReturn('<url>hi</url>');
@@ -64,6 +75,9 @@ class ManageScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::toggleDisablingSchedule
+     */
     public function testToggleDisablingScheduleFailed()
     {
         $this->routerMock->expects($this->once())->method('generate')->willReturn('<url>hi</url>');
@@ -78,6 +92,9 @@ class ManageScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::removeSchedule
+     */
     public function testRemoveScheduleSuccess()
     {
         $this->routerMock->expects($this->once())->method('generate')->willReturn('<url>hi</url>');
@@ -90,6 +107,9 @@ class ManageScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::removeSchedule
+     */
     public function testRemoveScheduleFailed()
     {
         $this->routerMock->expects($this->once())->method('generate')->willReturn('<url>hi</url>');
@@ -103,6 +123,9 @@ class ManageScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::unwreckSchedule
+     */
     public function testUnwreckScheduleSuccess()
     {
         $this->routerMock->expects($this->once())->method('generate')->willReturn('<url>hi</url>');
@@ -115,6 +138,9 @@ class ManageScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::unwreckSchedule
+     */
     public function testUnwreckScheduleFailed()
     {
         $this->routerMock->expects($this->once())->method('generate')->willReturn('<url>hi</url>');
@@ -129,6 +155,9 @@ class ManageScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::editSchedule
+     */
     public function testEditStreamOpeningPage()
     {
         $formInterfaceMock = $this->createMock(FormInterface::class);
@@ -149,6 +178,9 @@ class ManageScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::editSchedule
+     */
     public function testEditStreamEditWithSuccess()
     {
         $formInterfaceMock = $this->createMock(FormInterface::class);
@@ -171,6 +203,9 @@ class ManageScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::editSchedule
+     */
     public function testEditScheduleCouldNotGetScheduleById()
     {
         $this->manageScheduleService->expects($this->once())->method('getScheduleById')->willReturn(null);
@@ -182,6 +217,9 @@ class ManageScheduleControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::editSchedule
+     */
     public function testEditStreamEditFailed()
     {
         $formInterfaceMock = $this->createMock(FormInterface::class);

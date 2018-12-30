@@ -4,6 +4,10 @@
          backupGlobals="false"
          colors="true"
          bootstrap="vendor/autoload.php"
+         failOnWarning="true"
+         failOnRisky="true"
+         forceCoversAnnotation="true"
+         beStrictAboutCoversAnnotation="true"
 >
     <php>
         <ini name="error_reporting" value="-1" />

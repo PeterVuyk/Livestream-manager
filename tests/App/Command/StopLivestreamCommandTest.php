@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Command;
+namespace App\Tests\Command;
 
 use App\Command\StopLivestreamCommand;
 use App\Service\StatusStreamService;
@@ -13,6 +13,14 @@ use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
+/**
+ * @coversDefaultClass \App\Command\StopLivestreamCommand
+ * @covers ::<!public>
+ * @covers ::__construct
+ * @uses \App\Service\StopStreamService
+ * @uses \App\Service\StatusStreamService
+ * @uses \App\Entity\StreamSchedule
+ */
 class StopLivestreamCommandTest extends TestCase
 {
     /** @var StopStreamService|MockObject */
@@ -47,6 +55,9 @@ class StopLivestreamCommandTest extends TestCase
         $this->commandTester = new CommandTester($stopLivestreamCommandMock);
     }
 
+    /**
+     * @covers ::execute
+     */
     public function testExecuteSuccess()
     {
         $this->statusStreamServiceMock->expects($this->once())->method('isRunning')->willReturn(true);
@@ -55,6 +66,9 @@ class StopLivestreamCommandTest extends TestCase
         $this->commandTester->execute([StopLivestreamCommand::COMMAND_STOP_STREAM]);
     }
 
+    /**
+     * @covers ::execute
+     */
     public function testExecuteStreamAlreadyRunning()
     {
         $this->statusStreamServiceMock->expects($this->once())->method('isRunning')->willReturn(false);

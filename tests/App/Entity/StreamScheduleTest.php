@@ -6,11 +6,22 @@ namespace App\Tests\Entity;
 use App\Entity\ScheduleLog;
 use App\Entity\StreamSchedule;
 use App\Exception\InvalidWeekdayException;
-use App\Entity\Weekdays;
+use App\Entity\Weekday;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \App\Entity\StreamSchedule
+ * @covers ::<!public>
+ * @uses \App\Entity\Weekday
+ * @uses \App\Entity\StreamSchedule
+ * @uses \App\Entity\ScheduleLog
+ */
 class StreamScheduleTest extends TestCase
 {
+    /**
+     * @covers ::getId
+     * @covers ::setId
+     */
     public function testId()
     {
         $streamSchedule = new StreamSchedule();
@@ -18,6 +29,10 @@ class StreamScheduleTest extends TestCase
         $this->assertSame('id-4', $streamSchedule->getId());
     }
 
+    /**
+     * @covers ::setName
+     * @covers ::getName
+     */
     public function testName()
     {
         $streamSchedule = new StreamSchedule();
@@ -27,6 +42,8 @@ class StreamScheduleTest extends TestCase
 
     /**
      * @throws \Exception
+     * @covers ::setLastExecution
+     * @covers ::getLastExecution
      */
     public function testLastExecution()
     {
@@ -35,6 +52,10 @@ class StreamScheduleTest extends TestCase
         $this->assertInstanceOf(\DateTime::class, $streamSchedule->getLastExecution());
     }
 
+    /**
+     * @covers ::setDisabled
+     * @covers ::getDisabled
+     */
     public function testDisabled()
     {
         $streamSchedule = new StreamSchedule();
@@ -42,6 +63,10 @@ class StreamScheduleTest extends TestCase
         $this->assertSame(false, $streamSchedule->getDisabled());
     }
 
+    /**
+     * @covers ::setWrecked
+     * @covers ::isWrecked
+     */
     public function testWrecked()
     {
         $streamSchedule = new StreamSchedule();
@@ -49,6 +74,10 @@ class StreamScheduleTest extends TestCase
         $this->assertSame(false, $streamSchedule->isWrecked());
     }
 
+    /**
+     * @covers ::getExecutionTime
+     * @covers ::setExecutionTime
+     */
     public function testExecutionTime()
     {
         $streamSchedule = new StreamSchedule();
@@ -56,6 +85,32 @@ class StreamScheduleTest extends TestCase
         $this->assertInstanceOf(\DateTime::class, $streamSchedule->getExecutionTime());
     }
 
+    /**
+     * @covers ::setIsRunning
+     * @covers ::isRunning
+     */
+    public function testIsRunning()
+    {
+        $streamSchedule = new StreamSchedule();
+        $streamSchedule->setIsRunning(true);
+        $this->assertTrue($streamSchedule->isRunning());
+    }
+
+    /**
+     * @covers ::getOnetimeExecutionDate
+     * @covers ::setOnetimeExecutionDate
+     */
+    public function testGetOnetimeExecutionDate()
+    {
+        $streamSchedule = new StreamSchedule();
+        $streamSchedule->setOnetimeExecutionDate(new \DateTime());
+        $this->assertInstanceOf(\DateTime::class, $streamSchedule->getOnetimeExecutionDate());
+    }
+
+    /**
+     * @covers ::setExecutionDay
+     * @covers ::getExecutionDay
+     */
     public function testExecutionDaySuccess()
     {
         $streamSchedule = new StreamSchedule();
@@ -63,6 +118,9 @@ class StreamScheduleTest extends TestCase
         $this->assertSame(1, $streamSchedule->getExecutionDay());
     }
 
+    /**
+     * @covers ::setExecutionDay
+     */
     public function testSetExecutionDayFailed()
     {
         $this->expectException(InvalidWeekdayException::class);
@@ -74,6 +132,7 @@ class StreamScheduleTest extends TestCase
      * @param StreamSchedule $streamSchedule
      * @param mixed|null $result
      * @dataProvider getNextExecutionTimeProvider
+     * @covers ::getNextExecutionTime
      */
     public function testGetNextExecutionTime(StreamSchedule $streamSchedule, $result)
     {
@@ -88,10 +147,13 @@ class StreamScheduleTest extends TestCase
     {
         $streamSchedule1 = new StreamSchedule();
         $streamSchedule1->setExecutionTime(new \DateTime());
-        $streamSchedule1->setExecutionDay(Weekdays::THURSDAY);
+        $streamSchedule1->setExecutionDay(Weekday::THURSDAY);
 
         $streamSchedule2 = new StreamSchedule();
         $streamSchedule2->setExecutionTime(new \DateTime());
+
+        $streamSchedule3 = new StreamSchedule();
+        $streamSchedule3->setOnetimeExecutionDate(new \DateTime());
 
         return [
             [
@@ -100,10 +162,17 @@ class StreamScheduleTest extends TestCase
             ], [
                 'streamSchedule' => $streamSchedule2,
                 'result' => null,
-            ],
+            ], [
+                'streamSchedule' => $streamSchedule3,
+                'result' => \DateTime::class,
+            ]
         ];
     }
 
+    /**
+     * @covers ::getStreamDuration
+     * @covers ::setStreamDuration
+     */
     public function testStreamSchedule()
     {
         $streamSchedule = new StreamSchedule();
@@ -115,6 +184,7 @@ class StreamScheduleTest extends TestCase
      * @dataProvider isRecurringProvider
      * @param StreamSchedule $streamSchedule
      * @param bool $isRecurring
+     * @covers ::isRecurring
      */
     public function testIsRecurring(StreamSchedule $streamSchedule, bool $isRecurring)
     {
@@ -138,6 +208,8 @@ class StreamScheduleTest extends TestCase
 
     /**
      * @throws \Exception
+     * @covers ::addScheduleLog
+     * @covers ::getScheduleLog
      */
     public function testScheduleLog()
     {
@@ -151,6 +223,7 @@ class StreamScheduleTest extends TestCase
      * @dataProvider streamTobeExecutedProvider
      * @param StreamSchedule $streamSchedule
      * @param bool $result
+     * @covers ::streamTobeExecuted
      */
     public function testStreamTobeExecuted(StreamSchedule $streamSchedule, bool $result)
     {
@@ -203,6 +276,7 @@ class StreamScheduleTest extends TestCase
      * @param StreamSchedule $streamSchedule
      * @param $result
      * @throws \Exception
+     * @covers ::getExecutionEndTime
      */
     public function testGetExecutionEndTime(StreamSchedule $streamSchedule, $result)
     {

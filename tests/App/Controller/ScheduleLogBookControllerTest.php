@@ -12,6 +12,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * @coversDefaultClass \App\Controller\ScheduleLogBookController
+ * @covers ::<!public>
+ * @covers ::__construct
+ * @uses \App\Controller\Controller
+ * @uses \App\Service\ManageScheduleService
+ * @uses \App\Entity\StreamSchedule
+ */
 class ScheduleLogBookControllerTest extends TestCase
 {
     /** @var ScheduleLogBookController */
@@ -43,6 +51,9 @@ class ScheduleLogBookControllerTest extends TestCase
         );
     }
 
+    /**
+     * @covers ::viewLogging
+     */
     public function testViewLoggingSuccess()
     {
         $this->manageScheduleServiceMock->expects($this->once())
@@ -53,6 +64,9 @@ class ScheduleLogBookControllerTest extends TestCase
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::viewLogging
+     */
     public function testViewLoggingFailed()
     {
         $this->manageScheduleServiceMock->expects($this->once())

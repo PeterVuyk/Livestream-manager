@@ -8,10 +8,17 @@ use App\Entity\StreamSchedule;
 use PHPUnit\Framework\TestCase;
 use Ramsey\Uuid\Uuid;
 
+/**
+ * @coversDefaultClass \App\Entity\ScheduleLog
+ * @covers ::<!public>
+ * @covers ::__construct
+ * @uses \App\Entity\StreamSchedule
+ */
 class ScheduleLogTest extends TestCase
 {
     /**
      * @throws \Exception
+     * @covers ::getId
      */
     public function testGetId()
     {
@@ -20,6 +27,7 @@ class ScheduleLogTest extends TestCase
 
     /**
      * @throws \Exception
+     * @covers ::getStreamSchedule
      */
     public function testGetStreamSchedule()
     {
@@ -28,6 +36,7 @@ class ScheduleLogTest extends TestCase
 
     /**
      * @throws \Exception
+     * @covers ::getMessage
      */
     public function testGetMessage()
     {
@@ -36,6 +45,7 @@ class ScheduleLogTest extends TestCase
 
     /**
      * @throws \Exception
+     * @covers ::getTimeExecuted
      */
     public function testGetTimeExecuted()
     {
@@ -44,6 +54,7 @@ class ScheduleLogTest extends TestCase
 
     /**
      * @throws \Exception
+     * @covers ::getRunSuccessful
      */
     public function testRunSuccessful()
     {
@@ -54,7 +65,7 @@ class ScheduleLogTest extends TestCase
      * @throws \Exception
      * @return ScheduleLog
      */
-    public function getScheduleLog()
+    private function getScheduleLog()
     {
         return new ScheduleLog(new StreamSchedule(), true, 'message');
     }

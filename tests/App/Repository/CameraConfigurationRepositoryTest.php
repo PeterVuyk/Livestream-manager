@@ -1,10 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Repository;
+namespace App\Tests\Repository;
 
 use App\Entity\CameraConfiguration;
-use App\Entity\Configuration;
 use App\Repository\CameraConfigurationRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\OptimisticLockException;
@@ -14,6 +13,12 @@ use PHPUnit\Framework\TestCase;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
+/**
+ * @coversDefaultClass \App\Repository\CameraConfigurationRepository
+ * @covers ::<!public>
+ * @covers ::__construct()
+ * @uses \App\Entity\CameraConfiguration
+ */
 class CameraConfigurationRepositoryTest extends TestCase
 {
     /** @var CameraConfigurationRepository */
@@ -35,6 +40,7 @@ class CameraConfigurationRepositoryTest extends TestCase
     /**
      * @throws ORMException
      * @throws OptimisticLockException
+     * @covers ::saveFromConfiguration
      */
     public function testSaveFromConfiguration()
     {

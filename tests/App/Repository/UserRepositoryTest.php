@@ -5,17 +5,20 @@ namespace App\Tests\Repository;
 
 use App\Entity\User;
 use App\Repository\UserRepository;
-use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\NonUniqueResultException;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
-use Doctrine\ORM\QueryBuilder;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
+/**
+ * @coversDefaultClass \App\Repository\UserRepository
+ * @covers ::<!public>
+ * @covers ::__construct()
+ * @uses \App\Entity\User
+ */
 class UserRepositoryTest extends TestCase
 {
     /** @var UserRepository */
@@ -37,6 +40,7 @@ class UserRepositoryTest extends TestCase
     /**
      * @throws ORMException
      * @throws OptimisticLockException
+     * @covers ::save
      */
     public function testSave()
     {
@@ -49,6 +53,7 @@ class UserRepositoryTest extends TestCase
     /**
      * @throws ORMException
      * @throws OptimisticLockException
+     * @covers ::remove
      */
     public function testRemove()
     {

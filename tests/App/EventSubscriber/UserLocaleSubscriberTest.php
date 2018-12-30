@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\EventSubscriber;
+namespace App\Tests\EventSubscriber;
 
 use App\Entity\User;
 use App\EventSubscriber\UserLocaleSubscriber;
@@ -12,6 +12,12 @@ use Symfony\Component\Security\Http\Event\InteractiveLoginEvent;
 use Symfony\Component\Security\Http\SecurityEvents;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
+/**
+ * @coversDefaultClass \App\EventSubscriber\UserLocaleSubscriber
+ * @covers ::<!public>
+ * @covers ::__construct()
+ * @uses \App\Entity\User
+ */
 class UserLocaleSubscriberTest extends TestCase
 {
     /** @var SessionInterface|MockObject */
@@ -26,6 +32,9 @@ class UserLocaleSubscriberTest extends TestCase
         $this->userLocaleSubscriber = new UserLocaleSubscriber($this->sessionMock);
     }
 
+    /**
+     * @covers ::onInteractiveLogin
+     */
     public function testOnInteractiveLogin()
     {
         $tokenMock = $this->createMock(TokenInterface::class);
@@ -39,6 +48,9 @@ class UserLocaleSubscriberTest extends TestCase
         $this->addToAssertionCount(1);
     }
 
+    /**
+     * @covers ::getSubscribedEvents
+     */
     public function testGetSubscribedEvents()
     {
         $this->assertArrayHasKey(SecurityEvents::INTERACTIVE_LOGIN, UserLocaleSubscriber::getSubscribedEvents());

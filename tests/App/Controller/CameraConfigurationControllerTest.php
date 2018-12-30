@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Controller;
+namespace App\Tests\Controller;
 
 use App\Controller\CameraConfigurationController;
 use App\Entity\CameraConfiguration;
@@ -17,6 +17,15 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * @coversDefaultClass \App\Controller\CameraConfigurationController
+ * @covers ::<!public>
+ * @covers ::__construct
+ * @uses \App\Controller\Controller
+ * @uses \App\Service\CameraConfigurationService
+ * @uses \App\Entity\CameraConfiguration
+ * @uses \App\Entity\Configuration
+ */
 class CameraConfigurationControllerTest extends TestCase
 {
     /** @var CameraConfigurationService|MockObject */
@@ -53,6 +62,9 @@ class CameraConfigurationControllerTest extends TestCase
         );
     }
 
+    /**
+     * @covers ::configurationList
+     */
     public function testConfigurationList()
     {
         $this->cameraConfigurationServiceMock->expects($this->once())
@@ -71,6 +83,9 @@ class CameraConfigurationControllerTest extends TestCase
         $this->assertSame(Response::HTTP_OK, $result->getStatusCode());
     }
 
+    /**
+     * @covers ::configurationList
+     */
     public function testConfigurationListSubmitFormSuccess()
     {
         $this->cameraConfigurationServiceMock->expects($this->once())
@@ -93,6 +108,9 @@ class CameraConfigurationControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::configurationList
+     */
     public function testConfigurationListSubmitFormFailed()
     {
         $this->cameraConfigurationServiceMock->expects($this->once())

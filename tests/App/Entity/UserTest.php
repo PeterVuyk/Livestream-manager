@@ -6,8 +6,16 @@ namespace App\Tests\Entity;
 use App\Entity\User;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \App\Entity\User
+ * @covers ::<!public>
+ * @covers ::__construct()
+ */
 class UserTest extends TestCase
 {
+    /**
+     * @covers ::__construct
+     */
     public function testUserCreation()
     {
         $user = new User();
@@ -16,12 +24,19 @@ class UserTest extends TestCase
         $this->assertTrue($user->isEnabled());
     }
 
+    /**
+     * @covers ::getLocale
+     */
     public function testDefaultLocale()
     {
         $user = new User();
         $this->assertSame('en', $user->getLocale());
     }
 
+    /**
+     * @covers ::setLocale
+     * @covers ::getLocale
+     */
     public function testUpdateLocale()
     {
         $user = new User();

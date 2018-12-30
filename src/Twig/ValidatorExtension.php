@@ -5,7 +5,7 @@ namespace App\Twig;
 
 use Twig\Extension\AbstractExtension;
 
-class Validator extends AbstractExtension
+class ValidatorExtension extends AbstractExtension
 {
     const IS_DATE_TIME = 'isDateTime';
 

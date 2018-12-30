@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Controller;
+namespace App\Tests\Controller;
 
 use App\Controller\UserManagementController;
 use App\Entity\User;
@@ -16,6 +16,14 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * @coversDefaultClass \App\Controller\UserManagementController
+ * @covers ::<!public>
+ * @covers ::__construct
+ * @uses \App\Controller\Controller
+ * @uses \App\Service\UserService
+ * @uses \App\Entity\User
+ */
 class UserManagementControllerTest extends TestCase
 {
     /** @var \Twig_Environment|MockObject */
@@ -52,6 +60,9 @@ class UserManagementControllerTest extends TestCase
         );
     }
 
+    /**
+     * @covers ::usersList
+     */
     public function testUsersList()
     {
         $this->userServiceMock->expects($this->once())->method('getAllUsers')->willReturn([new User()]);
@@ -61,6 +72,9 @@ class UserManagementControllerTest extends TestCase
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::deleteUser
+     */
     public function testDeleteUserSuccess()
     {
         $this->userServiceMock->expects($this->once())->method('removeUser');
@@ -71,6 +85,9 @@ class UserManagementControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::deleteUser
+     */
     public function testDeleteUserFailed()
     {
         $this->userServiceMock->expects($this->once())->method('removeUser')->willThrowException(new \Exception());
@@ -81,6 +98,9 @@ class UserManagementControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::toggleDisablingUser
+     */
     public function testToggleDisablingUserSuccess()
     {
         $this->userServiceMock->expects($this->once())->method('toggleDisablingUser');
@@ -91,6 +111,9 @@ class UserManagementControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::toggleDisablingUser
+     */
     public function testToggleDisablingUserFailed()
     {
         $this->userServiceMock->expects($this->once())->method('toggleDisablingUser')->willThrowException(new \Exception());
@@ -101,6 +124,9 @@ class UserManagementControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::userDetails
+     */
     public function testUserDetailsOpeningPage()
     {
         $this->userServiceMock->expects($this->once())->method('getUserById')->willReturn(new User());
@@ -117,6 +143,9 @@ class UserManagementControllerTest extends TestCase
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::userDetails
+     */
     public function testUserDetailsFailedCollectDetails()
     {
         $this->userServiceMock->expects($this->once())->method('getUserById')->willReturn(null);
@@ -127,6 +156,9 @@ class UserManagementControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::userDetails
+     */
     public function testUserDetailsSubmitFormSuccess()
     {
         $this->userServiceMock->expects($this->once())->method('getUserById')->willReturn(new User());
@@ -144,6 +176,9 @@ class UserManagementControllerTest extends TestCase
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
+    /**
+     * @covers ::userDetails
+     */
     public function testUserDetailsSubmitFormFailed()
     {
         $this->userServiceMock->expects($this->once())->method('getUserById')->willReturn(new User());

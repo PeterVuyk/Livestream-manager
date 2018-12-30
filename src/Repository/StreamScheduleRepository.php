@@ -83,7 +83,7 @@ class StreamScheduleRepository extends ServiceEntityRepository
     /**
      * @return StreamSchedule[]
      */
-    public function findActiveCommands(): array
+    public function findActiveSchedules(): array
     {
         return $this->findBy(['disabled' => false, 'wrecked' => false]);
     }

@@ -1,13 +1,22 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Entity;
+namespace App\Tests\Entity;
 
 use App\Entity\CameraConfiguration;
 use PHPUnit\Framework\TestCase;
 
+/**
+ * @coversDefaultClass \App\Entity\CameraConfiguration
+ * @covers ::<!public>
+ * @uses \App\Entity\CameraConfiguration
+ */
 class CameraConfigurationTest extends TestCase
 {
+    /**
+     * @covers ::setKey
+     * @covers ::getKey
+     */
     public function testKey()
     {
         $cameraConfiguration = new CameraConfiguration();
@@ -15,6 +24,10 @@ class CameraConfigurationTest extends TestCase
         $this->assertSame('key!', $cameraConfiguration->getKey());
     }
 
+    /**
+     * @covers ::setValue
+     * @covers ::getValue
+     */
     public function testValue()
     {
         $cameraConfiguration = new CameraConfiguration();

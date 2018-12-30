@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Service;
+namespace App\Tests\Service;
 
 use App\Entity\CameraConfiguration;
 use App\Entity\Configuration;
@@ -13,6 +13,13 @@ use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
+/**
+ * @coversDefaultClass \App\Service\CameraConfigurationService
+ * @covers ::<!public>
+ * @covers ::__construct()
+ * @uses \App\Entity\CameraConfiguration
+ * @uses \App\Entity\Configuration
+ */
 class CameraConfigurationServiceTest extends TestCase
 {
     /** @var CameraConfigurationService|MockObject */
@@ -34,7 +41,10 @@ class CameraConfigurationServiceTest extends TestCase
         );
     }
 
-    public function testGetConfigurations()
+    /**
+     * @covers ::getAllConfigurations
+     */
+    public function testGetAllConfigurations()
     {
         $this->cameraConfigurationRepositoryMock->expects($this->once())
             ->method('findAll')
@@ -47,6 +57,7 @@ class CameraConfigurationServiceTest extends TestCase
     /**
      * @throws ORMException
      * @throws OptimisticLockException
+     * @covers ::saveConfigurations
      */
     public function testSaveConfigurations()
     {
@@ -54,6 +65,10 @@ class CameraConfigurationServiceTest extends TestCase
         $this->cameraConfigurationService->saveConfigurations(new Configuration());
     }
 
+    /**
+     * @covers ::getConfigurationsKeyValue
+     * @uses \App\Service\CameraConfigurationService
+     */
     public function testGetConfigurationsKeyValue()
     {
         $cameraConfiguration1 = new CameraConfiguration();

@@ -1,13 +1,18 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Controller;
+namespace App\Tests\Controller;
 
 use App\Controller\Controller;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * @coversDefaultClass \App\Controller\Controller
+ * @covers ::<!public>
+ * @covers ::__construct
+ */
 class ControllerTest extends TestCase
 {
     /** @var \Twig_Environment|MockObject */
@@ -22,6 +27,9 @@ class ControllerTest extends TestCase
         $this->controller = new TestController($this->twig);
     }
 
+    /**
+     * @covers ::render
+     */
     public function testRenderSuccess()
     {
         $this->twig->expects($this->once())->method('render')->willReturn('<p>hi</p>');
@@ -30,6 +38,9 @@ class ControllerTest extends TestCase
         $this->assertSame('<p>hi</p>', $response->getContent());
     }
 
+    /**
+     * @covers ::render
+     */
     public function testRenderFailed()
     {
         $this->twig->expects($this->once())->method('render')->willThrowException(new \Exception('oeps'));
