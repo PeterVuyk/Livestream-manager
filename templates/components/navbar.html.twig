@@ -42,7 +42,7 @@
             {% endif %}
             {% if app.user is null %}
                 <li class="nav-item">
-                    <a class="nav-link" href="{{ path('user_security_login') }}">{{ 'navigation.login_path'|trans }}</a>
+                    <a class="nav-link" href="{{ path('fos_user_security_login') }}">{{ 'navigation.login_path'|trans }}</a>
                 </li>
             {% else %}
                 <li class="nav-item dropdown">
@@ -52,6 +52,9 @@
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="{{ path('user_details', {userId: app.user.id}) }}">
                             {{ 'navigation.personal_details'|trans }}
+                        </a>
+                        <a class="dropdown-item" href="{{ path('fos_user_change_password') }}">
+                            {{ 'navigation.change_password'|trans }}
                         </a>
                         <a class="dropdown-item" href="{{ path('fos_user_security_logout') }}">
                             {{ 'navigation.sign_out'|trans }}
