@@ -14,8 +14,12 @@ admin:
 
 home_page:
   path: /
-  defaults: { _controller: App\Controller\HomepageController:home }
+  defaults: { _controller: fos_user.security.controller:loginAction }
   methods: [GET]
+#home_page:
+#  path: /
+#  defaults: { _controller: App\Controller\HomepageController:home }
+#  methods: [GET]
 
 app.swagger_ui:
   path: /api/doc

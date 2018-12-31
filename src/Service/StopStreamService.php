@@ -34,8 +34,8 @@ class StopStreamService implements StreamInterface
 
     public function process(): void
     {
-        if ($this->statusStreamService->isRunning()) {
-            $this->logger->warning('Stream tried to start while it wan\'t running');
+        if (!$this->statusStreamService->isRunning()) {
+            $this->logger->warning('Stream tried to stop while it wasn\'t running');
             return;
         }
 
@@ -43,7 +43,7 @@ class StopStreamService implements StreamInterface
         if ($configurations->checkIfMixerIsRunning) {
             $attempts = 0;
             do {
-                if (!$this->isMixerRunning()) {
+                if (!$this->isMixerRunning($configurations->mixerIPAddress)) {
                     break;
                 }
                 $attempts++;
@@ -52,19 +52,17 @@ class StopStreamService implements StreamInterface
             } while ($attempts <= $configurations->mixerDelayAttempts);
         }
 
-        //TODO: Find out what the exact steps is to stop the stream?
-
         exec('killall -9 picam');
-
         $this->logger->info('Livestream is stopped successfully');
     }
 
     /**
+     * @param string $mixerIPAddress
      * @return bool
      */
-    private function isMixerRunning(): bool
+    private function isMixerRunning(string $mixerIPAddress): bool
     {
-        if ($socket =@ fsockopen('127.0.0.1', 80, $errno, $errstr, 30)) {
+        if ($socket =@ fsockopen($mixerIPAddress, 80, $errno, $errstr, 30)) {
             fclose($socket);
             return true;
         }
