@@ -50,7 +50,7 @@ class StartStreamService implements StreamInterface
             throw CouldNotStartLivestreamException::hostNotAvailable();
         }
 
-        $this->createPicamDirectories();
+        $this->createCameraDirectories();
         $this->logger->info('Livestream is online');
 
         exec(
@@ -71,7 +71,7 @@ class StartStreamService implements StreamInterface
     /**
      * @throws CouldNotStartLivestreamException
      */
-    private function createPicamDirectories()
+    private function createCameraDirectories()
     {
         if (!file_exists('/run/shm')) {
             if (!mkdir('/run/shm/hooks/') || !mkdir('/run/shm/rec/') || !mkdir('/run/shm/state/')) {

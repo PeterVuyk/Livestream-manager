@@ -1,0 +1,5 @@
+{% trans_default_domain 'manual' %}
+<h5 class="font-weight-bold">{{ 'manual.api.title.api_usage'|trans }}</h5>
+{{ 'manual.api.description.api'|trans|raw }}
+    <a href="{{ path('app.swagger_ui') }}">{{ 'manual.api.api_rest_endpoints_link'|trans }}</a>
+</p>

@@ -6,8 +6,8 @@ namespace App\Exception;
 class CouldNotStartLivestreamException extends \Exception
 {
     const HOST_NOT_AVAILABLE_MESSAGE = 'Unable to start stream because host is not available, aborted';
-    const COULD_NOT_CREATE_DIRS_MESSAGE = 'Could not create the required directories for picam, aborted';
-    const COULD_NOT_CREATE_SYMLINK_MESSAGE = 'Could not create the required symlink for picam, aborted';
+    const COULD_NOT_CREATE_DIRS_MESSAGE = 'Could not create the required directories for the camera, aborted';
+    const COULD_NOT_CREATE_SYMLINK_MESSAGE = 'Could not create the required symlink for the camera, aborted';
 
     public function __construct(string $reason, \Throwable $previous = null)
     {

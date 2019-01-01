@@ -1,8 +1,11 @@
-manual.title: 'Manual'
+manual.title: 'Handboek'
+home.list.title: 'Handboek'
 home.tab.title_configuration: Configuratie
 home.tab.title_user_management: Gebruikersbeheer
 home.tab.title_schedule: Schema
 home.tab.title_livestream: Livestream
+home.tab.title_api: 'API'
+manual.api.title.api_usage: 'API Gebruik'
 home.tab_content.livestream: '<p>Livestream</p>'
 manual.schedule.description.disabling_schedule: 'Deze pictogram geeft je de mogelijkheid om een geplande stream te activeren of deactiveren. De stream is actief als het pitogram groen is. Als je de stream deactiveert dan wordt de tekst grijs en de pictogram rood.'
 manual.schedule.description.edit_schedule: 'Bewerk de geplande stream zoals tijdstip van event, naam of duur livestream.'
@@ -15,8 +18,8 @@ manual.schedule.description.create_schedule: 'Voor geplande streams maken we een
 manual.schedule.title.manage_schedule: 'Beheer schema'
 manual.schedule.title.create_schedule: 'Aanmaken schema'
 manual.schedule.title.conflicting_schedules: 'Conflicterende schema''s'
-manual.user_management.description.default_user: 'Standaard gebruiker'
-manual.user_management.title.default_user: 'Standaard wordt een tijdelijke gebruiker gemaakt, gebruikersnaam: temporary, Wachtwoord: secret. We raden je aan om voor elke gebruiker een nieuw account te maken en deze standaardgebruiker te verwijderen zodra een ander account is gemaakt. De gebruiker kan in de gebruikerslijst verwijderd worden'
+manual.user_management.title.default_user: 'Standaard gebruiker'
+manual.user_management.description.default_user: 'Standaard wordt een tijdelijke gebruiker gemaakt, gebruikersnaam: temporary, Wachtwoord: secret. We raden je aan om voor elke gebruiker een nieuw account te maken en deze standaardgebruiker te verwijderen zodra een ander account is gemaakt. De gebruiker kan in de gebruikerslijst verwijderd worden'
 manual.user_management.title.authorized_users: 'Geautoriseerde gebruikers'
 manual.user_management.description.authorized_users: 'Alle gebruikers kunnen de geautoriseerde gebruikers in de gebruikerslijst beheren. In deze lijst kan je accounts deactiveren, gebruikersvoorkeuren beheren en persoonlijke instellingen bijwerken.'
 manual.user_management.title.user_details: 'Gebruikersdetails'
@@ -42,3 +45,5 @@ manual.user_management.description.mixer_interval_time: 'Voordat de stream wordt
 manual.user_management.description.mixer_retry_attempts: 'Als het mengpaneel beschikbaar is, zal het de beschikbaarheid opnieuw controleren met zoveel pogingen als je hier hebt ingevuld.'
 manual.configuration.title.meaning_configuration_keys: 'Betekenis configuratie keys'
 manual.configuration.description.meaning_configuration_keys: 'Hieronder vindt je een overzicht met alle configuratiesleutels met een korte beschrijving.'
+manual.api.description.api: '<p>Voor het mogelijk maken van communicatie tussen de web-based client en de server, hebben we een API Rest endpoint om:<ul><li>De status van de stream op te halen.</li><li>Ophalen van de ingeplande streams.</li></ul>De authenticatie is ''basic authentication''. The gebruikersnaam en wachtwoord kan gedeeld worden door de moderator, indien nodig kan er een nieuw account gegenereerd worden en ''in memory'' worden opgeslagen. Bekijk de endpoints via deze link:'
+manual.api.api_rest_endpoints_link: 'API Rest endpoints'
