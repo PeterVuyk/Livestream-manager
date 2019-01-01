@@ -12,11 +12,6 @@ admin:
   requirements:
     _locale: '%app.locales%'
 
-manual_page:
-  path: /manual
-  defaults: { _controller: App\Controller\ManualController:manualPage }
-  methods: [GET]
-
 home_page:
   path: /
   defaults: { _controller: fos_user.security.controller:loginAction }

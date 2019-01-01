@@ -3,8 +3,10 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\CameraConfiguration;
 use App\Exception\CouldNotStartLivestreamException;
 use Psr\Log\LoggerInterface;
+use Webmozart\Assert\Assert;
 
 class StartStreamService implements StreamInterface
 {
@@ -43,7 +45,7 @@ class StartStreamService implements StreamInterface
             return;
         }
 
-        $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
+        $configurations = $this->getConfigurations();
         if (!$this->isHostAvailable($configurations)) {
             throw CouldNotStartLivestreamException::hostNotAvailable();
         }
@@ -104,5 +106,33 @@ class StartStreamService implements StreamInterface
         }
         while ($attempts <= $configurations->retryIsServerAvailable);
         return false;
+    }
+
+    /**
+     * @throws \InvalidArgumentException
+     * @return \stdClass
+     */
+    private function getConfigurations()
+    {
+        $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
+        $requiredProperties = [
+            CameraConfiguration::KEY_LIVESTREAM_SERVER,
+            CameraConfiguration::KEY_INTERVAL_IS_SERVER_AVAILABLE,
+            CameraConfiguration::KEY_RETRY_IS_SERVER_AVAILABLE,
+            CameraConfiguration::KEY_VIDEO_BITRATE,
+            CameraConfiguration::KEY_AUDIO_VOLUME,
+            CameraConfiguration::KEY_OUTPUT_VIDEO_LOCATION,
+            CameraConfiguration::KEY_HARDWARE_VIDEO_DEVICE,
+            CameraConfiguration::KEY_CAMERA_LOCATION_APPLICATION,
+            CameraConfiguration::KEY_OUTPUT_STREAM_FORMAT,
+            CameraConfiguration::KEY_MAP_AUDIO_CHANNEL,
+            CameraConfiguration::KEY_AUDIO_BITRATE,
+            CameraConfiguration::KEY_AUDIO_SAMPLING_FREQUENCY,
+            CameraConfiguration::KEY_INCREASE_VOLUME_INPUT,
+            CameraConfiguration::KEY_INPUT_CAMERA_ADDRESS,
+            CameraConfiguration::KEY_FFMPEG_LOCATION_APPLICATION,
+        ];
+        Assert::allPropertyExists($configurations, $requiredProperties);
+        return $configurations;
     }
 }

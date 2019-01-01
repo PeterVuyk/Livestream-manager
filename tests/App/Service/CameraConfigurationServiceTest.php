@@ -62,7 +62,7 @@ class CameraConfigurationServiceTest extends TestCase
     public function testSaveConfigurations()
     {
         $this->cameraConfigurationRepositoryMock->expects($this->once())->method('saveFromConfiguration');
-        $this->cameraConfigurationService->saveConfigurations(new Configuration());
+        $this->cameraConfigurationService->saveConfigurations(new Configuration([new CameraConfiguration()]));
     }
 
     /**

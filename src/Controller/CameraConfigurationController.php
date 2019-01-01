@@ -59,10 +59,7 @@ class CameraConfigurationController extends Controller
     {
         $cameraConfigurations = $this->cameraConfigurationService->getAllConfigurations();
 
-        $configuration = new Configuration();
-        foreach ($cameraConfigurations as $cameraConfiguration) {
-            $configuration->getCameraConfiguration()->add($cameraConfiguration);
-        }
+        $configuration = new Configuration($cameraConfigurations);
         $form = $this->formFactory->create(ConfigurationType::class, $configuration);
 
         $form->handleRequest($request);

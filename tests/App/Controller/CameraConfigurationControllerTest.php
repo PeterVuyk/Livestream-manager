@@ -96,7 +96,9 @@ class CameraConfigurationControllerTest extends TestCase
         $formInterfaceMock->expects($this->once())->method('handleRequest');
         $formInterfaceMock->expects($this->once())->method('isSubmitted')->willReturn(true);
         $formInterfaceMock->expects($this->once())->method('isValid')->willReturn(true);
-        $formInterfaceMock->expects($this->once())->method('getData')->willReturn(new Configuration());
+        $formInterfaceMock->expects($this->once())
+            ->method('getData')
+            ->willReturn(new Configuration([new CameraConfiguration()]));
         $this->formFactoryMock->expects($this->once())->method('create')->willReturn($formInterfaceMock);
 
         $this->cameraConfigurationServiceMock->expects($this->once())->method('saveConfigurations');
@@ -121,7 +123,9 @@ class CameraConfigurationControllerTest extends TestCase
         $formInterfaceMock->expects($this->once())->method('handleRequest');
         $formInterfaceMock->expects($this->once())->method('isSubmitted')->willReturn(true);
         $formInterfaceMock->expects($this->once())->method('isValid')->willReturn(true);
-        $formInterfaceMock->expects($this->once())->method('getData')->willReturn(new Configuration());
+        $formInterfaceMock->expects($this->once())
+            ->method('getData')
+            ->willReturn(new Configuration([new CameraConfiguration()]));
         $this->formFactoryMock->expects($this->once())->method('create')->willReturn($formInterfaceMock);
 
         $this->cameraConfigurationServiceMock->expects($this->once())

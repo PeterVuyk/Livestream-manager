@@ -21,7 +21,7 @@ class ConfigurationTest extends TestCase
     public function testCameraConfiguration()
     {
         $cameraConfiguration = new CameraConfiguration();
-        $configuration = new Configuration();
+        $configuration = new Configuration([$cameraConfiguration]);
         $configuration->getCameraConfiguration()->add($cameraConfiguration);
         $this->assertInstanceOf(CameraConfiguration::class, $configuration->getCameraConfiguration()->first());
     }

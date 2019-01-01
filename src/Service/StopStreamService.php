@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\CameraConfiguration;
 use Psr\Log\LoggerInterface;
+use Webmozart\Assert\Assert;
 
 class StopStreamService implements StreamInterface
 {
@@ -39,7 +41,8 @@ class StopStreamService implements StreamInterface
             return;
         }
 
-        $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
+        //TODO: Add clause to check if it need to be checked if mixer is online.
+        $configurations = $this->getConfigurations();
         if ($configurations->checkIfMixerIsRunning) {
             $attempts = 0;
             do {
@@ -67,5 +70,22 @@ class StopStreamService implements StreamInterface
             return true;
         }
         return false;
+    }
+
+    /**
+     * @throws \InvalidArgumentException
+     * @return \stdClass
+     */
+    private function getConfigurations()
+    {
+        $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
+        $requiredProperties = [
+            CameraConfiguration::MIXER_INTERVAL_TIME,
+            CameraConfiguration::KEY_MIXER_RETRY_ATTEMPTS,
+            CameraConfiguration::KEY_CHECK_IF_MIXER_IS_RUNNING,
+            CameraConfiguration::KEY_MIXER_IP_ADDRESS,
+        ];
+        Assert::allPropertyExists($configurations, $requiredProperties);
+        return $configurations;
     }
 }

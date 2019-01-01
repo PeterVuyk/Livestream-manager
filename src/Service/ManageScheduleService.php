@@ -38,6 +38,14 @@ class ManageScheduleService
     }
 
     /**
+     * @return StreamSchedule[]
+     */
+    public function getAllSchedules(): array
+    {
+        return $this->streamScheduleRepository->findAll();
+    }
+
+    /**
      * @param string $id
      * @return StreamSchedule|null
      */

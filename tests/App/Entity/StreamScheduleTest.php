@@ -18,15 +18,34 @@ use PHPUnit\Framework\TestCase;
  */
 class StreamScheduleTest extends TestCase
 {
+    /** @var StreamSchedule */
+    private $streamSchedule;
+
+    public function setUp()
+    {
+        $streamSchedule = new StreamSchedule();
+        $streamSchedule->setId('f1f28b0c-9ec1-47ab-86e6-af24a50293c1');
+        $streamSchedule->setName('some-name');
+        $streamSchedule->setLastExecution(new \DateTime());
+        $streamSchedule->setDisabled(false);
+        $streamSchedule->setWrecked(false);
+        $streamSchedule->setExecutionTime(new \DateTime());
+        $streamSchedule->setIsRunning(true);
+        $streamSchedule->setOnetimeExecutionDate(new \DateTime());
+        $streamSchedule->setExecutionDay(1);
+        $scheduleLog = new ScheduleLog(new StreamSchedule(), true, 'message');
+        $streamSchedule->addScheduleLog($scheduleLog);
+
+        $this->streamSchedule = $streamSchedule;
+    }
+
     /**
      * @covers ::getId
      * @covers ::setId
      */
     public function testId()
     {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setId('id-4');
-        $this->assertSame('id-4', $streamSchedule->getId());
+        $this->assertSame('f1f28b0c-9ec1-47ab-86e6-af24a50293c1', $this->streamSchedule->getId());
     }
 
     /**
@@ -35,9 +54,7 @@ class StreamScheduleTest extends TestCase
      */
     public function testName()
     {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setName('some-name');
-        $this->assertSame('some-name', $streamSchedule->getName());
+        $this->assertSame('some-name', $this->streamSchedule->getName());
     }
 
     /**
@@ -47,9 +64,7 @@ class StreamScheduleTest extends TestCase
      */
     public function testLastExecution()
     {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setLastExecution(new \DateTime());
-        $this->assertInstanceOf(\DateTime::class, $streamSchedule->getLastExecution());
+        $this->assertInstanceOf(\DateTime::class, $this->streamSchedule->getLastExecution());
     }
 
     /**
@@ -58,9 +73,7 @@ class StreamScheduleTest extends TestCase
      */
     public function testDisabled()
     {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setDisabled(false);
-        $this->assertSame(false, $streamSchedule->getDisabled());
+        $this->assertSame(false, $this->streamSchedule->getDisabled());
     }
 
     /**
@@ -69,9 +82,7 @@ class StreamScheduleTest extends TestCase
      */
     public function testWrecked()
     {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setWrecked(false);
-        $this->assertSame(false, $streamSchedule->isWrecked());
+        $this->assertSame(false, $this->streamSchedule->isWrecked());
     }
 
     /**
@@ -80,9 +91,7 @@ class StreamScheduleTest extends TestCase
      */
     public function testExecutionTime()
     {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setExecutionTime(new \DateTime());
-        $this->assertInstanceOf(\DateTime::class, $streamSchedule->getExecutionTime());
+        $this->assertInstanceOf(\DateTime::class, $this->streamSchedule->getExecutionTime());
     }
 
     /**
@@ -91,9 +100,7 @@ class StreamScheduleTest extends TestCase
      */
     public function testIsRunning()
     {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setIsRunning(true);
-        $this->assertTrue($streamSchedule->isRunning());
+        $this->assertTrue($this->streamSchedule->isRunning());
     }
 
     /**
@@ -102,9 +109,7 @@ class StreamScheduleTest extends TestCase
      */
     public function testGetOnetimeExecutionDate()
     {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setOnetimeExecutionDate(new \DateTime());
-        $this->assertInstanceOf(\DateTime::class, $streamSchedule->getOnetimeExecutionDate());
+        $this->assertInstanceOf(\DateTime::class, $this->streamSchedule->getOnetimeExecutionDate());
     }
 
     /**
@@ -113,9 +118,7 @@ class StreamScheduleTest extends TestCase
      */
     public function testExecutionDaySuccess()
     {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setExecutionDay(1);
-        $this->assertSame(1, $streamSchedule->getExecutionDay());
+        $this->assertSame(1, $this->streamSchedule->getExecutionDay());
     }
 
     /**
@@ -308,5 +311,21 @@ class StreamScheduleTest extends TestCase
                 'result' => $now,
             ]
         ];
+    }
+
+    /**
+     * @covers ::getPayload
+     */
+    public function testGetPayload()
+    {
+        $this->assertArrayHasKey('id', $this->streamSchedule->getPayload());
+        $this->assertArrayHasKey('name', $this->streamSchedule->getPayload());
+        $this->assertArrayHasKey('executionDay', $this->streamSchedule->getPayload());
+        $this->assertArrayHasKey('executionTime', $this->streamSchedule->getPayload());
+        $this->assertArrayHasKey('onetimeExecutionDate', $this->streamSchedule->getPayload());
+        $this->assertArrayHasKey('lastExecution', $this->streamSchedule->getPayload());
+        $this->assertArrayHasKey('scheduleLog', $this->streamSchedule->getPayload());
+        $this->assertArrayHasKey('isRunning', $this->streamSchedule->getPayload());
+        $this->assertArrayHasKey('nextExecutionTime', $this->streamSchedule->getPayload());
     }
 }

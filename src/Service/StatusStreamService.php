@@ -3,6 +3,9 @@ declare(strict_types=1);
 
 namespace App\Service;
 
+use App\Entity\CameraConfiguration;
+use Webmozart\Assert\Assert;
+
 class StatusStreamService
 {
     const STATUS_RUNNING = 0;
@@ -20,15 +23,27 @@ class StatusStreamService
     }
 
     /**
+     * @throws \InvalidArgumentException
      * @return bool
      */
     public function isRunning(): bool
     {
-        $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
-        exec("ps aux | grep \"$configurations->picamLocationApplication\" | grep -v \"grep\" ; echo $?", $output);
+        $cameraLocationApplication = $this->getConfigurations()->cameraLocationApplication;
+        exec("ps aux | grep \"{$cameraLocationApplication}\" | grep -v \"grep\" ; echo $?", $output);
         if ($output === self::STATUS_RUNNING) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * @throws \InvalidArgumentException
+     * @return \stdClass
+     */
+    private function getConfigurations()
+    {
+        $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_CAMERA_LOCATION_APPLICATION);
+        return $configurations;
     }
 }

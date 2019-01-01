@@ -12,10 +12,14 @@ class Configuration
 
     /**
      * Configuration constructor.
+     * @param CameraConfiguration[] $cameraConfigurations
      */
-    public function __construct()
+    public function __construct(array $cameraConfigurations)
     {
         $this->cameraConfiguration = new ArrayCollection();
+        foreach ($cameraConfigurations as $cameraConfiguration) {
+            $this->getCameraConfiguration()->add($cameraConfiguration);
+        }
     }
 
     /**
