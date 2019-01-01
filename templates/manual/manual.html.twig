@@ -1,0 +1,36 @@
+{% extends "base.html.twig" %}
+{% set active_page = 'manual' %}
+{% trans_default_domain 'manual' %}
+{% block title %}{{ 'home.list.title'|trans }}{% endblock title %}
+
+{% block content %}
+    <h2>{{ 'manual.title'|trans }}</h2>
+    {% include 'components/flash.html.twig' %}
+
+        <div class="row">
+            <div class="col-3">
+                <div class="nav flex-column nav-pills" id="v-pills-tab" role="tablist" aria-orientation="vertical">
+                    <a class="nav-link active" id="v-pills-schedule-tab" data-toggle="pill" href="#v-pills-schedule" role="tab" aria-controls="v-pills-profile" aria-selected="false">{{ 'home.tab.title_schedule'|trans }}</a>
+                    <a class="nav-link" id="v-pills-livestream-tab" data-toggle="pill" href="#v-pills-livestream" role="tab" aria-controls="v-pills-messages" aria-selected="false">{{ 'home.tab.title_livestream'|trans }}</a>
+                    <a class="nav-link" id="v-pills-configuration-tab" data-toggle="pill" href="#v-pills-configuration" role="tab" aria-controls="v-pills-settings" aria-selected="true">{{ 'home.tab.title_configuration'|trans }}</a>
+                    <a class="nav-link" id="v-pills-user-management-tab" data-toggle="pill" href="#v-pills-user-management" role="tab" aria-controls="v-pills-settings" aria-selected="false">{{ 'home.tab.title_user_management'|trans }}</a>
+                </div>
+            </div>
+            <div class="col-9">
+                <div class="tab-content" id="v-pills-tabContent">
+                    <div class="tab-pane fade show active" id="v-pills-schedule" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+                        {{ include('manual/schedule.html.twig') }}
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-livestream" role="tabpanel" aria-labelledby="v-pills-settings-tab">
+                        {{ 'home.tab_content.livestream'|trans|raw }}
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-configuration" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                        {{ include('manual/configuration.html.twig') }}
+                    </div>
+                    <div class="tab-pane fade" id="v-pills-user-management" role="tabpanel" aria-labelledby="v-pills-messages-tab">
+                        {{ include('manual/userManagement.html.twig') }}
+                    </div>
+                </div>
+            </div>
+        </div>
+{% endblock content %}

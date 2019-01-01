@@ -1,0 +1,44 @@
+{% trans_default_domain 'manual' %}
+<h5 class="font-weight-bold">{{ 'manual.schedule.title.create_schedule'|trans }}</h5>
+<p>{{ 'manual.schedule.description.create_schedule'|trans }}</p>
+
+<h5 class="font-weight-bold">{{ 'manual.schedule.title.conflicting_schedules'|trans }}</h5>
+<p>
+    @TODO: Describe how wa conflicting schedule works.
+</p>
+<h5 class="font-weight-bold">{{ 'manual.schedule.title.manage_schedule'|trans }}</h5>
+<p>{{ 'manual.schedule.description.manage_schedule'|trans }}</p>
+<table class="table table-bordered">
+    <tbody>
+    <tr>
+        <td>
+            <span class="text-success fa fa-power-off fa-lg"></span>
+            <span class="text-danger fa fa-power-off fa-lg"></span>
+        </td>
+        <td>{{ 'manual.schedule.description.disabling_schedule'|trans }}</td>
+    </tr>
+    <tr>
+        <td><span class="text-info fa fa-edit fa-lg"></span></td>
+        <td>{{ 'manual.schedule.description.edit_schedule'|trans }}</td>
+    </tr>
+    <tr>
+        <td><span class="text-danger fa fa-trash fa-lg"></span></td>
+        <td>{{ 'manual.schedule.description.remove_schedule'|trans }}</td>
+    </tr>
+    <tr>
+        <td>
+            <span class="fa fa-check text-center text-success fa-lg"></span>
+            <span class="fa fa-warning text-danger fa-lg"></span>
+        </td>
+        <td>{{ 'manual.schedule.description.last_run_status'|trans }}</td>
+    </tr>
+    <tr>
+        <td><span class="fa fa-eye fa-lg"></span></td>
+        <td>{{ 'manual.schedule.description.logbook'|trans }}</td>
+    </tr>
+    <tr>
+        <td><span class="fa fa-undo text-warning fa-lg"></span></td>
+        <td>{{ 'manual.schedule.description.wrecked_schedule'|trans }}</td>
+    </tr>
+    </tbody>
+</table>

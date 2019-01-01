@@ -47,9 +47,9 @@ class StopStreamService implements StreamInterface
                     break;
                 }
                 $attempts++;
-                sleep((int)$configurations->mixerDelayTime);
+                sleep((int)$configurations->mixerIntervalTime);
                 $this->logger->info('Stop stream delayed, mixer is still running');
-            } while ($attempts <= $configurations->mixerDelayAttempts);
+            } while ($attempts <= $configurations->mixerRetryAttempts);
         }
 
         exec('killall -9 picam');

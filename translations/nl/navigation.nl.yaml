@@ -1,4 +1,4 @@
-navigation.admin_home: Admin
+navigation.manual: 'Handboek'
 navigation.schedule: 'Schedule'
 navigation.camera_configuration: 'Configuration'
 navigation.users: Users
@@ -8,5 +8,4 @@ navigation.account_name: 'Logged in - '
 navigation.personal_details: 'My details'
 navigation.sign_out: 'Sign out'
 admin.list.title: 'Admin page'
-home.list.title: 'Homepage'
 navigation.change_password: 'Change password'

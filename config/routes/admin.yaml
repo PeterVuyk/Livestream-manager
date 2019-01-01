@@ -8,11 +8,6 @@ scheduler:
     nl: /schema/
   resource: "scheduler.yaml"
 
-admin_page:
-  path: /
-  defaults: { _controller: App\Controller\HomepageController:admin }
-  methods: [GET]
-
 start_stream:
   path: /stream/start
   defaults: { _controller: App\Controller\LivestreamController:startStream }

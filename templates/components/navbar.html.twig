@@ -1,9 +1,9 @@
-{% trans_default_domain 'homepage' %}
+{% trans_default_domain 'navigation' %}
 <div class="container">
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
-            <li class="nav-item {% if active_page is defined and active_page == 'admin_home' %}active{% endif %}">
-                <a class="nav-link nav " href="{{ path('admin_page') }}">{{ 'navigation.admin_home'|trans }}</a>
+            <li class="nav-item {% if active_page is defined and active_page == 'schedule' %}active{% endif %}">
+                <a class="nav-link" href="{{ path('scheduler_list') }}">{{ 'navigation.schedule'|trans }}</a>
             </li>
             <li class="nav-item {% if active_page is defined and active_page == 'camera_configuration' %}active{% endif %}">
                 <a class="nav-link" href="{{ path('camera_configuration_list') }}">{{ 'navigation.camera_configuration'|trans }}</a>
@@ -21,8 +21,8 @@
                     <li class="nav-item"><a class="nav-link" href="{{ path('user_registration') }}">{{ 'navigation.register'|trans }}</a></li>
                 </ul>
             </li>
-            <li class="nav-item {% if active_page is defined and active_page == 'schedule' %}active{% endif %}">
-                <a class="nav-link" href="{{ path('scheduler_list') }}">{{ 'navigation.schedule'|trans }}</a>
+            <li class="nav-item {% if active_page is defined and active_page == 'manual' %}active{% endif %}">
+                <a class="nav-link nav " href="{{ path('manual_page') }}">{{ 'navigation.manual'|trans }}</a>
             </li>
         </ul>
         <ul class="navbar-nav pull-right">
