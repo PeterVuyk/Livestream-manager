@@ -3,6 +3,12 @@
 <h2>{{ 'user_login.title'|trans }}</h2>
 {% include 'components/flash.html.twig' %}
 
+{% if error %}
+    <div class="alert alert-danger">
+        {{ error.messageKey|trans(error.messageData, 'security') }}
+    </div>
+{% endif %}
+
 {% if not is_granted("IS_AUTHENTICATED_REMEMBERED") %}
     <form action="{{ path("fos_user_security_check") }}" method="post">
         {% if csrf_token %}

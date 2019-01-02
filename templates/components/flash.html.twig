@@ -1,8 +1,14 @@
 {% trans_default_domain 'flash_messages' %}
-{% for type, flashes in app.session.flashbag.all %}
-    {% for flash in flashes %}
-        <div class="alert alert-{{ type }}">
-            {{ flash|trans }}
+{% if app.request.hasPreviousSession %}
+    {% for flashMessage in app.session.flashbag.get('success') %}
+        <div class="alert alert-dismissable alert-success">
+            {{ flashMessage|trans }}<br>
         </div>
     {% endfor %}
-{% endfor %}
+
+    {% for flashMessage in app.session.flashbag.get('error') %}
+        <div class="alert alert-dismissable alert-danger">
+            {{ flashMessage|trans }}<br>
+        </div>
+    {% endfor %}
+{% endif %}

@@ -22,7 +22,7 @@ user_registration:
   path:
     en: /registration
     nl: /registratie
-  defaults: { _controller: FOSUserBundle:Registration:register }
+  defaults: { _controller: App\Controller\RegistrationController:register }
   methods: [GET, POST]
 
 fos_user_change_password:

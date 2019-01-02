@@ -1,0 +1,12 @@
+{% extends "base.html.twig" %}
+{% set active_page = 'users' %}
+{% trans_default_domain 'users' %}
+{% block title %}{{ 'user_registration.title'|trans }}{% endblock title %}
+
+{% block content %}
+    <h2>{{ 'stream_schedule.new.title'|trans }}</h2>
+    {% include 'components/flash.html.twig' %}
+    {{ form(form) }}
+    <a href="{{ path('user_list') }}" class="btn btn-danger" role="button">Cancel</a>
+    {{ form_widget( form.submitButton, {'attr': {'class': 'btn btn-success btn-lg pull-right'} } ) }}
+{% endblock content %}

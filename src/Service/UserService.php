@@ -8,18 +8,24 @@ use App\Exception\UserNotFoundException;
 use App\Repository\UserRepository;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
+use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserService
 {
     /** @var UserRepository */
     private $userRepository;
 
+    /** @var UserPasswordEncoderInterface */
+    private $passwordEncoder;
+
     /**
      * UserService constructor.
+     * @param UserPasswordEncoderInterface $passwordEncoder
      * @param UserRepository $userRepository
      */
-    public function __construct(UserRepository $userRepository)
+    public function __construct(UserPasswordEncoderInterface $passwordEncoder, UserRepository $userRepository)
     {
+        $this->passwordEncoder = $passwordEncoder;
         $this->userRepository = $userRepository;
     }
 
@@ -36,6 +42,18 @@ class UserService
             throw UserNotFoundException::couldNotRemoveUser($userId);
         }
         $this->userRepository->remove($user);
+    }
+
+    /**
+     * @param User $user
+     * @throws ORMException
+     * @throws OptimisticLockException
+     */
+    public function createUser(User $user): void
+    {
+        $password = $this->passwordEncoder->encodePassword($user, $user->getPlainPassword());
+        $user->setPassword($password);
+        $this->userRepository->save($user);
     }
 
     /**

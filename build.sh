@@ -10,7 +10,7 @@ docker-compose exec php composer install
 docker-compose exec yarn /bin/bash -c "cd /usr/src/app && yarn install && yarn build"
 
 # Run the database migrations to setup the database tables.
-docker-compose exec php bin/console doctrine:migrations:migrate -y
+docker-compose exec php bin/console doctrine:migrations:migrate
 
 # Extract an update the translation content.
 docker-compose exec php bin/console translation:update --dump-messages --force en
