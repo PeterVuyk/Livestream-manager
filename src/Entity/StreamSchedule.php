@@ -247,7 +247,7 @@ class StreamSchedule
      */
     public function setStreamDuration(?int $streamDuration): void
     {
-        $this->streamDuration= $streamDuration;
+        $this->streamDuration = $streamDuration;
     }
 
     /**
@@ -331,25 +331,5 @@ class StreamSchedule
             }
         }
         return false;
-    }
-
-    /**
-     * @return array
-     */
-    public function getPayload()
-    {
-        $payload = [
-            'isRecurring' => $this->isRecurring(),
-            'nextExecutionTime' => $this->getNextExecutionTime(),
-        ];
-        return array_filter(
-            array_merge(
-                get_object_vars($this),
-                $payload
-            ),
-            function ($value) {
-                return !(is_null($value) || $value === false);
-            }
-        );
     }
 }

@@ -312,20 +312,4 @@ class StreamScheduleTest extends TestCase
             ]
         ];
     }
-
-    /**
-     * @covers ::getPayload
-     */
-    public function testGetPayload()
-    {
-        $this->assertArrayHasKey('id', $this->streamSchedule->getPayload());
-        $this->assertArrayHasKey('name', $this->streamSchedule->getPayload());
-        $this->assertArrayHasKey('executionDay', $this->streamSchedule->getPayload());
-        $this->assertArrayHasKey('executionTime', $this->streamSchedule->getPayload());
-        $this->assertArrayHasKey('onetimeExecutionDate', $this->streamSchedule->getPayload());
-        $this->assertArrayHasKey('lastExecution', $this->streamSchedule->getPayload());
-        $this->assertArrayHasKey('scheduleLog', $this->streamSchedule->getPayload());
-        $this->assertArrayHasKey('isRunning', $this->streamSchedule->getPayload());
-        $this->assertArrayHasKey('nextExecutionTime', $this->streamSchedule->getPayload());
-    }
 }

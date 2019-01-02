@@ -39,7 +39,7 @@ class ApiLivestreamController
     {
         try {
             $isRunning = $this->statusStreamService->isRunning();
-            return new JsonResponse(['statusStream' => $isRunning], JsonResponse::HTTP_OK);
+            return new JsonResponse(['livestreamIsLive' => $isRunning], JsonResponse::HTTP_OK);
         } catch (\Exception $exception) {
             $this->logger->error('Could not retrieve status stream via API', ['exception' => $exception->getMessage()]);
         }

@@ -4,11 +4,11 @@ declare(strict_types=1);
 namespace App\Tests\App\Controller\Api;
 
 use App\Controller\Api\ApiSchedulerController;
-use App\Entity\ScheduleLog;
 use App\Entity\StreamSchedule;
 use App\Service\ManageScheduleService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 
 /**
@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * @covers ::__construct
  * @uses \App\Entity\ScheduleLog
  * @uses \App\Entity\StreamSchedule
+ * @uses \App\Entity\Api\StreamScheduleDTO
  * @uses \App\Entity\Weekday
  */
 class ApiSchedulerControllerTest extends TestCase
@@ -24,26 +25,48 @@ class ApiSchedulerControllerTest extends TestCase
     /** @var ManageScheduleService|MockObject */
     private $manageScheduleServiceMock;
 
+    /** @var LoggerInterface|MockObject */
+    private $loggerMock;
+
     /** @var ApiSchedulerController */
     private $schedulerController;
 
     public function setUp()
     {
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->manageScheduleServiceMock = $this->createMock(ManageScheduleService::class);
-        $this->schedulerController = new ApiSchedulerController($this->manageScheduleServiceMock);
+        $this->schedulerController = new ApiSchedulerController($this->loggerMock, $this->manageScheduleServiceMock);
     }
 
     /**
      * @covers ::getStreamSchedule
      */
-    public function testGetStreamSchedule()
+    public function testGetStreamScheduleSuccess()
     {
+        $streamSchedule = $this->getStreamSchedule();
+        $streamSchedule->setWrecked(true);
         $this->manageScheduleServiceMock->expects($this->once())
             ->method('getAllSchedules')
-            ->willReturn([$this->getStreamSchedule()]);
+            ->willReturn([$this->getStreamSchedule(), $streamSchedule]);
+        $this->loggerMock->expects($this->never())->method('error');
 
         $response = $this->schedulerController->getStreamSchedule();
         $this->assertSame(JsonResponse::HTTP_OK, $response->getStatusCode());
+        $this->assertSame(1, count(json_decode($response->getContent(), true)));
+    }
+
+    /**
+     * @covers ::getStreamSchedule
+     */
+    public function testGetStreamScheduleFailed()
+    {
+        $this->manageScheduleServiceMock->expects($this->once())
+            ->method('getAllSchedules')
+            ->willReturn([new StreamSchedule()]);
+        $this->loggerMock->expects($this->once())->method('error');
+
+        $response = $this->schedulerController->getStreamSchedule();
+        $this->assertSame(JsonResponse::HTTP_INTERNAL_SERVER_ERROR, $response->getStatusCode());
     }
 
     private function getStreamSchedule()
@@ -57,11 +80,8 @@ class ApiSchedulerControllerTest extends TestCase
         $streamSchedule->setExecutionTime(new \DateTime());
         $streamSchedule->setIsRunning(true);
         $streamSchedule->setOnetimeExecutionDate(new \DateTime());
+        $streamSchedule->setStreamDuration(4);
         $streamSchedule->setExecutionDay(1);
-        $scheduleLog = new ScheduleLog(new StreamSchedule(), true, 'message');
-        $streamSchedule->addScheduleLog($scheduleLog);
-
         return $streamSchedule;
     }
-
 }
