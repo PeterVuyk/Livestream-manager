@@ -10,3 +10,13 @@ services:
   php:
     ports:
     - 9000:9000
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: livestream-phpmyadmin
+    ports:
+    - 8081:80
+    depends_on:
+    - db
+    environment:
+    - PMA_USER=${DATABASE_USER}
+    - PMA_PASSWORD=${DATABASE_PASSWORD}
