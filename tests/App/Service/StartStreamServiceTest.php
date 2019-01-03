@@ -1,0 +1,99 @@
+<?php
+declare(strict_types=1);
+
+namespace App\Tests\App\Service;
+
+use App\Entity\CameraConfiguration;
+use App\Exception\CouldNotStartLivestreamException;
+use App\Service\CameraConfigurationService;
+use App\Service\StartStreamService;
+use App\Service\StatusStreamService;
+use PHPUnit\Framework\MockObject\MockObject;
+use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
+
+/**
+ * @coversDefaultClass \App\Service\StartStreamService
+ * @covers ::<!public>
+ * @covers ::__construct()
+ * @uses \App\Entity\CameraConfiguration
+ * @uses \App\Service\StatusStreamService
+ */
+class StartStreamServiceTest extends TestCase
+{
+    const TMP_LOCATION = '/tmp/some-location';
+
+    /** @var CameraConfigurationService|MockObject */
+    private $cameraConfigurationServiceMock;
+
+    /** @var StatusStreamService|MockObject */
+    private $statusStreamServiceMock;
+
+    /** @var LoggerInterface|MockObject */
+    private $loggerMock;
+
+    /** @var StartStreamService */
+    private $startStreamService;
+
+    public function setUp()
+    {
+        $this->cameraConfigurationServiceMock = $this->createMock(CameraConfigurationService::class);
+        $this->statusStreamServiceMock = $this->createMock(StatusStreamService::class);
+        $this->loggerMock = $this->createMock(LoggerInterface::class);
+        $this->startStreamService = new StartStreamService(
+            $this->cameraConfigurationServiceMock,
+            $this->statusStreamServiceMock,
+            $this->loggerMock
+        );
+    }
+
+    /**
+     * @throws CouldNotStartLivestreamException
+     * @covers ::process
+     */
+    public function testProcessStreamAlreadyRunning()
+    {
+        $this->statusStreamServiceMock->expects($this->once())->method('isRunning')->willReturn(true);
+        $this->loggerMock->expects($this->once())->method('warning');
+        $this->startStreamService->process();
+        $this->addToAssertionCount(1);
+    }
+
+    /**
+     * @throws CouldNotStartLivestreamException
+     * @covers ::process
+     */
+    public function testProcessHostNotAvailable()
+    {
+        $this->expectException(CouldNotStartLivestreamException::class);
+
+        $this->loggerMock->expects($this->atLeastOnce())->method('warning');
+        $this->cameraConfigurationServiceMock->expects($this->once())
+            ->method('getConfigurationsKeyValue')
+            ->willReturn($this->getConfigurations());
+        $this->startStreamService->process();
+    }
+
+    private function getConfigurations()
+    {
+        $configurations = [
+            CameraConfiguration::KEY_LIVESTREAM_SERVER => 'asdfsfasdfasdfa.asfasfasfa.com',
+            CameraConfiguration::KEY_FFMPEG_LOCATION_APPLICATION => self::TMP_LOCATION,
+            CameraConfiguration::KEY_INPUT_CAMERA_ADDRESS => 'tcp://127.0.0.1:8181?listen',
+            CameraConfiguration::KEY_INCREASE_VOLUME_INPUT => 'volume=24dB',
+            CameraConfiguration::KEY_AUDIO_BITRATE => '192000',
+            CameraConfiguration::KEY_AUDIO_SAMPLING_FREQUENCY => '44100',
+            CameraConfiguration::KEY_MAP_AUDIO_CHANNEL => '0.1.0',
+            CameraConfiguration::KEY_OUTPUT_STREAM_FORMAT => 'flv rtmp://live.example.com:1935/given/url',
+            CameraConfiguration::KEY_CAMERA_LOCATION_APPLICATION => self::TMP_LOCATION,
+            CameraConfiguration::KEY_HARDWARE_VIDEO_DEVICE => 'hw:1,0',
+            CameraConfiguration::KEY_OUTPUT_VIDEO_LOCATION => 'tcp://127.0.0.1:8181',
+            CameraConfiguration::KEY_AUDIO_VOLUME => '1.0',
+            CameraConfiguration::KEY_VIDEO_BITRATE => '1500000',
+            CameraConfiguration::KEY_INTERVAL_IS_SERVER_AVAILABLE => '0',
+            CameraConfiguration::KEY_RETRY_IS_SERVER_AVAILABLE => '5',
+        ];
+        return (object)$configurations;
+    }
+
+}

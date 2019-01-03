@@ -34,6 +34,9 @@ class StopStreamService implements StreamInterface
         $this->logger = $logger;
     }
 
+    /**
+     * @throw \InvalidArgumentException
+     */
     public function process(): void
     {
         if (!$this->statusStreamService->isRunning()) {
@@ -41,9 +44,8 @@ class StopStreamService implements StreamInterface
             return;
         }
 
-        //TODO: Add clause to check if it need to be checked if mixer is online.
         $configurations = $this->getConfigurations();
-        if ($configurations->checkIfMixerIsRunning) {
+        if ($configurations->checkIfMixerIsRunning === 'true') {
             $attempts = 0;
             do {
                 if (!$this->isMixerRunning($configurations->mixerIPAddress)) {
@@ -55,7 +57,7 @@ class StopStreamService implements StreamInterface
             } while ($attempts <= $configurations->mixerRetryAttempts);
         }
 
-        exec('killall -9 picam');
+        exec($configurations->stopStreamCommand);
         $this->logger->info('Livestream is stopped successfully');
     }
 
@@ -79,13 +81,11 @@ class StopStreamService implements StreamInterface
     private function getConfigurations()
     {
         $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
-        $requiredProperties = [
-            CameraConfiguration::MIXER_INTERVAL_TIME,
-            CameraConfiguration::KEY_MIXER_RETRY_ATTEMPTS,
-            CameraConfiguration::KEY_CHECK_IF_MIXER_IS_RUNNING,
-            CameraConfiguration::KEY_MIXER_IP_ADDRESS,
-        ];
-        Assert::allPropertyExists($configurations, $requiredProperties);
+        Assert::propertyExists($configurations, CameraConfiguration::MIXER_INTERVAL_TIME);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_MIXER_RETRY_ATTEMPTS);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_CHECK_IF_MIXER_IS_RUNNING);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_MIXER_IP_ADDRESS);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_STOP_STREAM_COMMAND);
         return $configurations;
     }
 }

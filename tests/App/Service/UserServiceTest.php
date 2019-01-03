@@ -145,4 +145,16 @@ class UserServiceTest extends TestCase
         $this->userRepositoryMock->expects($this->once())->method('save')->willThrowException(new ORMException());
         $this->userService->createUser(new User());
     }
+
+    /**
+     * @throws ORMException
+     * @throws OptimisticLockException
+     * @covers ::updateUser
+     */
+    public function testUpdateUser()
+    {
+        $this->userRepositoryMock->expects($this->once())->method('save');
+        $this->userService->updateUser(new User());
+        $this->addToAssertionCount(1);
+    }
 }

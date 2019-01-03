@@ -56,6 +56,18 @@ class ManageScheduleServiceTest extends TestCase
     }
 
     /**
+     * @covers ::getAllSchedules
+     */
+    public function testGetAllSchedules()
+    {
+        $this->streamScheduleRepository->expects($this->once())
+            ->method('findAll')
+            ->willReturn([new StreamSchedule()]);
+        $scheduledItems = $this->manageScheduleService->getAllSchedules();
+        $this->assertInstanceOf(StreamSchedule::class, $scheduledItems[0]);
+    }
+
+    /**
      * @covers ::getScheduleById
      */
     public function testGetScheduleById()

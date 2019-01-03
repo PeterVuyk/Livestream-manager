@@ -47,3 +47,4 @@ manual.configuration.title.meaning_configuration_keys: 'Betekenis configuratie k
 manual.configuration.description.meaning_configuration_keys: 'Hieronder vindt je een overzicht met alle configuratiesleutels met een korte beschrijving.'
 manual.api.description.api: '<p>Voor het mogelijk maken van communicatie tussen de web-based client en de server, hebben we een API Rest endpoint om:<ul><li>De status van de stream op te halen.</li><li>Ophalen van de ingeplande streams.</li></ul>De authenticatie is ''basic authentication''. The gebruikersnaam en wachtwoord kan gedeeld worden door de moderator, indien nodig kan er een nieuw account gegenereerd worden en ''in memory'' worden opgeslagen. Bekijk de endpoints via deze link:'
 manual.api.api_rest_endpoints_link: 'API Rest endpoints'
+manual.user_management.description.stop_stream_command: 'Met deze commando zet je de camera uit.'

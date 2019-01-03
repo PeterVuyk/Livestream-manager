@@ -30,6 +30,7 @@ class CameraConfiguration
     const KEY_INCREASE_VOLUME_INPUT = 'increaseVolumeInput';
     const KEY_INPUT_CAMERA_ADDRESS = 'inputCameraAddress';
     const KEY_FFMPEG_LOCATION_APPLICATION = 'ffmpegLocationApplication';
+    const KEY_STOP_STREAM_COMMAND = 'stopStreamCommand';
 
     /**
      * @var string

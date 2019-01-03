@@ -36,6 +36,7 @@ class StartStreamService implements StreamInterface
     }
 
     /**
+     * @throws \InvalidArgumentException
      * @throws CouldNotStartLivestreamException
      */
     public function process(): void
@@ -49,9 +50,7 @@ class StartStreamService implements StreamInterface
         if (!$this->isHostAvailable($configurations)) {
             throw CouldNotStartLivestreamException::hostNotAvailable();
         }
-
-        $this->createCameraDirectories();
-        $this->logger->info('Livestream is online');
+        $this->logger->info('host is available');
 
         exec(
             "{$configurations->ffmpegLocationApplication} -i {$configurations->inputCameraAddress} \
@@ -69,26 +68,6 @@ class StartStreamService implements StreamInterface
     }
 
     /**
-     * @throws CouldNotStartLivestreamException
-     */
-    private function createCameraDirectories()
-    {
-        if (!file_exists('/run/shm')) {
-            if (!mkdir('/run/shm/hooks/') || !mkdir('/run/shm/rec/') || !mkdir('/run/shm/state/')) {
-                throw CouldNotStartLivestreamException::couldNotCreateRequiredDirectories();
-            }
-        }
-
-        if (is_link('/run/shm/rec/archive')) {
-            return;
-        }
-
-        if (!symlink('/home/pi/picam/archive', '/run/shm/rec/archive')) {
-            throw CouldNotStartLivestreamException::couldNotCreateASymlink();
-        }
-    }
-
-    /**
      * @param object $configurations
      * @return bool
      */
@@ -102,7 +81,7 @@ class StartStreamService implements StreamInterface
             }
             $attempts++;
             $this->logger->warning("host was not available, attempts: {$attempts}");
-            sleep($configurations->intervalIsServerAvailable);
+            sleep((int)$configurations->intervalIsServerAvailable);
         }
         while ($attempts <= $configurations->retryIsServerAvailable);
         return false;
@@ -115,24 +94,21 @@ class StartStreamService implements StreamInterface
     private function getConfigurations()
     {
         $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
-        $requiredProperties = [
-            CameraConfiguration::KEY_LIVESTREAM_SERVER,
-            CameraConfiguration::KEY_INTERVAL_IS_SERVER_AVAILABLE,
-            CameraConfiguration::KEY_RETRY_IS_SERVER_AVAILABLE,
-            CameraConfiguration::KEY_VIDEO_BITRATE,
-            CameraConfiguration::KEY_AUDIO_VOLUME,
-            CameraConfiguration::KEY_OUTPUT_VIDEO_LOCATION,
-            CameraConfiguration::KEY_HARDWARE_VIDEO_DEVICE,
-            CameraConfiguration::KEY_CAMERA_LOCATION_APPLICATION,
-            CameraConfiguration::KEY_OUTPUT_STREAM_FORMAT,
-            CameraConfiguration::KEY_MAP_AUDIO_CHANNEL,
-            CameraConfiguration::KEY_AUDIO_BITRATE,
-            CameraConfiguration::KEY_AUDIO_SAMPLING_FREQUENCY,
-            CameraConfiguration::KEY_INCREASE_VOLUME_INPUT,
-            CameraConfiguration::KEY_INPUT_CAMERA_ADDRESS,
-            CameraConfiguration::KEY_FFMPEG_LOCATION_APPLICATION,
-        ];
-        Assert::allPropertyExists($configurations, $requiredProperties);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_LIVESTREAM_SERVER);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_FFMPEG_LOCATION_APPLICATION);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_INPUT_CAMERA_ADDRESS);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_INCREASE_VOLUME_INPUT);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_AUDIO_BITRATE);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_AUDIO_SAMPLING_FREQUENCY);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_MAP_AUDIO_CHANNEL);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_OUTPUT_STREAM_FORMAT);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_CAMERA_LOCATION_APPLICATION);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_HARDWARE_VIDEO_DEVICE);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_OUTPUT_VIDEO_LOCATION);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_AUDIO_VOLUME);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_VIDEO_BITRATE);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_INTERVAL_IS_SERVER_AVAILABLE);
+        Assert::propertyExists($configurations, CameraConfiguration::KEY_RETRY_IS_SERVER_AVAILABLE);
         return $configurations;
     }
 }
