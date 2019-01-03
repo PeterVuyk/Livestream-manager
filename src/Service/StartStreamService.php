@@ -82,8 +82,7 @@ class StartStreamService implements StreamInterface
             $attempts++;
             $this->logger->warning("host was not available, attempts: {$attempts}");
             sleep((int)$configurations->intervalIsServerAvailable);
-        }
-        while ($attempts <= $configurations->retryIsServerAvailable);
+        } while ($attempts <= $configurations->retryIsServerAvailable);
         return false;
     }
 

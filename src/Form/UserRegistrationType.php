@@ -50,8 +50,9 @@ class UserRegistrationType extends AbstractType
                     'required' => true,
                     'constraints' => [
                         new Assert\NotBlank(),
-                    ]
-                ])
+                        ]
+                ]
+            )
             ->add(
                 'submitButton',
                 SubmitType::class,

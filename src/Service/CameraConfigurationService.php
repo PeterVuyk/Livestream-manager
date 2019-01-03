@@ -46,7 +46,9 @@ class CameraConfigurationService
      */
     public function saveConfigurations(Configuration $configuration)
     {
-        $this->cameraConfigurationRepository->saveFromConfiguration($configuration->getCameraConfiguration()->toArray());
+        $this->cameraConfigurationRepository->saveFromConfiguration(
+            $configuration->getCameraConfiguration()->toArray()
+        );
     }
 
     /**

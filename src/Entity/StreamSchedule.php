@@ -264,7 +264,7 @@ class StreamSchedule
     /**
      * @return bool|null
      */
-    public function IsRunning(): ?bool
+    public function isRunning(): ?bool
     {
         return $this->isRunning;
     }

@@ -19,3 +19,8 @@ docker-data/logs/*
 npm-debug.log
 yarn-error.log
 ###< symfony/webpack-encore-pack ###
+
+###> squizlabs/php_codesniffer ###
+/.phpcs-cache
+/phpcs.xml
+###< squizlabs/php_codesniffer ###

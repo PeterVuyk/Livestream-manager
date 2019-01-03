@@ -63,7 +63,8 @@ class UserDetailsType extends AbstractType
             )
             ->add(
                 'submitButton',
-                SubmitType::class, [
+                SubmitType::class,
+                [
                     'label' => 'user_details.submit_button',
                     'translation_domain' => 'users',
                     'attr' => ['class' => 'btn btn-primary pull-right'],
@@ -81,5 +82,4 @@ class UserDetailsType extends AbstractType
             'data_class' => User::class,
         ));
     }
-
 }

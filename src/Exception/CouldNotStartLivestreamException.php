@@ -18,15 +18,4 @@ class CouldNotStartLivestreamException extends \Exception
     {
         return new self(self::HOST_NOT_AVAILABLE_MESSAGE);
     }
-
-    public static function couldNotCreateRequiredDirectories()
-    {
-        return new self(self::COULD_NOT_CREATE_DIRS_MESSAGE);
-    }
-
-    public static function couldNotCreateASymlink()
-    {
-        return new self(self::COULD_NOT_CREATE_SYMLINK_MESSAGE);
-    }
-
 }

@@ -29,7 +29,8 @@ class ConfigurationType extends AbstractType
             )
             ->add(
                 'submitButton',
-                SubmitType::class, [
+                SubmitType::class,
+                [
                     'label' => 'camera_configuration_list.submit_button',
                     'translation_domain' => 'camera_configuration',
                     'attr' => ['class' => 'btn btn-primary pull-right'],
