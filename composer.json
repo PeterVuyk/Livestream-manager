@@ -1,5 +1,5 @@
 {
-    "name": "petervuyk/livestream-api",
+    "name": "petervuyk/livestream-server",
     "type": "project",
     "license": "MIT",
     "require": {

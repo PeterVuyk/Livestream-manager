@@ -12,8 +12,5 @@ docker-compose exec yarn /bin/bash -c "cd /usr/src/app && yarn install && yarn b
 # Run the database migrations to setup the database tables.
 docker-compose exec php bin/console doctrine:migrations:migrate
 
-# Extract an update the translation content.
-docker-compose exec php bin/console translation:update --dump-messages --force en
-
 # Add the required cron for the schedule to crontab.
 (crontab -l ; echo "* * * * * /usr/local/bin/docker-compose -f $(pwd)/docker-compose.yml exec -T php bin/console scheduler:execute >/dev/null 2>&1") | sort - | uniq - | crontab -
