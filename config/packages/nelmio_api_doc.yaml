@@ -1,7 +1,7 @@
 nelmio_api_doc:
   documentation:
     info:
-      title: API endpoints to control the livestream
+      title: API endpoints livestream and scheduler
   areas:
     path_patterns:
     - ^/api/v(?!/doc$)

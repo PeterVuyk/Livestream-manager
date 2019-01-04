@@ -9,6 +9,7 @@ use App\Service\ManageScheduleService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Swagger\Annotations as SWG;
+use Nelmio\ApiDocBundle\Annotation\Model;
 
 class ApiSchedulerController
 {
@@ -32,7 +33,18 @@ class ApiSchedulerController
     /**
      * @SWG\Response(
      *     response=200,
-     *     description="Get the stream schedule list"
+     *     description="Returns the scheduled livestreams",
+     *     @SWG\Schema(
+     *         type="array",
+     *         @SWG\Items(ref=@Model(type=StreamScheduleDTO::class))
+     *     )
+     * )
+     * @SWG\Response(
+     *     response=500,
+     *     description="Failed getting the scheduled livestream, Internal server error",
+     *     @SWG\Schema(
+     *             @SWG\Property(property="message", type="string"),
+     *     )
      * )
      * @SWG\Tag(name="Scheduler")
      * @return JsonResponse
@@ -46,12 +58,12 @@ class ApiSchedulerController
                     continue;
                 }
                 $streamScheduleDTO = StreamScheduleDTO::createFromStreamSchedule($schedule);
-                $response[] = $streamScheduleDTO->getPayload();
+                $response[] = $streamScheduleDTO->grabPayload();
             }
             return new JsonResponse($response, JsonResponse::HTTP_OK);
         } catch (CouldNotCreateStreamScheduleDTOException $exception) {
             $this->logger->error('Could not retrieve scheduled streams via API', ['exception' => $exception]);
         }
-        return new JsonResponse($response, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
+        return new JsonResponse(['message' => 'something went wrong'], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);
     }
 }

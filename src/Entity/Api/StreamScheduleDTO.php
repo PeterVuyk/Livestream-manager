@@ -7,34 +7,62 @@ use App\Entity\StreamSchedule;
 use App\Entity\Weekday;
 use App\Exception\CouldNotCreateStreamScheduleDTOException;
 use Webmozart\Assert\Assert;
+use Swagger\Annotations as SWG;
 
 class StreamScheduleDTO
 {
-    /** @var string */
+    /**
+     * @var string
+     * @SWG\Property(type="string", maxLength=40, description="Uuid, the unique identifier stream schedule.")
+     */
     private $id;
 
-    /** @var string */
+    /**
+     * @var string
+     * @SWG\Property(type="string", maxLength=50)
+     */
     private $name;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     * @SWG\Property(type="string", maxLength=25, description="null if onetime schedule, day of the week if recurring")
+     */
     private $executionDay;
 
-    /** @var string|null */
+    /**
+     * @var string|null
+     * @SWG\Property(type="string", maxLength=25, description="null if onetime schedule, time of the day if recurring")
+     */
     private $executionTime;
 
-    /** @var \DateTime|null */
+    /**
+     * @var \DateTime|null
+     * @SWG\Property(type="DateTime", description="null if recurring schedule, DateTime if one-time schedule")
+     */
     private $onetimeExecutionDate;
 
-    /** @var int */
+    /**
+     * @var int
+     * @SWG\Property(type="int", maxLength=10, description="total stream duration in minutes")
+     */
     private $minutesStreamDuration;
 
-    /** @var bool */
+    /**
+     * @var bool
+     * @SWG\Property(type="bool")
+     */
     private $isRunning;
 
-    /** @var bool */
+    /**
+     * @var bool
+     * @SWG\Property(type="bool" description"Boolean if stream is a recurring or one-time schedule")
+     */
     private $isRecurring;
 
-    /** @var \DateTime */
+    /**
+     * @var \DateTime
+     * @SWG\Property(type="DateTime", description="next planned execution from the stream")
+     */
     private $nextExecutionTime;
 
     /**
@@ -46,8 +74,8 @@ class StreamScheduleDTO
     {
         try {
             self::validate($streamSchedule);
-            $this->executionDay =
-                $streamSchedule->getExecutionDay()? Weekday::getDayOfTheWeekById($streamSchedule->getExecutionDay()) : null;
+            $this->executionDay = $streamSchedule->getExecutionDay() ?
+                    Weekday::getDayOfTheWeekById($streamSchedule->getExecutionDay()): null;
             $this->nextExecutionTime = $streamSchedule->getNextExecutionTime();
         } catch (\InvalidArgumentException $exception) {
             throw CouldNotCreateStreamScheduleDTOException::invalidArguments($streamSchedule, $exception);
@@ -146,7 +174,7 @@ class StreamScheduleDTO
     /**
      * @return array
      */
-    public function getPayload()
+    public function grabPayload()
     {
         return [
             'id' => $this->getId(),

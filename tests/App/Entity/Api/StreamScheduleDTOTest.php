@@ -109,18 +109,18 @@ class StreamScheduleDTOTest extends TestCase
     }
 
     /**
-     * @covers ::getPayload
+     * @covers ::grabPayload
      * @uses \App\Entity\Api\StreamScheduleDTO
      */
     public function testGetPayload()
     {
-        $this->assertArrayHasKey('id', $this->streamScheduleDTO->getPayload());
-        $this->assertArrayHasKey('name', $this->streamScheduleDTO->getPayload());
-        $this->assertArrayHasKey('executionDay', $this->streamScheduleDTO->getPayload());
-        $this->assertArrayHasKey('executionTime', $this->streamScheduleDTO->getPayload());
-        $this->assertArrayHasKey('onetimeExecutionDate', $this->streamScheduleDTO->getPayload());
-        $this->assertArrayHasKey('minutesStreamDuration', $this->streamScheduleDTO->getPayload());
-        $this->assertArrayHasKey('isRunning', $this->streamScheduleDTO->getPayload());
+        $this->assertArrayHasKey('id', $this->streamScheduleDTO->grabPayload());
+        $this->assertArrayHasKey('name', $this->streamScheduleDTO->grabPayload());
+        $this->assertArrayHasKey('executionDay', $this->streamScheduleDTO->grabPayload());
+        $this->assertArrayHasKey('executionTime', $this->streamScheduleDTO->grabPayload());
+        $this->assertArrayHasKey('onetimeExecutionDate', $this->streamScheduleDTO->grabPayload());
+        $this->assertArrayHasKey('minutesStreamDuration', $this->streamScheduleDTO->grabPayload());
+        $this->assertArrayHasKey('isRunning', $this->streamScheduleDTO->grabPayload());
     }
 
     /**
