@@ -5,10 +5,9 @@ namespace App\Tests\Service;
 
 use App\Entity\CameraConfiguration;
 use App\Entity\Configuration;
+use App\Exception\CouldNotModifyCameraConfigurationException;
 use App\Repository\CameraConfigurationRepository;
 use App\Service\CameraConfigurationService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -55,8 +54,7 @@ class CameraConfigurationServiceTest extends TestCase
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyCameraConfigurationException
      * @covers ::saveConfigurations
      */
     public function testSaveConfigurations()

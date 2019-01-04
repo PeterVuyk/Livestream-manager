@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\StreamSchedule;
+use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Repository\StreamScheduleRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 
 class ManageScheduleService
 {
@@ -56,8 +55,7 @@ class ManageScheduleService
 
     /**
      * @param StreamSchedule $streamSchedule
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyStreamScheduleException
      */
     public function toggleDisablingSchedule(StreamSchedule $streamSchedule): void
     {
@@ -67,8 +65,7 @@ class ManageScheduleService
 
     /**
      * @param StreamSchedule $streamSchedule
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyStreamScheduleException
      */
     public function unwreckSchedule(StreamSchedule $streamSchedule): void
     {
@@ -78,7 +75,7 @@ class ManageScheduleService
 
     /**
      * @param StreamSchedule $streamSchedule
-     * @throws ORMException
+     * @throws CouldNotModifyStreamScheduleException
      */
     public function removeSchedule(StreamSchedule $streamSchedule): void
     {
@@ -87,8 +84,7 @@ class ManageScheduleService
 
     /**
      * @param StreamSchedule $streamSchedule
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyStreamScheduleException
      */
     public function saveSchedule(StreamSchedule $streamSchedule): void
     {

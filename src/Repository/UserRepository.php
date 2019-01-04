@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\User;
+use App\Exception\CouldNotModifyUserException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -22,23 +22,29 @@ class UserRepository extends ServiceEntityRepository
 
     /**
      * @param User $user
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyUserException
      */
     public function save(User $user): void
     {
-        $this->getEntityManager()->persist($user);
-        $this->getEntityManager()->flush();
+        try {
+            $this->getEntityManager()->persist($user);
+            $this->getEntityManager()->flush();
+        } catch (ORMException $exception) {
+            throw CouldNotModifyUserException::forError($exception);
+        }
     }
 
     /**
      * @param User $user
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyUserException
      */
     public function remove(User $user): void
     {
-        $this->getEntityManager()->remove($user);
-        $this->getEntityManager()->flush();
+        try {
+            $this->getEntityManager()->remove($user);
+            $this->getEntityManager()->flush();
+        } catch (ORMException $exception) {
+            throw CouldNotModifyUserException::forError($exception);
+        }
     }
 }

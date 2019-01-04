@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Entity\Api\StreamScheduleDTO;
+use App\Exception\CouldNotCreateStreamScheduleDTOException;
 use App\Service\ManageScheduleService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
@@ -48,7 +49,7 @@ class ApiSchedulerController
                 $response[] = $streamScheduleDTO->getPayload();
             }
             return new JsonResponse($response, JsonResponse::HTTP_OK);
-        } catch (\Exception $exception) {
+        } catch (CouldNotCreateStreamScheduleDTOException $exception) {
             $this->logger->error('Could not retrieve scheduled streams via API', ['exception' => $exception]);
         }
         return new JsonResponse($response, JsonResponse::HTTP_INTERNAL_SERVER_ERROR);

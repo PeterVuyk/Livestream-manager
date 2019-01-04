@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\StreamSchedule;
+use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Form\UpdateScheduleType;
 use App\Service\ManageScheduleService;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -49,7 +50,6 @@ class ManageScheduleController extends Controller
         $this->formFactory = $formFactory;
     }
 
-
     /**
      * @param string $scheduleId
      * @return RedirectResponse
@@ -59,7 +59,7 @@ class ManageScheduleController extends Controller
         try {
             $schedule = $this->manageScheduleService->getScheduleById($scheduleId);
             $this->manageScheduleService->toggleDisablingSchedule($schedule);
-        } catch (\Exception $exception) {
+        } catch (CouldNotModifyStreamScheduleException $exception) {
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.manage_schedule.error.could_not_disable_status');
         }
         return new RedirectResponse($this->router->generate('scheduler_list'));
@@ -74,7 +74,7 @@ class ManageScheduleController extends Controller
         try {
             $schedule = $this->manageScheduleService->getScheduleById($scheduleId);
             $this->manageScheduleService->removeSchedule($schedule);
-        } catch (\Exception $exception) {
+        } catch (CouldNotModifyStreamScheduleException $exception) {
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.manage_schedule.error.could_not_remove');
         }
         return new RedirectResponse($this->router->generate('scheduler_list'));
@@ -89,7 +89,7 @@ class ManageScheduleController extends Controller
         try {
             $schedule = $this->manageScheduleService->getScheduleById($scheduleId);
             $this->manageScheduleService->unwreckSchedule($schedule);
-        } catch (\Exception $exception) {
+        } catch (CouldNotModifyStreamScheduleException $exception) {
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.manage_schedule.error.could_not_activate');
         }
         return new RedirectResponse($this->router->generate('scheduler_list'));
@@ -114,7 +114,7 @@ class ManageScheduleController extends Controller
             try {
                 $this->manageScheduleService->saveSchedule($form->getData());
                 $this->flashBag->add(self::SUCCESS_MESSAGE, 'flash.manage_schedule.success.schedule_updated');
-            } catch (\Exception $exception) {
+            } catch (CouldNotModifyStreamScheduleException $exception) {
                 $this->flashBag->add(self::ERROR_MESSAGE, 'flash.manage_schedule.error.can_not_edit_schedule');
             }
             return new RedirectResponse($this->router->generate('scheduler_list'));

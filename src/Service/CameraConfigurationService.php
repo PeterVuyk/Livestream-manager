@@ -5,9 +5,8 @@ namespace App\Service;
 
 use App\Entity\CameraConfiguration;
 use App\Entity\Configuration;
+use App\Exception\CouldNotModifyCameraConfigurationException;
 use App\Repository\CameraConfigurationRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Psr\Log\LoggerInterface;
 
 class CameraConfigurationService
@@ -41,8 +40,7 @@ class CameraConfigurationService
 
     /**
      * @param Configuration $configuration
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyCameraConfigurationException
      */
     public function saveConfigurations(Configuration $configuration)
     {

@@ -4,10 +4,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Configuration;
+use App\Exception\CouldNotModifyCameraConfigurationException;
 use App\Form\ConfigurationType;
 use App\Service\CameraConfigurationService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Form\FormFactoryInterface;
@@ -67,7 +66,7 @@ class CameraConfigurationController extends Controller
             try {
                 $this->cameraConfigurationService->saveConfigurations($form->getData());
                 $this->flashBag->add(self::SUCCESS_MESSAGE, 'flash.camera_configuration.success.updated');
-            } catch (ORMException | OptimisticLockException $exception) {
+            } catch (CouldNotModifyCameraConfigurationException $exception) {
                 $this->flashBag->add(self::ERROR_MESSAGE, 'flash.camera_configuration.error.could_not_update');
             }
             return new RedirectResponse($this->router->generate('camera_configuration_list'));

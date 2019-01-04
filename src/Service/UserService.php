@@ -4,10 +4,9 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\User;
+use App\Exception\CouldNotModifyUserException;
 use App\Exception\UserNotFoundException;
 use App\Repository\UserRepository;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 
 class UserService
@@ -31,8 +30,7 @@ class UserService
 
     /**
      * @param int $userId
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyUserException
      * @throws UserNotFoundException
      */
     public function removeUser(int $userId): void
@@ -46,8 +44,7 @@ class UserService
 
     /**
      * @param User $user
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyUserException
      */
     public function createUser(User $user): void
     {
@@ -58,8 +55,7 @@ class UserService
 
     /**
      * @param int $userId
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyUserException
      * @throws UserNotFoundException
      */
     public function toggleDisablingUser(int $userId)
@@ -74,8 +70,7 @@ class UserService
 
     /**
      * @param User $user
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyUserException
      */
     public function updateUser(User $user): void
     {

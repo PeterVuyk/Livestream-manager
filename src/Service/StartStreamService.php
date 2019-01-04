@@ -5,6 +5,7 @@ namespace App\Service;
 
 use App\Entity\CameraConfiguration;
 use App\Exception\CouldNotStartLivestreamException;
+use App\Exception\InvalidConfigurationsException;
 use Psr\Log\LoggerInterface;
 use Webmozart\Assert\Assert;
 
@@ -36,7 +37,7 @@ class StartStreamService implements StreamInterface
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws InvalidConfigurationsException
      * @throws CouldNotStartLivestreamException
      */
     public function process(): void
@@ -92,22 +93,26 @@ class StartStreamService implements StreamInterface
      */
     private function getConfigurations()
     {
-        $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_LIVESTREAM_SERVER);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_FFMPEG_LOCATION_APPLICATION);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_INPUT_CAMERA_ADDRESS);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_INCREASE_VOLUME_INPUT);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_AUDIO_BITRATE);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_AUDIO_SAMPLING_FREQUENCY);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_MAP_AUDIO_CHANNEL);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_OUTPUT_STREAM_FORMAT);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_CAMERA_LOCATION_APPLICATION);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_HARDWARE_VIDEO_DEVICE);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_OUTPUT_VIDEO_LOCATION);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_AUDIO_VOLUME);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_VIDEO_BITRATE);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_INTERVAL_IS_SERVER_AVAILABLE);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_RETRY_IS_SERVER_AVAILABLE);
+        try {
+            $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_LIVESTREAM_SERVER);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_FFMPEG_LOCATION_APPLICATION);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_INPUT_CAMERA_ADDRESS);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_INCREASE_VOLUME_INPUT);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_AUDIO_BITRATE);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_AUDIO_SAMPLING_FREQUENCY);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_MAP_AUDIO_CHANNEL);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_OUTPUT_STREAM_FORMAT);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_CAMERA_LOCATION_APPLICATION);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_HARDWARE_VIDEO_DEVICE);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_OUTPUT_VIDEO_LOCATION);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_AUDIO_VOLUME);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_VIDEO_BITRATE);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_INTERVAL_IS_SERVER_AVAILABLE);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_RETRY_IS_SERVER_AVAILABLE);
+        } catch (\InvalidArgumentException $exception) {
+            throw InvalidConfigurationsException::fromError($exception);
+        }
         return $configurations;
     }
 }

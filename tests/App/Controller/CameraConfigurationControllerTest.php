@@ -6,6 +6,7 @@ namespace App\Tests\Controller;
 use App\Controller\CameraConfigurationController;
 use App\Entity\CameraConfiguration;
 use App\Entity\Configuration;
+use App\Exception\CouldNotModifyCameraConfigurationException;
 use App\Service\CameraConfigurationService;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -130,7 +131,7 @@ class CameraConfigurationControllerTest extends TestCase
 
         $this->cameraConfigurationServiceMock->expects($this->once())
             ->method('saveConfigurations')
-            ->willThrowException(new ORMException());
+            ->willThrowException(CouldNotModifyCameraConfigurationException::forError(new ORMException()));
 
         $this->flashBagMock->expects($this->once())->method('add');
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');

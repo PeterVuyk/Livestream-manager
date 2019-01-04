@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\CameraConfiguration;
+use App\Exception\CouldNotModifyCameraConfigurationException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -22,14 +22,17 @@ class CameraConfigurationRepository extends ServiceEntityRepository
 
     /**
      * @param CameraConfiguration[] $cameraConfigurations
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyCameraConfigurationException
      */
     public function saveFromConfiguration(array $cameraConfigurations)
     {
-        foreach ($cameraConfigurations as $cameraConfiguration) {
-            $this->getEntityManager()->persist($cameraConfiguration);
+        try {
+            foreach ($cameraConfigurations as $cameraConfiguration) {
+                $this->getEntityManager()->persist($cameraConfiguration);
+            }
+            $this->getEntityManager()->flush();
+        } catch (ORMException $exception) {
+            throw CouldNotModifyCameraConfigurationException::forError($exception);
         }
-        $this->getEntityManager()->flush();
     }
 }

@@ -6,11 +6,10 @@ namespace App\Command;
 use App\Entity\ScheduleLog;
 use App\Entity\StreamSchedule;
 use App\Exception\CouldNotExecuteCommandException;
+use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Repository\StreamScheduleRepository;
 use App\Service\StartStreamService;
 use App\Service\StopStreamService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -104,8 +103,7 @@ class SchedulerExecuteCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @throws CouldNotExecuteCommandException
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyStreamScheduleException
      */
     private function executeStopStream(StreamSchedule $streamSchedule, InputInterface $input, OutputInterface $output)
     {
@@ -133,8 +131,7 @@ class SchedulerExecuteCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @throws CouldNotExecuteCommandException
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyStreamScheduleException
      */
     private function executeStartStream(StreamSchedule $streamSchedule, InputInterface $input, OutputInterface $output)
     {

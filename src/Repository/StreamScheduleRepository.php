@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\StreamSchedule;
+use App\Exception\CouldNotModifyStreamScheduleException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 
@@ -25,23 +25,30 @@ class StreamScheduleRepository extends ServiceEntityRepository
 
     /**
      * @param StreamSchedule $streamSchedule
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyStreamScheduleException
      */
     public function save(StreamSchedule $streamSchedule): void
     {
-        $this->getEntityManager()->persist($streamSchedule);
-        $this->getEntityManager()->flush();
+        try {
+            $this->getEntityManager()->persist($streamSchedule);
+            $this->getEntityManager()->flush();
+        } catch (ORMException $exception) {
+            throw CouldNotModifyStreamScheduleException::forError($exception);
+        }
     }
 
     /**
      * @param StreamSchedule $streamSchedule
-     * @throws ORMException
+     * @throws CouldNotModifyStreamScheduleException
      */
     public function remove(StreamSchedule $streamSchedule): void
     {
-        $this->getEntityManager()->remove($streamSchedule);
-        $this->getEntityManager()->flush();
+        try {
+            $this->getEntityManager()->remove($streamSchedule);
+            $this->getEntityManager()->flush();
+        } catch (ORMException $exception) {
+            throw CouldNotModifyStreamScheduleException::forError($exception);
+        }
     }
 
     /**

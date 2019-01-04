@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\App\Controller;
 
 use App\Controller\RegistrationController;
+use App\Exception\CouldNotModifyUserException;
 use App\Service\UserService;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -92,7 +93,9 @@ class RegistrationControllerTest extends TestCase
         $formMock->expects($this->once())->method('isSubmitted')->willReturn(true);
         $formMock->expects($this->once())->method('isValid')->willReturn(true);
         $this->formFactory->expects($this->once())->method('create')->willReturn($formMock);
-        $this->userService->expects($this->once())->method('createUser')->willThrowException(new ORMException());
+        $this->userService->expects($this->once())
+            ->method('createUser')
+            ->willThrowException(CouldNotModifyUserException::forError(new ORMException()));
         $flashBagMock = $this->createMock(FlashBagInterface::class);
         $flashBagMock->expects($this->once())->method('add');
         $sessionMock = $this->createMock(Session::class);

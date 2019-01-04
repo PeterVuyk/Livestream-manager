@@ -4,15 +4,15 @@ declare(strict_types=1);
 namespace App\Tests\Repository;
 
 use App\Entity\StreamSchedule;
+use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Repository\StreamScheduleRepository;
 use Doctrine\ORM\AbstractQuery;
+use Doctrine\ORM\ORMException;
 use Doctrine\ORM\Persisters\Entity\EntityPersister;
 use Doctrine\ORM\UnitOfWork;
 use PHPUnit\Framework\TestCase;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use Symfony\Bridge\Doctrine\RegistryInterface;
 use Doctrine\ORM\QueryBuilder;
@@ -42,25 +42,54 @@ class StreamScheduleRepositoryTest extends TestCase
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyStreamScheduleException
      * @covers ::save
      */
-    public function testSave()
+    public function testSaveSuccess()
     {
         $this->entityManager->expects($this->once())->method('persist');
         $this->entityManager->expects($this->once())->method('flush');
         $this->streamScheduleRepository->save(new StreamSchedule());
+
+        $this->addToAssertionCount(1);
     }
 
     /**
-     * @throws ORMException
+     * @throws CouldNotModifyStreamScheduleException
+     * @covers ::save
+     */
+    public function testSaveFailed()
+    {
+        $this->expectException(CouldNotModifyStreamScheduleException::class);
+
+        $this->entityManager->expects($this->once())->method('persist');
+        $this->entityManager->expects($this->once())->method('flush')->willThrowException(new ORMException());
+        $this->streamScheduleRepository->save(new StreamSchedule());
+    }
+
+    /**
+     * @throws CouldNotModifyStreamScheduleException
      * @covers ::remove
      */
-    public function testRemove()
+    public function testRemoveSuccess()
     {
         $this->entityManager->expects($this->once())->method('remove');
         $this->entityManager->expects($this->once())->method('flush');
+        $this->streamScheduleRepository->remove(new StreamSchedule());
+
+        $this->addToAssertionCount(1);
+    }
+
+    /**
+     * @throws CouldNotModifyStreamScheduleException
+     * @covers ::remove
+     */
+    public function testRemoveFailed()
+    {
+        $this->expectException(CouldNotModifyStreamScheduleException::class);
+
+        $this->entityManager->expects($this->once())->method('remove');
+        $this->entityManager->expects($this->once())->method('flush')->willThrowException(new ORMException());
         $this->streamScheduleRepository->remove(new StreamSchedule());
     }
 

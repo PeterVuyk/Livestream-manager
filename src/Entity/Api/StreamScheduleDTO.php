@@ -5,6 +5,7 @@ namespace App\Entity\Api;
 
 use App\Entity\StreamSchedule;
 use App\Entity\Weekday;
+use App\Exception\CouldNotCreateStreamScheduleDTOException;
 use Webmozart\Assert\Assert;
 
 class StreamScheduleDTO
@@ -37,23 +38,28 @@ class StreamScheduleDTO
     private $nextExecutionTime;
 
     /**
+     * @throws CouldNotCreateStreamScheduleDTOException
      * StreamScheduleDTO constructor.
-     * @throws \InvalidArgumentException
      * @param StreamSchedule $streamSchedule
      */
     private function __construct(StreamSchedule $streamSchedule)
     {
+        try {
+            self::validate($streamSchedule);
+            $this->executionDay =
+                $streamSchedule->getExecutionDay()? Weekday::getDayOfTheWeekById($streamSchedule->getExecutionDay()) : null;
+            $this->nextExecutionTime = $streamSchedule->getNextExecutionTime();
+        } catch (\InvalidArgumentException $exception) {
+            throw CouldNotCreateStreamScheduleDTOException::invalidArguments($streamSchedule, $exception);
+        }
         $this->id = $streamSchedule->getId();
         $this->name = $streamSchedule->getName();
-        $this->executionDay =
-            $streamSchedule->getExecutionDay()? Weekday::getDayOfTheWeekById($streamSchedule->getExecutionDay()) : null;
         $this->executionTime =
             $streamSchedule->getExecutionTime()? $streamSchedule->getExecutionTime()->format('H:i:s') : null;
         $this->onetimeExecutionDate = $streamSchedule->getOnetimeExecutionDate();
         $this->minutesStreamDuration = $streamSchedule->getStreamDuration();
         $this->isRunning = $streamSchedule->isRunning();
         $this->isRecurring = $streamSchedule->isRecurring();
-        $this->nextExecutionTime = $streamSchedule->getNextExecutionTime();
     }
 
     /**
@@ -62,7 +68,6 @@ class StreamScheduleDTO
      */
     public static function createFromStreamSchedule(StreamSchedule $streamSchedule)
     {
-        self::validate($streamSchedule);
         return new self($streamSchedule);
     }
 

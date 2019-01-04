@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Exception\CouldNotModifyUserException;
+use App\Exception\UserNotFoundException;
 use App\Form\UserDetailsType;
 use App\Service\UserService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -70,7 +70,7 @@ class UserManagementController extends Controller
         try {
             $this->userService->removeUser($userId);
             $this->flashBag->add(self::SUCCESS_MESSAGE, 'flash.user_management.error.user_removed');
-        } catch (\Exception $exception) {
+        } catch (UserNotFoundException | CouldNotModifyUserException $exception) {
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.user_management.error.could_not_remove_user');
         }
         return new RedirectResponse($this->router->generate('user_list'));
@@ -84,7 +84,7 @@ class UserManagementController extends Controller
     {
         try {
             $this->userService->toggleDisablingUser($userId);
-        } catch (\Exception $exception) {
+        } catch (CouldNotModifyUserException | UserNotFoundException $exception) {
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.user_management.error.failed_disabling_user');
         }
 
@@ -108,7 +108,7 @@ class UserManagementController extends Controller
             try {
                 $this->userService->updateUser($form->getData());
                 $this->flashBag->add(self::SUCCESS_MESSAGE, 'flash.user_management.success.user_created');
-            } catch (ORMException | OptimisticLockException $exception) {
+            } catch (CouldNotModifyUserException $exception) {
                 $this->flashBag->add(self::ERROR_MESSAGE, 'flash.user_management.error.failed_saving_user');
             }
             return new RedirectResponse($request->getUri());

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\StreamSchedule;
+use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Form\CreateOnetimeScheduleType;
 use App\Form\CreateRecurringScheduleType;
 use App\Service\ManageScheduleService;
@@ -77,7 +78,7 @@ class ScheduleController extends Controller
             try {
                 $this->manageScheduleService->saveSchedule($form->getData());
                 $this->flashBag->add(self::SUCCESS_MESSAGE, 'flash.schedule.success.schedule_created');
-            } catch (\Exception $exception) {
+            } catch (CouldNotModifyStreamScheduleException $exception) {
                 $this->flashBag->add(self::ERROR_MESSAGE, 'flash.schedule.error.could_not_save_schedule');
             }
             return new RedirectResponse($this->router->generate('scheduler_list'));
@@ -100,7 +101,7 @@ class ScheduleController extends Controller
             try {
                 $this->manageScheduleService->saveSchedule($form->getData());
                 $this->flashBag->add(self::SUCCESS_MESSAGE, 'flash.schedule.success.schedule_created');
-            } catch (\Exception $exception) {
+            } catch (CouldNotModifyStreamScheduleException $exception) {
                 $this->flashBag->add(self::ERROR_MESSAGE, 'flash.schedule.error.could_not_save_schedule');
             }
             return new RedirectResponse($this->router->generate('scheduler_list'));

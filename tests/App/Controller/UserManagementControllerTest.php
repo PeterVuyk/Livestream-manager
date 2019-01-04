@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 
 use App\Controller\UserManagementController;
 use App\Entity\User;
+use App\Exception\CouldNotModifyUserException;
 use App\Service\UserService;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -90,7 +91,9 @@ class UserManagementControllerTest extends TestCase
      */
     public function testDeleteUserFailed()
     {
-        $this->userServiceMock->expects($this->once())->method('removeUser')->willThrowException(new \Exception());
+        $this->userServiceMock->expects($this->once())
+            ->method('removeUser')
+            ->willThrowException(CouldNotModifyUserException::forError(new ORMException()));
         $this->flashBagMock->expects($this->once())->method('add');
         $this->routerMock->expects($this->once())->method('generate')->willReturn('direction');
 
@@ -116,7 +119,9 @@ class UserManagementControllerTest extends TestCase
      */
     public function testToggleDisablingUserFailed()
     {
-        $this->userServiceMock->expects($this->once())->method('toggleDisablingUser')->willThrowException(new \Exception());
+        $this->userServiceMock->expects($this->once())
+            ->method('toggleDisablingUser')
+            ->willThrowException(CouldNotModifyUserException::forError(new ORMException()));
         $this->routerMock->expects($this->once())->method('generate')->willReturn('direction');
         $this->flashBagMock->expects($this->once())->method('add');
 
@@ -182,7 +187,9 @@ class UserManagementControllerTest extends TestCase
     public function testUserDetailsSubmitFormFailed()
     {
         $this->userServiceMock->expects($this->once())->method('getUserById')->willReturn(new User());
-        $this->userServiceMock->expects($this->once())->method('updateUser')->willThrowException(new ORMException());
+        $this->userServiceMock->expects($this->once())
+            ->method('updateUser')
+            ->willThrowException(CouldNotModifyUserException::forError(new ORMException()));
         $this->flashBagMock->expects($this->once())->method('add');
 
         $formMock = $this->createMock(FormInterface::class);

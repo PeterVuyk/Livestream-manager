@@ -4,10 +4,9 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\StreamSchedule;
+use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Repository\StreamScheduleRepository;
 use App\Service\ManageScheduleService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
@@ -80,8 +79,7 @@ class ManageScheduleServiceTest extends TestCase
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyStreamScheduleException
      * @covers ::toggleDisablingSchedule
      * @uses \App\Service\ManageScheduleService
      */
@@ -95,8 +93,7 @@ class ManageScheduleServiceTest extends TestCase
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyStreamScheduleException
      * @covers ::unwreckSchedule
      * @uses \App\Service\ManageScheduleService
      */
@@ -108,7 +105,7 @@ class ManageScheduleServiceTest extends TestCase
     }
 
     /**
-     * @throws ORMException
+     * @throws CouldNotModifyStreamScheduleException
      * @covers ::removeSchedule
      */
     public function testRemoveScheduleSuccess()
@@ -119,8 +116,7 @@ class ManageScheduleServiceTest extends TestCase
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyStreamScheduleException
      * @covers ::saveSchedule
      */
     public function testSaveScheduleSuccess()

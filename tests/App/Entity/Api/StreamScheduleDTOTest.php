@@ -5,6 +5,7 @@ namespace App\Tests\App\Entity\Api;
 
 use App\Entity\Api\StreamScheduleDTO;
 use App\Entity\StreamSchedule;
+use App\Exception\CouldNotCreateStreamScheduleDTOException;
 use PHPUnit\Framework\TestCase;
 
 /**
@@ -125,12 +126,24 @@ class StreamScheduleDTOTest extends TestCase
     /**
      * @covers ::createFromStreamSchedule
      */
-    public function testCreateFromStreamSchedule()
+    public function testCreateFromStreamScheduleSuccess()
     {
         $this->assertInstanceOf(
             StreamScheduleDTO::class,
             StreamScheduleDTO::createFromStreamSchedule($this->getStreamSchedule())
         );
+    }
+
+    /**
+     * @covers ::createFromStreamSchedule
+     */
+    public function testCreateFromStreamScheduleFailed()
+    {
+        $this->expectException(CouldNotCreateStreamScheduleDTOException::class);
+        $streamSchedule = $this->getStreamSchedule();
+        $streamSchedule->setStreamDuration(null);
+
+        StreamScheduleDTO::createFromStreamSchedule($streamSchedule);
     }
 
     private function getStreamSchedule()

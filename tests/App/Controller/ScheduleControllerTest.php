@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 
 use App\Controller\ScheduleController;
 use App\Entity\StreamSchedule;
+use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Service\ManageScheduleService;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -112,7 +113,7 @@ class ScheduleControllerTest extends TestCase
 
         $this->manageScheduleService->expects($this->once())
             ->method('saveSchedule')
-            ->willThrowException(new \Exception());
+            ->willThrowException(CouldNotModifyStreamScheduleException::forError(new ORMException()));
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');
 
@@ -187,7 +188,9 @@ class ScheduleControllerTest extends TestCase
         $formInterface->expects($this->once())->method('getData')->willReturn(new StreamSchedule());
         $this->formFactoryMock->expects($this->once())->method('create')->willReturn($formInterface);
 
-        $this->manageScheduleService->expects($this->once())->method('saveSchedule')->willThrowException(new ORMException());
+        $this->manageScheduleService->expects($this->once())
+            ->method('saveSchedule')
+            ->willThrowException(CouldNotModifyStreamScheduleException::forError(new ORMException()));
         $this->flashBagMock->expects($this->once())->method('add');
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('url');

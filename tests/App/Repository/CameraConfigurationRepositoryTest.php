@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Tests\Repository;
 
 use App\Entity\CameraConfiguration;
+use App\Exception\CouldNotModifyCameraConfigurationException;
 use App\Repository\CameraConfigurationRepository;
 use Doctrine\ORM\EntityManager;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -38,16 +38,29 @@ class CameraConfigurationRepositoryTest extends TestCase
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyCameraConfigurationException
      * @covers ::saveFromConfiguration
      */
-    public function testSaveFromConfiguration()
+    public function testSaveFromConfigurationSuccess()
     {
         $this->entityManager->expects($this->exactly(2))->method('persist');
         $this->entityManager->expects($this->once())->method('flush');
 
         $this->cameraConfigurationRepository->saveFromConfiguration([new CameraConfiguration(), new CameraConfiguration()]);
         $this->addToAssertionCount(1);
+    }
+
+    /**
+     * @throws CouldNotModifyCameraConfigurationException
+     * @covers ::saveFromConfiguration
+     */
+    public function testSaveFromConfigurationFailed()
+    {
+        $this->expectException(CouldNotModifyCameraConfigurationException::class);
+
+        $this->entityManager->expects($this->once())->method('persist');
+        $this->entityManager->expects($this->once())->method('flush')->willThrowException(new ORMException());
+
+        $this->cameraConfigurationRepository->saveFromConfiguration([new CameraConfiguration()]);
     }
 }

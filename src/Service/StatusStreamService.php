@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\CameraConfiguration;
+use App\Exception\InvalidConfigurationsException;
 use Webmozart\Assert\Assert;
 
 class StatusStreamService
@@ -23,7 +24,7 @@ class StatusStreamService
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws InvalidConfigurationsException
      * @return bool
      */
     public function isRunning(): bool
@@ -37,13 +38,17 @@ class StatusStreamService
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws InvalidConfigurationsException
      * @return \stdClass
      */
     private function getConfigurations()
     {
         $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_CAMERA_LOCATION_APPLICATION);
+        try {
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_CAMERA_LOCATION_APPLICATION);
+        } catch (\InvalidArgumentException $exception) {
+            throw InvalidConfigurationsException::fromError($exception);
+        }
         return $configurations;
     }
 }

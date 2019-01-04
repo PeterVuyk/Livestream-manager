@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\CameraConfiguration;
+use App\Exception\InvalidConfigurationsException;
 use Psr\Log\LoggerInterface;
 use Webmozart\Assert\Assert;
 
@@ -35,7 +36,7 @@ class StopStreamService implements StreamInterface
     }
 
     /**
-     * @throw \InvalidArgumentException
+     * @throw InvalidConfigurationsException
      */
     public function process(): void
     {
@@ -75,17 +76,21 @@ class StopStreamService implements StreamInterface
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @throws InvalidConfigurationsException
      * @return \stdClass
      */
     private function getConfigurations()
     {
         $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
-        Assert::propertyExists($configurations, CameraConfiguration::MIXER_INTERVAL_TIME);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_MIXER_RETRY_ATTEMPTS);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_CHECK_IF_MIXER_IS_RUNNING);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_MIXER_IP_ADDRESS);
-        Assert::propertyExists($configurations, CameraConfiguration::KEY_STOP_STREAM_COMMAND);
+        try {
+            Assert::propertyExists($configurations, CameraConfiguration::MIXER_INTERVAL_TIME);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_MIXER_RETRY_ATTEMPTS);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_CHECK_IF_MIXER_IS_RUNNING);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_MIXER_IP_ADDRESS);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_STOP_STREAM_COMMAND);
+        } catch (\InvalidArgumentException $exception) {
+            InvalidConfigurationsException::fromError($exception);
+        }
         return $configurations;
     }
 }

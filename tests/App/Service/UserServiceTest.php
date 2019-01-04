@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\User;
+use App\Exception\CouldNotModifyUserException;
 use App\Exception\UserNotFoundException;
 use App\Repository\UserRepository;
 use App\Service\UserService;
-use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -38,8 +38,7 @@ class UserServiceTest extends TestCase
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyUserException
      * @throws UserNotFoundException
      * @covers ::toggleDisablingUser
      * @uses \App\Service\UserService
@@ -56,8 +55,7 @@ class UserServiceTest extends TestCase
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyUserException
      * @throws UserNotFoundException
      * @covers ::toggleDisablingUser
      * @uses \App\Service\UserService
@@ -72,8 +70,7 @@ class UserServiceTest extends TestCase
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyUserException
      * @throws UserNotFoundException
      * @covers ::removeUser
      * @uses \App\Service\UserService
@@ -88,8 +85,7 @@ class UserServiceTest extends TestCase
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyUserException
      * @throws UserNotFoundException
      * @covers ::removeUser
      * @uses \App\Service\UserService
@@ -122,8 +118,7 @@ class UserServiceTest extends TestCase
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyUserException
      * @covers ::createUser
      */
     public function testCreateUserSuccess()
@@ -134,21 +129,21 @@ class UserServiceTest extends TestCase
         $this->addToAssertionCount(1);
     }
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyUserException
      * @covers ::createUser
      */
     public function testCreateUserFailed()
     {
-        $this->expectException(ORMException::class);
+        $this->expectException(CouldNotModifyUserException::class);
         $this->passwordEncoderMock->expects($this->once())->method('encodePassword')->willReturn('password');
-        $this->userRepositoryMock->expects($this->once())->method('save')->willThrowException(new ORMException());
+        $this->userRepositoryMock->expects($this->once())
+            ->method('save')
+            ->willThrowException(CouldNotModifyUserException::forError(new ORMException()));
         $this->userService->createUser(new User());
     }
 
     /**
-     * @throws ORMException
-     * @throws OptimisticLockException
+     * @throws CouldNotModifyUserException
      * @covers ::updateUser
      */
     public function testUpdateUser()

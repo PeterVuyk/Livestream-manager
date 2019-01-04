@@ -54,6 +54,7 @@ class Weekday
     /**
      * @param int $day
      * @return string
+     * @throw InvalidWeekdayException
      */
     public static function getDayOfTheWeekById(int $day): string
     {

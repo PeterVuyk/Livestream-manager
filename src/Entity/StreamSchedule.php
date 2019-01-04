@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
+use App\Exception\CouldNotGetExecutionEndTimeException;
 use App\Exception\InvalidWeekdayException;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping as ORM;
@@ -192,7 +193,7 @@ class StreamSchedule
 
     /**
      * @param int $executionDay
-     * @throws \InvalidArgumentException
+     * @throws InvalidWeekdayException
      */
     public function setExecutionDay(int $executionDay): void
     {
@@ -297,7 +298,7 @@ class StreamSchedule
 
     /**
      * @return \DateTime|null
-     * @throws \Exception
+     * @throws CouldNotGetExecutionEndTimeException
      */
     public function getExecutionEndTime(): ?\DateTime
     {
@@ -309,7 +310,11 @@ class StreamSchedule
             return null;
         }
 
-        return date_add($this->getLastExecution(), new \DateInterval('PT' . $this->getStreamDuration() . 'M'));
+        try {
+            return date_add($this->getLastExecution(), new \DateInterval('PT' . $this->getStreamDuration() . 'M'));
+        } catch (\Exception $exception) {
+            throw CouldNotGetExecutionEndTimeException::forError($exception);
+        }
     }
 
     /**

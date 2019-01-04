@@ -4,10 +4,9 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
+use App\Exception\CouldNotModifyUserException;
 use App\Form\UserRegistrationType;
 use App\Service\UserService;
-use Doctrine\ORM\OptimisticLockException;
-use Doctrine\ORM\ORMException;
 use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,7 +53,7 @@ class RegistrationController extends Controller
             $session = $request->getSession();
             try {
                 $this->userService->createUser($user);
-            } catch (ORMException | OptimisticLockException $exception) {
+            } catch (CouldNotModifyUserException $exception) {
                 $session->getFlashBag()->add(self::ERROR_MESSAGE, 'flash.registration.error.could_not_save');
                 return new RedirectResponse($request->getUri());
             }

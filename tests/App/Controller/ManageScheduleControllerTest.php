@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 
 use App\Controller\ManageScheduleController;
 use App\Entity\StreamSchedule;
+use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Service\ManageScheduleService;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -84,7 +85,8 @@ class ManageScheduleControllerTest extends TestCase
         $this->manageScheduleService->expects($this->once())
             ->method('getScheduleById')->willReturn(new StreamSchedule());
         $this->manageScheduleService->expects($this->once())
-            ->method('toggleDisablingSchedule')->willThrowException(new ORMException());
+            ->method('toggleDisablingSchedule')
+            ->willThrowException(CouldNotModifyStreamScheduleException::forError(new ORMException()));
 
         $this->flashBagMock->expects($this->once())->method('add');
 
@@ -117,7 +119,8 @@ class ManageScheduleControllerTest extends TestCase
         $this->manageScheduleService->expects($this->once())
             ->method('getScheduleById')->willReturn(new StreamSchedule());
         $this->manageScheduleService->expects($this->once())
-            ->method('removeSchedule')->willThrowException(new ORMException());
+            ->method('removeSchedule')
+            ->willThrowException(CouldNotModifyStreamScheduleException::forError(new ORMException()));
 
         $response = $this->manageScheduleController->removeSchedule('id');
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
@@ -149,7 +152,8 @@ class ManageScheduleControllerTest extends TestCase
         $this->manageScheduleService->expects($this->once())
             ->method('getScheduleById')->willReturn(new StreamSchedule());
         $this->manageScheduleService->expects($this->once())
-            ->method('unwreckSchedule')->willThrowException(new ORMException());
+            ->method('unwreckSchedule')
+            ->willThrowException(CouldNotModifyStreamScheduleException::forError(new ORMException()));
 
         $response = $this->manageScheduleController->unwreckSchedule('id');
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
@@ -234,7 +238,7 @@ class ManageScheduleControllerTest extends TestCase
             ->willReturn(new StreamSchedule());
         $this->manageScheduleService->expects($this->once())
             ->method('saveSchedule')
-            ->willThrowException(New \Exception());
+            ->willThrowException(CouldNotModifyStreamScheduleException::forError(New ORMException()));
 
         $this->flashBagMock->expects($this->once())->method('add');
 

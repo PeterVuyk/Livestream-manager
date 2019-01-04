@@ -60,7 +60,7 @@ class ScheduleLog
         $this->streamSchedule = $streamSchedule;
         $this->runSuccessful = $runSuccessful;
         $this->message = $message;
-        $this->timeExecuted = new \DateTimeImmutable();
+        $this->timeExecuted = new \DateTime();
     }
 
     /**
