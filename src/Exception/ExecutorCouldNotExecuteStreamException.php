@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Exception;
 
-class CouldNotExecuteCommandException extends \Exception
+class ExecutorCouldNotExecuteStreamException extends \Exception
 {
     const FAILED_COMMAND_START_STREAM_MESSAGE = 'Failed to run start stream command, Message: %s';
     const FAILED_COMMAND_STOP_STREAM_MESSAGE = 'Failed to run stop stream command, Message: %s';

@@ -13,7 +13,7 @@ class StreamScheduleDTO
 {
     /**
      * @var string
-     * @SWG\Property(type="string", maxLength=40, description="Uuid, the unique identifier stream schedule.")
+     * @SWG\Property(type="string", maxLength=36, description="Uuid, the unique identifier stream schedule.")
      */
     private $id;
 

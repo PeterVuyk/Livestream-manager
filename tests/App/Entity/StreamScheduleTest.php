@@ -223,17 +223,17 @@ class StreamScheduleTest extends TestCase
     }
 
     /**
-     * @dataProvider streamTobeExecutedProvider
+     * @dataProvider streamTobeStartedProvider
      * @param StreamSchedule $streamSchedule
      * @param bool $result
-     * @covers ::streamTobeExecuted
+     * @covers ::streamTobeStarted
      */
-    public function testStreamTobeExecuted(StreamSchedule $streamSchedule, bool $result)
+    public function testStreamTobeStarted(StreamSchedule $streamSchedule, bool $result)
     {
-        $this->assertSame($result, $streamSchedule->streamTobeExecuted());
+        $this->assertSame($result, $streamSchedule->streamTobeStarted());
     }
 
-    public function streamTobeExecutedProvider()
+    public function streamTobeStartedProvider()
     {
         $daysOfTheWeek = [
             'Monday' => 1,
@@ -309,6 +309,41 @@ class StreamScheduleTest extends TestCase
             ], [
                 'streamSchedule' => $streamScheduleWithEndTime,
                 'result' => $now,
+            ]
+        ];
+    }
+
+    /**
+     * @dataProvider streamToBeStoppedProvider
+     * @param bool $expectedResult
+     * @param StreamSchedule $streamSchedule
+     * @covers ::streamToBeStopped
+     */
+    public function testStreamToBeStopped(bool $expectedResult, StreamSchedule $streamSchedule)
+    {
+        $this->assertSame($expectedResult, $streamSchedule->streamToBeStopped());
+
+    }
+
+    public function streamToBeStoppedProvider()
+    {
+        $streamScheduleNotRunning = new StreamSchedule();
+        $streamScheduleNotRunning->setIsRunning(false);
+        $streamScheduleToBeStopped = new StreamSchedule();
+        $streamScheduleToBeStopped->setIsRunning(true);
+        $streamScheduleToBeStopped->setStreamDuration(5);
+        $streamScheduleToBeStopped->setLastExecution(new \DateTime('- 10 minutes'));
+
+        return [
+            [
+                'result' => false,
+                'streamSchedule' => $streamScheduleNotRunning,
+            ], [
+                'result' => false,
+                'streamSchedule' => new StreamSchedule(),
+            ], [
+                'result' => true,
+                'streamSchedule' => $streamScheduleToBeStopped,
             ]
         ];
     }

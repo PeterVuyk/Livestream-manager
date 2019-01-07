@@ -48,3 +48,4 @@ manual.configuration.description.meaning_configuration_keys: 'Below you find an 
 manual.api.description.api: '<p>For allowing communication between the web-based client and a server we provide a API Rest endpoint to:<ul><li>Get the status from the stream.</li><li>Get all scheduled streams.</li></ul>The authentication is ''basic authentication''. The username and password can be shared by the moderator, or if needed a new login can be generated and stored in memory. To view the endpoints:'
 manual.api.api_rest_endpoints_link: 'API Rest endpoints'
 manual.user_management.description.stop_stream_command: 'With this command you will shut down the camera.'
+manual.schedule.description.conflicting_schedules: 'If two or more scheduled schedules are conflicting, both streams will be marked as ''wrecked''. If the livestream is turned on, it will automatically turned off.'

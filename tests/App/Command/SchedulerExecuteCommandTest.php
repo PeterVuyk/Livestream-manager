@@ -5,9 +5,13 @@ namespace App\Tests\Command;
 
 use App\Command\SchedulerExecuteCommand;
 use App\Entity\StreamSchedule;
+use App\Exception\ConflictingScheduledStreamsException;
+use App\Exception\CouldNotModifyStreamScheduleException;
+use App\Exception\ExecutorCouldNotExecuteStreamException;
 use App\Repository\StreamScheduleRepository;
 use App\Service\StartStreamService;
 use App\Service\StopStreamService;
+use App\Service\StreamExecutorService;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -29,11 +33,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class SchedulerExecuteCommandTest extends TestCase
 {
-    /** @var StreamScheduleRepository|MockObject */
-    private $streamScheduleRepositoryMock;
-
-    /** @var StartStreamService|MockObject */
-    private $startStreamServiceMock;
+    /** @var StreamExecutorService|MockObject */
+    private $streamExecutorService;
 
     /** @var StopStreamService|MockObject */
     private $stopStreamServiceMock;
@@ -46,8 +47,7 @@ class SchedulerExecuteCommandTest extends TestCase
 
     public function setUp()
     {
-        $this->streamScheduleRepositoryMock = $this->createMock(StreamScheduleRepository::class);
-        $this->startStreamServiceMock = $this->createMock(StartStreamService::class);
+        $this->streamExecutorService = $this->createMock(StreamExecutorService::class);
         $this->stopStreamServiceMock = $this->createMock(StopStreamService::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);
 
@@ -58,8 +58,7 @@ class SchedulerExecuteCommandTest extends TestCase
         $kernelMock->expects($this->any())->method('getContainer')->willReturn($containerMock);
 
         $schedulerExecuteCommand = new SchedulerExecuteCommand(
-            $this->streamScheduleRepositoryMock,
-            $this->startStreamServiceMock,
+            $this->streamExecutorService,
             $this->stopStreamServiceMock,
             $this->loggerMock
         );
@@ -74,27 +73,13 @@ class SchedulerExecuteCommandTest extends TestCase
     /**
      * @covers ::execute
      */
-    public function testExecuteNoSchedulesToExecute()
-    {
-        $this->streamScheduleRepositoryMock->expects($this->once())->method('findActiveSchedules')->willReturn([]);
-        $this->startStreamServiceMock->expects($this->never())->method('process');
-        $this->stopStreamServiceMock->expects($this->never())->method('process');
-
-        $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
-    }
-
-    /**
-     * @covers ::execute
-     */
     public function testExecuteStartStreamSuccess()
     {
         $streamSchedule = new StreamSchedule();
         $streamSchedule->setExecutionTime(new \DateTime('- 1 minutes'));
         $streamSchedule->setOnetimeExecutionDate(new \DateTime('- 1 minutes'));
-
-        $this->streamScheduleRepositoryMock->expects($this->once())->method('findActiveSchedules')->willReturn([$streamSchedule]);
-        $this->streamScheduleRepositoryMock->expects($this->once())->method('save');
-        $this->startStreamServiceMock->expects($this->once())->method('process');
+        $this->streamExecutorService->expects($this->once())->method('getStreamToExecute')->willReturn($streamSchedule);
+        $this->streamExecutorService->expects($this->once())->method('start');
         $this->stopStreamServiceMock->expects($this->never())->method('process');
 
         $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
@@ -108,12 +93,9 @@ class SchedulerExecuteCommandTest extends TestCase
         $streamSchedule = new StreamSchedule();
         $streamSchedule->setIsRunning(true);
         $streamSchedule->setStreamDuration(5);
-        $streamSchedule->setLastExecution(new \DateTime('- 6 minutes'));
-
-        $this->streamScheduleRepositoryMock->expects($this->once())->method('findActiveSchedules')->willReturn([$streamSchedule]);
-        $this->streamScheduleRepositoryMock->expects($this->once())->method('save');
-        $this->startStreamServiceMock->expects($this->never())->method('process');
-        $this->stopStreamServiceMock->expects($this->once())->method('process');
+        $streamSchedule->setLastExecution(new \DateTime('- 10 minutes'));
+        $this->streamExecutorService->expects($this->once())->method('getStreamToExecute')->willReturn($streamSchedule);
+        $this->streamExecutorService->expects($this->once())->method('stop');
 
         $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
     }
@@ -121,34 +103,17 @@ class SchedulerExecuteCommandTest extends TestCase
     /**
      * @covers ::execute
      */
-    public function testExecuteStopStreamFailed()
+    public function testExecuteStopStreamCouldNotExecute()
     {
         $streamSchedule = new StreamSchedule();
         $streamSchedule->setIsRunning(true);
         $streamSchedule->setStreamDuration(5);
-        $streamSchedule->setLastExecution(new \DateTime('- 6 minutes'));
-
-        $this->streamScheduleRepositoryMock->expects($this->once())->method('findActiveSchedules')->willReturn([$streamSchedule]);
-        $this->streamScheduleRepositoryMock->expects($this->once())->method('save');
-        $this->stopStreamServiceMock->expects($this->once())->method('process')->willThrowException(new \Exception());
-        $this->loggerMock->expects($this->atLeastOnce())->method('error');
-
-        $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
-    }
-
-    /**
-     * @covers ::execute
-     */
-    public function testExecuteStartStreamFailed()
-    {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setExecutionTime(new \DateTime('- 1 minutes'));
-        $streamSchedule->setOnetimeExecutionDate(new \DateTime('- 1 minutes'));
-
-        $this->streamScheduleRepositoryMock->expects($this->once())->method('findActiveSchedules')->willReturn([$streamSchedule]);
-        $this->streamScheduleRepositoryMock->expects($this->once())->method('save');
-        $this->startStreamServiceMock->expects($this->once())->method('process')->willThrowException(new \Exception());
-        $this->loggerMock->expects($this->atLeastOnce())->method('error');
+        $streamSchedule->setLastExecution(new \DateTime('- 10 minutes'));
+        $this->streamExecutorService->expects($this->once())->method('getStreamToExecute')->willReturn($streamSchedule);
+        $this->streamExecutorService->expects($this->once())
+            ->method('stop')
+            ->willThrowException(ExecutorCouldNotExecuteStreamException::couldNotStopLivestream(new \Exception()));
+        $this->loggerMock->expects($this->once())->method('error');
 
         $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
     }
@@ -156,16 +121,41 @@ class SchedulerExecuteCommandTest extends TestCase
     /**
      * @covers ::execute
      */
-    public function testExecuteFailedSavingStreamSchedule()
+    public function testExecuteStopStreamCouldNotModifyStreamSchedule()
     {
         $streamSchedule = new StreamSchedule();
-        $streamSchedule->setExecutionTime(new \DateTime('- 1 minutes'));
-        $streamSchedule->setOnetimeExecutionDate(new \DateTime('- 1 minutes'));
+        $streamSchedule->setIsRunning(true);
+        $streamSchedule->setStreamDuration(5);
+        $streamSchedule->setLastExecution(new \DateTime('- 10 minutes'));
+        $this->streamExecutorService->expects($this->once())->method('getStreamToExecute')->willReturn($streamSchedule);
+        $this->streamExecutorService->expects($this->once())
+            ->method('stop')
+            ->willThrowException(CouldNotModifyStreamScheduleException::forError(new ORMException()));
+        $this->loggerMock->expects($this->once())->method('error');
 
-        $this->streamScheduleRepositoryMock->expects($this->once())->method('findActiveSchedules')->willReturn([$streamSchedule]);
-        $this->streamScheduleRepositoryMock->expects($this->once())->method('save')->willThrowException(new ORMException());
-        $this->startStreamServiceMock->expects($this->once())->method('process');
-        $this->loggerMock->expects($this->atLeastOnce())->method('error');
+        $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
+    }
+
+    /**
+     * @covers ::execute
+     */
+    public function testExecuteNothingToExecute()
+    {
+        $this->streamExecutorService->expects($this->once())->method('getStreamToExecute')->willReturn(null);
+        $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
+        $this->addToAssertionCount(1);
+    }
+
+    /**
+     * @covers ::execute
+     */
+    public function testExecuteFailedGettingStreams()
+    {
+        $this->streamExecutorService->expects($this->once())
+            ->method('getStreamToExecute')
+            ->willThrowException(ConflictingScheduledStreamsException::multipleSchedules([new StreamSchedule()]));
+        $this->loggerMock->expects($this->once())->method('error');
+        $this->stopStreamServiceMock->expects($this->once())->method('process');
 
         $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
     }

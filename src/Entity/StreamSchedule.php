@@ -320,7 +320,7 @@ class StreamSchedule
     /**
      * @return bool
      */
-    public function streamTobeExecuted(): bool
+    public function streamTobeStarted(): bool
     {
         if ($this->isWrecked() === true) {
             return false;
@@ -334,6 +334,20 @@ class StreamSchedule
             if ($this->getNextExecutionTime() > new \DateTime('- 15 minutes')) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    /**
+     * @return bool
+     */
+    public function streamToBeStopped(): bool
+    {
+        if ($this->isRunning() !== true) {
+            return false;
+        }
+        if ($this->getExecutionEndTime() instanceof \DateTime && $this->getExecutionEndTime() <= new \DateTime()) {
+            return true;
         }
         return false;
     }
