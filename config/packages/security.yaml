@@ -37,13 +37,12 @@ security:
                 provider: fos_userbundle
                 csrf_token_generator: security.csrf.token_manager
                 always_use_default_target_path: false
-                default_target_path: home_page #TODO: Find out why this conflicting language switch when I use scheduler_list.
+                default_target_path: scheduler_list
             logout:       true
             anonymous:    true
 
     access_control:
-    - { path: ^/.*/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/.*/admin/, role: ROLE_USER }
+    - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
     - { path: ^/api/doc, role: ROLE_USER }
     - { path: ^/api, role: ROLE_API }
-    - { path: /.*, role: IS_AUTHENTICATED_ANONYMOUSLY }
+    - { path: /.*, role: ROLE_USER }

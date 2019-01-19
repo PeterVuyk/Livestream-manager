@@ -83,7 +83,7 @@ class StopStreamService implements StreamInterface
     {
         $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
         try {
-            Assert::propertyExists($configurations, CameraConfiguration::MIXER_INTERVAL_TIME);
+            Assert::propertyExists($configurations, CameraConfiguration::KEY_MIXER_INTERVAL_TIME);
             Assert::propertyExists($configurations, CameraConfiguration::KEY_MIXER_RETRY_ATTEMPTS);
             Assert::propertyExists($configurations, CameraConfiguration::KEY_CHECK_IF_MIXER_IS_RUNNING);
             Assert::propertyExists($configurations, CameraConfiguration::KEY_MIXER_IP_ADDRESS);

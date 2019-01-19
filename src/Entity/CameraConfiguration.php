@@ -11,7 +11,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CameraConfiguration
 {
-    const MIXER_INTERVAL_TIME = 'mixerIntervalTime';
+    const KEY_MIXER_INTERVAL_TIME = 'mixerIntervalTime';
     const KEY_MIXER_RETRY_ATTEMPTS = 'mixerRetryAttempts';
     const KEY_CHECK_IF_MIXER_IS_RUNNING = 'checkIfMixerIsRunning';
     const KEY_MIXER_IP_ADDRESS = 'mixerIPAddress';

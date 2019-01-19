@@ -41,8 +41,6 @@ services:
     build:
       context: docker-data/build/yarn
       dockerfile: Dockerfile
-      args:
-        LIVESTREAM_USER: ${LIVESTREAM_USER}
     container_name: livestream-yarn
     volumes:
     - ./:/usr/src/app

@@ -14,7 +14,7 @@ admin:
 
 home_page:
   path: /
-  defaults: { _controller: fos_user.security.controller:loginAction }
+  defaults: { _controller: App\Controller\ScheduleController:list }
   methods: [GET]
 
 app.swagger_ui:
