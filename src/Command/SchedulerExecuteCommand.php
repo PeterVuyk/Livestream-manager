@@ -5,6 +5,7 @@ namespace App\Command;
 
 use App\Entity\StreamSchedule;
 use App\Exception\ConflictingScheduledStreamsException;
+use App\Exception\CouldNotModifyCameraException;
 use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Exception\ExecutorCouldNotExecuteStreamException;
 use App\Service\StreamProcessing\StopStreamService;
@@ -58,6 +59,7 @@ class SchedulerExecuteCommand extends Command
      * @param InputInterface $input
      * @param OutputInterface $output
      * @return int|null|void
+     * @throws CouldNotModifyCameraException
      */
     public function execute(InputInterface $input, OutputInterface $output)
     {

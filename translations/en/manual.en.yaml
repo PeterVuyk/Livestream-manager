@@ -6,7 +6,6 @@ home.tab.title_schedule: Schedule
 home.tab.title_livestream: Livestream
 home.tab.title_api: 'API'
 manual.api.title.api_usage: 'API Usage'
-home.tab_content.livestream: '<p>Livestream</p>'
 manual.schedule.description.disabling_schedule: 'This icon give you the ability to enable or disable the scheduled stream. The stream is active if the icon is green. The text will be greyed out once you disabled it by pressing the button, the icon will be shown red after.'
 manual.schedule.description.edit_schedule: 'Edit the scheduled stream like time of event, name or runtime.'
 manual.schedule.description.remove_schedule: 'Remove the scheduled stream permanently.'
@@ -49,3 +48,6 @@ manual.api.description.api: '<p>For allowing communication between the web-based
 manual.api.api_rest_endpoints_link: 'API Rest endpoints'
 manual.user_management.description.stop_stream_command: 'With this command you will shut down the camera.'
 manual.schedule.description.conflicting_schedules: 'If two or more scheduled schedules are conflicting, both streams will be marked as ''wrecked''. If the livestream is turned on, it will automatically turned off.'
+manual.livestream.title.usage: 'Livestream usage'
+manual.livestream.description.usage: 'In the navigation bar you will find the current status from the stream. In the image below you will find the different statuses. If the camera is off, only the play button is clickable in the navigation bar. If the camera is running only the stop button is clickable. If the camera is stopping or starting, both of the buttons is not clickable you have to wait until the process is finnished.'
+manual.livestream.workflow.img_alt: 'Workflow livestream camera'

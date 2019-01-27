@@ -1,0 +1,30 @@
+{% trans_default_domain 'navigation' %}
+<li class="nav-item">
+    {% for transition in workflow_transitions(camera) %}
+    <strong>
+        <a class="nav-link">
+            {{  "navigation.status.#{transition.froms|first}"|trans }}
+        </a>
+    </strong>
+</li>
+{% endfor %}
+<li class="nav-item">
+    {% if workflow_can(camera, 'to_stopping') %}
+        <a class="nav-link" href="#js-stop-stream-modal" data-toggle="modal">
+            <span class="text-danger fa fa-stop fa-lg"></span>
+        </a>
+    {{ include('scheduler/list/modal/stopStreamModal.html.twig') }}
+    {% else %}
+        <a class="nav-link"><span class="text-muted fa fa-stop fa-lg"></span></a>
+    {% endif %}
+</li>
+<li class="nav-item">
+    {% if workflow_can(camera, 'to_starting') %}
+            <a class="nav-link" href="#js-start-stream-modal" data-toggle="modal">
+                <span class="text-success fa fa-play fa-lg"></span>
+            </a>
+        {{ include('scheduler/list/modal/startStreamModal.html.twig') }}
+    {% else %}
+            <a class="nav-link"><span class="text-muted fa fa-play fa-lg"></span></a>
+    {% endif %}
+</li>

@@ -13,3 +13,4 @@ flash.user_management.error.failed_saving_user: 'Het is niet gelukt om de gebrui
 flash.camera_configuration.success.updated: 'De configuratie is gewijzigd.'
 flash.camera_configuration.error.could_not_update: 'Het is niet gelukt om de configuratie te wijzigen.'
 flash.user_management.error.user_removed: 'Gebruiker is verwijderd.'
+flash.livestream.error.stop_stream: 'Het is niet gelukt de stream te stoppen.'

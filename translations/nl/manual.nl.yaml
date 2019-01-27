@@ -6,7 +6,6 @@ home.tab.title_schedule: Schema
 home.tab.title_livestream: Livestream
 home.tab.title_api: 'API'
 manual.api.title.api_usage: 'API Gebruik'
-home.tab_content.livestream: '<p>Livestream</p>'
 manual.schedule.description.disabling_schedule: 'Deze pictogram geeft je de mogelijkheid om een geplande stream te activeren of deactiveren. De stream is actief als het pitogram groen is. Als je de stream deactiveert dan wordt de tekst grijs en de pictogram rood.'
 manual.schedule.description.edit_schedule: 'Bewerk de geplande stream zoals tijdstip van event, naam of duur livestream.'
 manual.schedule.description.remove_schedule: 'Verwijder de ingeplande stream permanent.'
@@ -49,3 +48,6 @@ manual.api.description.api: '<p>Voor het mogelijk maken van communicatie tussen 
 manual.api.api_rest_endpoints_link: 'API Rest endpoints'
 manual.user_management.description.stop_stream_command: 'Met deze commando zet je de camera uit.'
 manual.schedule.description.conflicting_schedules: 'Als er twee of meerdere ingeplande schema''s met elkaar conflicteert, dan worden beide streams gemarkeerd als ''wrecked''. Is de livestream aan dan gaat deze automatisch uit.'
+manual.livestream.title.usage: 'Gebruik livestream'
+manual.livestream.description.usage: 'In de navigatiebalk vindt je de huidige status van de stream. In de afbeelding hieronder vindt je de verschillende statussen. Als de camera is uitgeschakeld dan is alleen de afspeelknop klikbaar in de navigatiebalk. Als de camera draait dan is alleen de stopknop aanklikbaar. Als de camera stopt of start, kan je op beide knoppen niet klikken. je moet dan wachten totdat het proces is voltooid.'
+manual.livestream.workflow.img_alt: 'Workflow livestream camera'

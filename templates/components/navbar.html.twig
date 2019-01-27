@@ -27,18 +27,7 @@
         </ul>
         <ul class="navbar-nav pull-right">
             {% if app.user is not null %}
-                <li class="nav-item">
-                    <a class="nav-link" href="#js-stop-stream-modal" data-toggle="modal">
-                        <span class="text-danger fa fa-stop fa-lg"></span>
-                    </a>
-                </li>
-                {{ include('scheduler/list/modal/stopStreamModal.html.twig') }}
-                <li class="nav-item">
-                    <a class="nav-link" href="#js-start-stream-modal" data-toggle="modal">
-                        <span class="text-success fa fa-play fa-lg"></span>
-                    </a>
-                </li>
-                {{ include('scheduler/list/modal/startStreamModal.html.twig') }}
+                {{ render(controller('App\\Controller\\LivestreamController::statusStream')) }}
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                         {{ 'navigation.account_name'|trans }}{{ app.user.username }}<span class="caret"></span>
