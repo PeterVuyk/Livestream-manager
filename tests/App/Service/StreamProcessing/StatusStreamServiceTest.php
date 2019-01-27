@@ -1,20 +1,20 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Service;
+namespace App\Tests\Service\StreamProcessing;
 
 use App\Entity\CameraConfiguration;
 use App\Service\CameraConfigurationService;
-use App\Service\StatusStreamService;
+use App\Service\StreamProcessing\StatusStreamService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \App\Service\StatusStreamService
+ * @coversDefaultClass \App\Service\StreamProcessing\StatusStreamService
  * @covers ::<!public>
  * @covers ::__construct()
  * @uses \App\Entity\CameraConfiguration
- * @uses \App\Service\StatusStreamService
+ * @uses \App\Service\StreamProcessing\StatusStreamService
  */
 class StatusStreamServiceTest extends TestCase
 {

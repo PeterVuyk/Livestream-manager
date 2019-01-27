@@ -1,10 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\StreamProcessing;
 
 use App\Entity\CameraConfiguration;
 use App\Exception\InvalidConfigurationsException;
+use App\Service\CameraConfigurationService;
 use Webmozart\Assert\Assert;
 
 class StatusStreamService
@@ -18,8 +19,9 @@ class StatusStreamService
      * StatusStreamService constructor.
      * @param CameraConfigurationService $cameraConfigurationService
      */
-    public function __construct(CameraConfigurationService $cameraConfigurationService)
-    {
+    public function __construct(
+        CameraConfigurationService $cameraConfigurationService
+    ) {
         $this->cameraConfigurationService = $cameraConfigurationService;
     }
 

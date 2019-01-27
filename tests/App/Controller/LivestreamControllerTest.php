@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Controller\LivestreamController;
-use App\Service\StartStreamService;
-use App\Service\StopStreamService;
+use App\Service\StreamProcessing\StartStreamService;
+use App\Service\StreamProcessing\StopStreamService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Response;
@@ -16,8 +16,8 @@ use Symfony\Component\Routing\RouterInterface;
  * @covers ::<!public>
  * @covers ::__construct
  * @uses \App\Controller\Controller
- * @uses \App\Service\StartStreamService
- * @uses \App\Service\StopStreamService
+ * @uses \App\Service\StreamProcessing\StartStreamService
+ * @uses \App\Service\StreamProcessing\StopStreamService
  */
 class LivestreamControllerTest extends TestCase
 {

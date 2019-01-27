@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Service\StatusStreamService;
-use App\Service\StopStreamService;
+use App\Service\StreamProcessing\StatusStreamService;
+use App\Service\StreamProcessing\StopStreamService;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;

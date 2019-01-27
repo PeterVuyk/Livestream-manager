@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Service\StatusStreamService;
+use App\Service\StreamProcessing\StatusStreamService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Swagger\Annotations as SWG;

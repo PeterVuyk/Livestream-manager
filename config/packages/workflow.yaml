@@ -1,0 +1,29 @@
+framework:
+    workflows:
+        camera_stream:
+            type: 'state_machine'
+            supports:
+            - App\Entity\Camera
+            initial_place: inactive
+            marking_store:
+                type: 'single_state'
+                arguments:
+                - 'state'
+            places:
+            - inactive
+            - starting
+            - running
+            - stopping
+            transitions:
+                to_starting:
+                    from: inactive
+                    to: starting
+                to_running:
+                    from: starting
+                    to: running
+                to_stopping:
+                    from: running
+                    to: stopping
+                to_inactive:
+                    from: stopping
+                    to: inactive

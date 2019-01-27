@@ -8,10 +8,8 @@ use App\Entity\StreamSchedule;
 use App\Exception\ConflictingScheduledStreamsException;
 use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Exception\ExecutorCouldNotExecuteStreamException;
-use App\Repository\StreamScheduleRepository;
-use App\Service\StartStreamService;
-use App\Service\StopStreamService;
-use App\Service\StreamExecutorService;
+use App\Service\StreamProcessing\StopStreamService;
+use App\Service\StreamProcessing\StreamExecutorService;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -26,8 +24,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
  * @covers ::<!public>
  * @covers ::__construct
  * @uses \App\Repository\StreamScheduleRepository
- * @uses \App\Service\StartStreamService
- * @uses \App\Service\StopStreamService
+ * @uses \App\Service\StreamProcessing\StartStreamService
+ * @uses \App\Service\StreamProcessing\StopStreamService
  * @uses \App\Entity\StreamSchedule
  * @uses \App\Entity\ScheduleLog
  */

@@ -1,11 +1,14 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\StreamProcessing;
 
 use App\Entity\CameraConfiguration;
 use App\Exception\CouldNotStartLivestreamException;
 use App\Exception\InvalidConfigurationsException;
+use App\Repository\CameraRepository;
+use App\Service\CameraConfigurationService;
+use App\Service\StateMachineInterface;
 use Psr\Log\LoggerInterface;
 use Webmozart\Assert\Assert;
 
@@ -20,20 +23,32 @@ class StartStreamService implements StreamInterface
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var CameraRepository */
+    private $cameraRepository;
+
+    /** @var StateMachineInterface */
+    private $streamStateMachine;
+
     /**
      * StartStreamService constructor.
      * @param CameraConfigurationService $cameraConfigurationService
      * @param StatusStreamService $statusStreamService
      * @param LoggerInterface $logger
+     * @param CameraRepository $cameraRepository ;
+     * @param StateMachineInterface $streamStateMachine
      */
     public function __construct(
         CameraConfigurationService $cameraConfigurationService,
         StatusStreamService $statusStreamService,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        cameraRepository $cameraRepository,
+        StateMachineInterface $streamStateMachine
     ) {
         $this->cameraConfigurationService = $cameraConfigurationService;
         $this->statusStreamService = $statusStreamService;
         $this->logger = $logger;
+        $this->cameraRepository = $cameraRepository;
+        $this->streamStateMachine = $streamStateMachine;
     }
 
     /**
@@ -42,10 +57,13 @@ class StartStreamService implements StreamInterface
      */
     public function process(): void
     {
-        if ($this->statusStreamService->isRunning()) {
+        $camera = $this->cameraRepository->getMainCamera();
+        $toStarting = $this->streamStateMachine->can($camera, 'to_starting');
+        if (!$toStarting || $this->statusStreamService->isRunning()) {
             $this->logger->warning('Stream tried to start while stream was already running');
             return;
         }
+        $this->streamStateMachine->apply($camera, 'to_starting');
 
         $configurations = $this->getConfigurations();
         if (!$this->isHostAvailable($configurations)) {
@@ -65,6 +83,7 @@ class StartStreamService implements StreamInterface
 			--videobitrate {$configurations->videoBitrate}"
         );
 
+        $this->streamStateMachine->apply($camera, 'to_running');
         $this->logger->info('Livestream is streaming');
     }
 

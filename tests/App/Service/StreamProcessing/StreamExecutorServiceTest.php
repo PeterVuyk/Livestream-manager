@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Service;
+namespace App\Tests\Service\StreamProcessing;
 
 use App\Entity\StreamSchedule;
 use App\Exception\ConflictingScheduledStreamsException;
@@ -9,16 +9,16 @@ use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Exception\CouldNotStartLivestreamException;
 use App\Exception\ExecutorCouldNotExecuteStreamException;
 use App\Repository\StreamScheduleRepository;
-use App\Service\StartStreamService;
-use App\Service\StopStreamService;
-use App\Service\StreamExecutorService;
+use App\Service\StreamProcessing\StartStreamService;
+use App\Service\StreamProcessing\StopStreamService;
+use App\Service\StreamProcessing\StreamExecutorService;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @coversDefaultClass \App\Service\StreamExecutorService
+ * @coversDefaultClass \App\Service\StreamProcessing\StreamExecutorService
  * @covers ::<!public>
  * @covers ::__construct
  * @uses \App\Entity\StreamSchedule

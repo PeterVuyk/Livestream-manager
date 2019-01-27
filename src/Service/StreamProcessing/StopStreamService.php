@@ -1,10 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Service;
+namespace App\Service\StreamProcessing;
 
 use App\Entity\CameraConfiguration;
+use App\Exception\CouldNotModifyCameraException;
 use App\Exception\InvalidConfigurationsException;
+use App\Repository\CameraRepository;
+use App\Service\CameraConfigurationService;
 use Psr\Log\LoggerInterface;
 use Webmozart\Assert\Assert;
 
@@ -19,31 +22,47 @@ class StopStreamService implements StreamInterface
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var StreamStateMachine */
+    private $streamStateMachine;
+
+    /** @var CameraRepository */
+    private $cameraRepository;
+
     /**
      * StopStreamService constructor.
      * @param CameraConfigurationService $cameraConfigurationService
      * @param StatusStreamService $statusStreamService
      * @param LoggerInterface $logger
+     * @param StreamStateMachine $streamStateMachine
+     * @param CameraRepository $cameraRepository
      */
     public function __construct(
         CameraConfigurationService $cameraConfigurationService,
         StatusStreamService $statusStreamService,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        StreamStateMachine $streamStateMachine,
+        CameraRepository $cameraRepository
     ) {
         $this->cameraConfigurationService = $cameraConfigurationService;
         $this->statusStreamService = $statusStreamService;
         $this->logger = $logger;
+        $this->streamStateMachine = $streamStateMachine;
+        $this->cameraRepository = $cameraRepository;
     }
 
     /**
      * @throw InvalidConfigurationsException
+     * @throws CouldNotModifyCameraException
      */
     public function process(): void
     {
-        if (!$this->statusStreamService->isRunning()) {
+        $camera = $this->cameraRepository->getMainCamera();
+        $toStopping = $this->streamStateMachine->can($camera, 'to_stopping');
+        if (!$toStopping || !$this->statusStreamService->isRunning()) {
             $this->logger->warning('Stream tried to stop while it wasn\'t running');
             return;
         }
+        $this->streamStateMachine->apply($camera, 'to_stopping');
 
         $configurations = $this->getConfigurations();
         if ($configurations->checkIfMixerIsRunning === 'true') {
@@ -59,6 +78,8 @@ class StopStreamService implements StreamInterface
         }
 
         exec($configurations->stopStreamCommand);
+
+        $this->streamStateMachine->apply($camera, 'to_inactive');
         $this->logger->info('Livestream is stopped successfully');
     }
 

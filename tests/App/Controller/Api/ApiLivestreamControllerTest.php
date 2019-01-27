@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\App\Controller\Api;
 
 use App\Controller\Api\ApiLivestreamController;
-use App\Service\StatusStreamService;
+use App\Service\StreamProcessing\StatusStreamService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;

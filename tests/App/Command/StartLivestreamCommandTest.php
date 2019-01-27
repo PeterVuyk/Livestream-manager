@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Tests\Command;
 
 use App\Command\StartLivestreamCommand;
-use App\Service\StartStreamService;
-use App\Service\StatusStreamService;
+use App\Service\StreamProcessing\StartStreamService;
+use App\Service\StreamProcessing\StatusStreamService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -17,8 +17,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
  * @coversDefaultClass \App\Command\StartLivestreamCommand
  * @covers ::<!public>
  * @covers ::__construct
- * @uses \App\Service\StartStreamService
- * @uses \App\Service\StatusStreamService
+ * @uses \App\Service\StreamProcessing\StartStreamService
+ * @uses \App\Service\StreamProcessing\StatusStreamService
  * @uses \App\Entity\StreamSchedule
  */
 class StartLivestreamCommandTest extends TestCase

@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Service\StartStreamService;
-use App\Service\StopStreamService;
+use App\Service\StreamProcessing\StartStreamService;
+use App\Service\StreamProcessing\StopStreamService;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\Routing\RouterInterface;
 

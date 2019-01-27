@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Tests\Command;
 
 use App\Command\StopLivestreamCommand;
-use App\Service\StatusStreamService;
-use App\Service\StopStreamService;
+use App\Service\StreamProcessing\StatusStreamService;
+use App\Service\StreamProcessing\StopStreamService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
@@ -17,8 +17,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
  * @coversDefaultClass \App\Command\StopLivestreamCommand
  * @covers ::<!public>
  * @covers ::__construct
- * @uses \App\Service\StopStreamService
- * @uses \App\Service\StatusStreamService
+ * @uses \App\Service\StreamProcessing\StopStreamService
+ * @uses \App\Service\StreamProcessing\StatusStreamService
  * @uses \App\Entity\StreamSchedule
  */
 class StopLivestreamCommandTest extends TestCase
