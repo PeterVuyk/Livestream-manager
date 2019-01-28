@@ -8,6 +8,7 @@ use App\Exception\CouldNotModifyCameraException;
 use App\Repository\CameraRepository;
 use App\Service\StateMachineInterface;
 use Symfony\Component\Workflow\Registry;
+use Symfony\Component\Workflow\Workflow;
 
 class StreamStateMachine implements StateMachineInterface
 {
@@ -29,8 +30,7 @@ class StreamStateMachine implements StateMachineInterface
 
     public function can(StateAwareInterface $camera, string $transition): bool
     {
-        $cameraWorkflow = $this->workflows->get($camera, 'camera_stream');
-        return $cameraWorkflow->can($camera, $transition);
+        return $this->getCameraWorkflow($camera)->can($camera, $transition);
     }
 
     /**
@@ -46,7 +46,20 @@ class StreamStateMachine implements StateMachineInterface
             );
         }
 
-        $camera->setState($transition);
+        $workflow = $this->getCameraWorkflow($camera);
+        $workflow->apply($camera, $transition);
+        $marking = $workflow->getMarking($camera);
+        $camera->setState(key($marking->getPlaces()));
+
         $this->cameraRepository->save($camera);
+    }
+
+    /**
+     * @param StateAwareInterface $camera
+     * @return Workflow
+     */
+    private function getCameraWorkflow(StateAwareInterface $camera): Workflow
+    {
+        return $this->workflows->get($camera, 'camera_stream');
     }
 }

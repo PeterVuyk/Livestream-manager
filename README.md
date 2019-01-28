@@ -1,4 +1,4 @@
-# Livestream Server (WIP)
+# Livestream Server
 
 A livestream with user interface and Restful API. Broadcast live video content remotely to a given host.
 

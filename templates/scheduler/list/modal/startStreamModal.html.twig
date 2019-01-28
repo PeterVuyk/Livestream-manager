@@ -13,8 +13,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'start_stream.action.cancel'|trans }}</button>
-                <button onclick="location.href='{{ path('start_stream') }}'"
-                        type="button" class="btn btn-primary">{{ 'start_stream.action.execute'|trans }}</button>
+                <a href="{{ path('start_stream') }}" data-method="POST">
+                    <button type="button" class="btn btn-primary">{{ 'start_stream.action.execute'|trans }}</button>
+                </a>
             </div>
         </div>
     </div>

@@ -12,9 +12,10 @@
                 <p>{{ 'user_delete.confirm.delete'|trans }}</p>
             </div>
             <div class="modal-footer">
-                <button onclick="location.href='{{ path('user_delete', {'userId': user.id}) }}'"
-                        type="button" class="btn btn-primary">{{ 'user_delete.action.delete'|trans }}</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'user_delete.action.cancel'|trans }}</button>
+                <a href="{{ path('user_delete', {'userId': user.id}) }}" data-method="POST">
+                    <button type="button" class="btn btn-primary">{{ 'user_delete.action.delete'|trans }}</button>
+                </a>
             </div>
         </div>
     </div>

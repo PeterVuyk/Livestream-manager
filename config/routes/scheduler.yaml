@@ -29,17 +29,17 @@ schedule_edit:
 schedule_toggle_disabling:
   path: /details/disable/{scheduleId}
   defaults: { _controller: App\Controller\ManageScheduleController:toggleDisablingSchedule }
-  methods: [GET]
+  methods: [POST]
 
 schedule_remove:
   path: /details/remove/{scheduleId}
   defaults: { _controller: App\Controller\ManageScheduleController:removeSchedule }
-  methods: [GET]
+  methods: [POST]
 
 schedule_unwreck:
   path: /details/unwreck/{scheduleId}
   defaults: { _controller: App\Controller\ManageScheduleController:unwreckSchedule }
-  methods: [GET]
+  methods: [POST]
 
 schedule_view_logging:
   defaults: { _controller: App\Controller\ScheduleLogBookController:viewLogging }

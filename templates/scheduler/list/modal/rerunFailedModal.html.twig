@@ -13,8 +13,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">{{ 'schedule_rerun_failed.action.cancel'|trans }}</button>
-                <button onclick="location.href='{{ path(path, {'scheduleId': scheduledItem.id}) }}'"
-                        type="button" class="btn btn-primary">{{ 'schedule_rerun_failed.action.activate'|trans }}</button>
+                <a href="{{ path(path, {'scheduleId': scheduledItem.id}) }}" data-method="POST">
+                    <button type="button" class="btn btn-primary">{{ 'schedule_rerun_failed.action.activate'|trans }}</button>
+                </a>
             </div>
         </div>
     </div>

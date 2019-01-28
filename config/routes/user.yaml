@@ -11,12 +11,12 @@ user_details:
 user_toggle_disabling:
   path: /users/disable/{userId}
   defaults: { _controller: App\Controller\UserManagementController:toggleDisablingUser }
-  methods: [GET]
+  methods: [POST]
 
 user_delete:
   path: /users/delete/{userId}
   defaults: { _controller: App\Controller\UserManagementController:deleteUser }
-  methods: [GET]
+  methods: [POST]
 
 user_registration:
   path:

@@ -14,3 +14,4 @@ flash.camera_configuration.success.updated: 'Configurations successfully updated
 flash.camera_configuration.error.could_not_update: 'Could not update the configurations.'
 flash.user_management.error.user_removed: 'User successfully removed.'
 flash.livestream.error.stop_stream: 'Could not stop the stream.'
+flash.livestream.error.start_stream: 'could not start the stream.'

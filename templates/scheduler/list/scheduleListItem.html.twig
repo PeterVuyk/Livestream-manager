@@ -2,7 +2,7 @@
 
 <tr class="{% if streamSchedule.disabled == true %} text-muted{% elseif streamSchedule.isRunning == true %} table-primary{% endif %}">
     <td>
-        <a href="{{ path('schedule_toggle_disabling', {'scheduleId': streamSchedule.id}) }}" >
+        <a data-method="POST" href="{{ path('schedule_toggle_disabling', {'scheduleId': streamSchedule.id}) }}" >
             {% if streamSchedule.disabled == true %}
                 <span class="text-danger fa fa-power-off fa-lg"></span> <span class="sr-only">&nbsp;</span>
             {% else %}
@@ -47,7 +47,7 @@
                 <span class="fa fa-eye fa-lg"></span>
             </a>
         {% endif %}
-        {% if streamSchedule.wrecked == true and scheduleLog is not null and scheduleLog.runSuccessful == false %}
+        {% if streamSchedule.wrecked == true %}
             <a href="#js-rerun-failed-schedule-modal-{{ streamSchedule.id }}" data-toggle="modal">
                 <span class="fa fa-undo text-warning fa-lg"></span>
             </a>

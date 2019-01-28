@@ -70,8 +70,8 @@ class LivestreamController extends Controller
         try {
             $this->startStreamService->process();
         } catch (CouldNotStartLivestreamException $exception) {
-            $this->logger->error('Could not start livestream', ['exception' => $exception]);
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.livestream.error.start_stream');
+            $this->logger->error('Could not start livestream', ['exception' => $exception]);
         }
         return new RedirectResponse($this->router->generate('scheduler_list'));
     }

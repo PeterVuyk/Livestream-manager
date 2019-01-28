@@ -9,6 +9,7 @@ use App\Repository\CameraRepository;
 use App\Service\StreamProcessing\StreamStateMachine;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Workflow\Marking;
 use Symfony\Component\Workflow\Registry;
 use Symfony\Component\Workflow\Workflow;
 
@@ -55,9 +56,13 @@ class StreamStateMachineTest extends TestCase
      */
     public function testApplySuccess()
     {
+        $marking = $this->createMock(Marking::class);
+        $marking->expects($this->once())->method('getPlaces')->willReturn(['running' => 1]);
         $workflow = $this->createMock(Workflow::class);
-        $workflow->expects($this->once())->method('can')->willReturn(true);
-        $this->workflows->expects($this->once())->method('get')->willReturn($workflow);
+        $workflow->expects($this->once())->method('apply');
+        $workflow->expects($this->once())->method('getMarking')->willReturn($marking);
+        $workflow->expects($this->atLeastOnce())->method('can')->willReturn(true);
+        $this->workflows->expects($this->atLeastOnce())->method('get')->willReturn($workflow);
 
         $this->cameraRepository->expects($this->once())->method('save');
         $this->streamStateMachine->apply(new Camera(), 'stop!');
