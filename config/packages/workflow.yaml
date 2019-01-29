@@ -14,6 +14,7 @@ framework:
             - starting
             - running
             - stopping
+            - failure
             transitions:
                 to_starting:
                     from: inactive
@@ -25,5 +26,8 @@ framework:
                     from: running
                     to: stopping
                 to_inactive:
-                    from: stopping
+                    from: [stopping, failure]
                     to: inactive
+                to_failure:
+                    from: [starting, running, stopping, inactive]
+                    to: failure

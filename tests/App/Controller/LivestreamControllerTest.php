@@ -10,6 +10,7 @@ use App\Exception\CouldNotStartLivestreamException;
 use App\Repository\CameraRepository;
 use App\Service\StreamProcessing\StartStreamService;
 use App\Service\StreamProcessing\StopStreamService;
+use App\Service\StreamProcessing\StreamStateMachine;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -49,6 +50,9 @@ class LivestreamControllerTest extends TestCase
     /** @var \Twig_Environment|MockObject */
     private $twigMock;
 
+    /** @var StreamStateMachine|MockObject */
+    private $streamStateMachineMock;
+
     /** @var LivestreamController */
     private $livestreamController;
 
@@ -61,6 +65,7 @@ class LivestreamControllerTest extends TestCase
         $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->flashBagMock = $this->createMock(FlashBagInterface::class);
         $this->twigMock = $this->createMock(\Twig_Environment::class);
+        $this->streamStateMachineMock = $this->createMock(StreamStateMachine::class);
         $this->livestreamController = new LivestreamController(
             $this->startStreamServiceMock,
             $this->stopStreamServiceMock,
@@ -68,7 +73,8 @@ class LivestreamControllerTest extends TestCase
             $this->twigMock,
             $this->cameraRepositoryMock,
             $this->loggerMock,
-            $this->flashBagMock
+            $this->flashBagMock,
+            $this->streamStateMachineMock
         );
     }
 
@@ -136,5 +142,35 @@ class LivestreamControllerTest extends TestCase
         $this->cameraRepositoryMock->expects($this->once())->method('getMainCamera')->willReturn(new Camera());
         $response = $this->livestreamController->statusStream();
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
+    }
+
+    /**
+     * @covers ::resetFromFailure
+     */
+    public function testResetFromFailureSuccess()
+    {
+        $this->cameraRepositoryMock->expects($this->once())->method('getMainCamera')->willReturn(new Camera());
+        $this->streamStateMachineMock->expects($this->once())->method('apply');
+        $this->loggerMock->expects($this->never())->method('error');
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');
+
+        $response = $this->livestreamController->resetFromFailure();
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
+    }
+
+    /**
+     * @covers ::resetFromFailure
+     */
+    public function testResetFromFailureFailed()
+    {
+        $this->cameraRepositoryMock->expects($this->once())->method('getMainCamera')->willReturn(new Camera());
+        $this->streamStateMachineMock->expects($this->once())
+            ->method('apply')
+            ->willThrowException(CouldNotModifyCameraException::forError(new ORMException()));
+        $this->loggerMock->expects($this->atLeastOnce())->method('error');
+        $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');
+
+        $response = $this->livestreamController->resetFromFailure();
+        $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 }

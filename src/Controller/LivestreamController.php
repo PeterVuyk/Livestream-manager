@@ -8,6 +8,7 @@ use App\Exception\CouldNotStartLivestreamException;
 use App\Repository\CameraRepository;
 use App\Service\StreamProcessing\StartStreamService;
 use App\Service\StreamProcessing\StopStreamService;
+use App\Service\StreamProcessing\StreamStateMachine;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -34,6 +35,9 @@ class LivestreamController extends Controller
     /** @var FlashBagInterface */
     private $flashBag;
 
+    /** @var StreamStateMachine */
+    private $streamStateMachine;
+
     /**
      * LivestreamController constructor.
      * @param StartStreamService $startStreamService
@@ -43,6 +47,7 @@ class LivestreamController extends Controller
      * @param CameraRepository $cameraRepository
      * @param LoggerInterface $logger
      * @param FlashBagInterface $flashBag
+     * @param StreamStateMachine $streamStateMachine
      */
     public function __construct(
         StartStreamService $startStreamService,
@@ -51,7 +56,8 @@ class LivestreamController extends Controller
         \Twig_Environment $twig,
         CameraRepository $cameraRepository,
         LoggerInterface $logger,
-        FlashBagInterface $flashBag
+        FlashBagInterface $flashBag,
+        StreamStateMachine $streamStateMachine
     ) {
         parent::__construct($twig);
         $this->startStreamService = $startStreamService;
@@ -60,6 +66,7 @@ class LivestreamController extends Controller
         $this->cameraRepository = $cameraRepository;
         $this->logger = $logger;
         $this->flashBag = $flashBag;
+        $this->streamStateMachine = $streamStateMachine;
     }
 
     /**
@@ -97,5 +104,20 @@ class LivestreamController extends Controller
     {
         $camera = $this->cameraRepository->getMainCamera();
         return $this->render('components/livestream.html.twig', ['camera' => $camera]);
+    }
+
+    /**
+     * @return RedirectResponse
+     */
+    public function resetFromFailure()
+    {
+        try {
+            $camera = $this->cameraRepository->getMainCamera();
+            $this->streamStateMachine->apply($camera, 'to_inactive');
+        } catch (CouldNotModifyCameraException $exception) {
+            $this->logger->error('Could not reset failure status', ['exception' => $exception]);
+            $this->flashBag->add(self::ERROR_MESSAGE, 'flash.livestream.error.unable_to_reset');
+        }
+        return new RedirectResponse($this->router->generate('scheduler_list'));
     }
 }

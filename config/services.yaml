@@ -1,7 +1,7 @@
 parameters:
     app.locales: 'en|nl'
     locale: 'en'
-    mailer_user: 'pvuyky@gmail.com'
+    mailer_user: 'some@mail.com'
 
 services:
     _defaults:
@@ -20,3 +20,13 @@ services:
     FOS\UserBundle\Controller\RegistrationController:
         arguments:
             $formFactory: '@fos_user.registration.form.factory'
+
+    Aws\Sns\SnsClient:
+        lazy: true
+        arguments:
+        - region: '%env(AWS_SNS_REGION)%'
+          version: '%env(AWS_SNS_VERSION)%'
+
+    App\Services\FailureStateSubscriber:
+        arguments:
+            $topicArn: 'env(AWS_SNS_TOPIC_ARN)'

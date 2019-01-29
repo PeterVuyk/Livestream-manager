@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Service\StreamProcessing;
 
 use App\Entity\CameraConfiguration;
+use App\Entity\StateAwareInterface;
 use App\Exception\CouldNotModifyCameraException;
 use App\Exception\InvalidConfigurationsException;
 use App\Repository\CameraRepository;
@@ -64,7 +65,7 @@ class StopStreamService implements StreamInterface
         }
         $this->streamStateMachine->apply($camera, 'to_stopping');
 
-        $configurations = $this->getConfigurations();
+        $configurations = $this->getConfigurations($camera);
         if ($configurations->checkIfMixerIsRunning === 'true') {
             $attempts = 0;
             do {
@@ -97,10 +98,11 @@ class StopStreamService implements StreamInterface
     }
 
     /**
-     * @throws InvalidConfigurationsException
+     * @param StateAwareInterface $camera
      * @return \stdClass
+     * @throws CouldNotModifyCameraException
      */
-    private function getConfigurations()
+    private function getConfigurations(StateAwareInterface $camera)
     {
         $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
         try {
@@ -110,6 +112,7 @@ class StopStreamService implements StreamInterface
             Assert::propertyExists($configurations, CameraConfiguration::KEY_MIXER_IP_ADDRESS);
             Assert::propertyExists($configurations, CameraConfiguration::KEY_STOP_STREAM_COMMAND);
         } catch (\InvalidArgumentException $exception) {
+            $this->streamStateMachine->apply($camera, 'to_failure');
             InvalidConfigurationsException::fromError($exception);
         }
         return $configurations;

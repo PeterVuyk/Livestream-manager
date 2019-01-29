@@ -15,3 +15,4 @@ flash.camera_configuration.error.could_not_update: 'Could not update the configu
 flash.user_management.error.user_removed: 'User successfully removed.'
 flash.livestream.error.stop_stream: 'Could not stop the stream.'
 flash.livestream.error.start_stream: 'could not start the stream.'
+flash.livestream.error.unable_to_reset: 'Could not reset the stream.'

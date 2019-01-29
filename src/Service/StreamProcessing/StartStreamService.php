@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Service\StreamProcessing;
 
 use App\Entity\CameraConfiguration;
+use App\Entity\StateAwareInterface;
 use App\Exception\CouldNotStartLivestreamException;
 use App\Exception\InvalidConfigurationsException;
 use App\Repository\CameraRepository;
@@ -65,8 +66,9 @@ class StartStreamService implements StreamInterface
         }
         $this->streamStateMachine->apply($camera, 'to_starting');
 
-        $configurations = $this->getConfigurations();
+        $configurations = $this->getConfigurations($camera);
         if (!$this->isHostAvailable($configurations)) {
+            $this->streamStateMachine->apply($camera, 'to_failure');
             throw CouldNotStartLivestreamException::hostNotAvailable();
         }
         $this->logger->info('host is available');
@@ -107,10 +109,10 @@ class StartStreamService implements StreamInterface
     }
 
     /**
-     * @throws \InvalidArgumentException
+     * @param StateAwareInterface $camera
      * @return \stdClass
      */
-    private function getConfigurations()
+    private function getConfigurations(StateAwareInterface $camera)
     {
         try {
             $configurations = $this->cameraConfigurationService->getConfigurationsKeyValue();
@@ -130,6 +132,7 @@ class StartStreamService implements StreamInterface
             Assert::propertyExists($configurations, CameraConfiguration::KEY_INTERVAL_IS_SERVER_AVAILABLE);
             Assert::propertyExists($configurations, CameraConfiguration::KEY_RETRY_IS_SERVER_AVAILABLE);
         } catch (\InvalidArgumentException $exception) {
+            $this->streamStateMachine->apply($camera, 'to_failure');
             throw InvalidConfigurationsException::fromError($exception);
         }
         return $configurations;
