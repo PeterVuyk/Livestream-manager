@@ -22,6 +22,7 @@
         "symfony/form": "*",
         "symfony/framework-bundle": "*",
         "symfony/orm-pack": "^1.0",
+        "symfony/process": "4.2.*",
         "symfony/security-bundle": "*",
         "symfony/swiftmailer-bundle": "^3.2",
         "symfony/templating": "4.2.*",

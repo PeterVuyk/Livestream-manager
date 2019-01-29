@@ -10,6 +10,7 @@ use App\Exception\InvalidConfigurationsException;
 use App\Repository\CameraRepository;
 use App\Service\CameraConfigurationService;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Process\Process;
 use Webmozart\Assert\Assert;
 
 class StopStreamService implements StreamInterface
@@ -78,7 +79,14 @@ class StopStreamService implements StreamInterface
             } while ($attempts <= $configurations->mixerRetryAttempts);
         }
 
-        exec($configurations->stopStreamCommand);
+        $process = new Process([$configurations->stopStreamCommand]);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            $this->logger->error('Stop livestream not successful', ['errorOutput' => $process->getErrorOutput()]);
+            $this->streamStateMachine->apply($camera, 'to_failure');
+            return;
+        }
 
         $this->streamStateMachine->apply($camera, 'to_inactive');
         $this->logger->info('Livestream is stopped successfully');

@@ -11,6 +11,7 @@ use App\Repository\CameraRepository;
 use App\Service\CameraConfigurationService;
 use App\Service\StateMachineInterface;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Process\Process;
 use Webmozart\Assert\Assert;
 
 class StartStreamService implements StreamInterface
@@ -73,7 +74,7 @@ class StartStreamService implements StreamInterface
         }
         $this->logger->info('host is available');
 
-        exec(
+        $process = new Process([
             "{$configurations->ffmpegLocationApplication} -i {$configurations->inputCameraAddress} \
             -af \"{$configurations->increaseVolumeInput}\" -c:v copy -ac 1 \
             -ar {$configurations->audioSamplingFrequency} -ab {$configurations->audioBitrate} \
@@ -83,7 +84,14 @@ class StartStreamService implements StreamInterface
 			{$configurations->outputVideoLocation} --hflip --vflip - -r {$configurations->audioSamplingFrequency} \
 			-a {$configurations->audioBitrate} --volume {$configurations->audioVolume} \
 			--videobitrate {$configurations->videoBitrate}"
-        );
+        ]);
+        $process->run();
+
+        if (!$process->isSuccessful()) {
+            $this->logger->error('Start livestream not successful', ['errorOutput' => $process->getErrorOutput()]);
+            $this->streamStateMachine->apply($camera, 'to_failure');
+            return;
+        }
 
         $this->streamStateMachine->apply($camera, 'to_running');
         $this->logger->info('Livestream is streaming');

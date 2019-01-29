@@ -27,6 +27,6 @@ services:
         - region: '%env(AWS_SNS_REGION)%'
           version: '%env(AWS_SNS_VERSION)%'
 
-    App\Services\FailureStateSubscriber:
+    App\EventSubscriber\FailureStateSubscriber:
         arguments:
             $topicArn: 'env(AWS_SNS_TOPIC_ARN)'

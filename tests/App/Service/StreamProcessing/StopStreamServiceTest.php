@@ -61,7 +61,7 @@ class StopStreamServiceTest extends TestCase
     public function testProcessSuccessNoMixerCheck()
     {
         $configurations = [
-            CameraConfiguration::KEY_STOP_STREAM_COMMAND => 'echo stop',
+            CameraConfiguration::KEY_STOP_STREAM_COMMAND => 'ls',
             CameraConfiguration::KEY_MIXER_INTERVAL_TIME => 0,
             CameraConfiguration::KEY_MIXER_RETRY_ATTEMPTS => 3,
             CameraConfiguration::KEY_CHECK_IF_MIXER_IS_RUNNING => 'false',
@@ -88,7 +88,7 @@ class StopStreamServiceTest extends TestCase
     public function testProcessSuccessCheckIfMixerIsRunning()
     {
         $configurations = [
-            CameraConfiguration::KEY_STOP_STREAM_COMMAND => 'echo stop',
+            CameraConfiguration::KEY_STOP_STREAM_COMMAND => 'ls',
             CameraConfiguration::KEY_MIXER_INTERVAL_TIME => 0,
             CameraConfiguration::KEY_MIXER_RETRY_ATTEMPTS => 3,
             CameraConfiguration::KEY_CHECK_IF_MIXER_IS_RUNNING => 'true',
@@ -115,7 +115,7 @@ class StopStreamServiceTest extends TestCase
     public function testProcessSuccessMixerNotAvailable()
     {
         $configurations = [
-            CameraConfiguration::KEY_STOP_STREAM_COMMAND => 'echo stop',
+            CameraConfiguration::KEY_STOP_STREAM_COMMAND => 'ls',
             CameraConfiguration::KEY_MIXER_INTERVAL_TIME => 0,
             CameraConfiguration::KEY_MIXER_RETRY_ATTEMPTS => 3,
             CameraConfiguration::KEY_CHECK_IF_MIXER_IS_RUNNING => 'true',
