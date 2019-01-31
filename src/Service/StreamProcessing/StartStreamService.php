@@ -61,10 +61,12 @@ class StartStreamService implements StreamInterface
     {
         $camera = $this->cameraRepository->getMainCamera();
         $toStarting = $this->streamStateMachine->can($camera, 'to_starting');
-        if (!$toStarting || $this->statusStreamService->isRunning()) {
-            $this->logger->warning('Stream tried to start while stream was already running');
-            return;
+        $cameraStreaming = $this->statusStreamService->isRunning();
+
+        if (!$toStarting || $cameraStreaming) {
+            throw CouldNotStartLivestreamException::invalidStateOrCameraStatus($toStarting, $cameraStreaming);
         }
+
         $this->streamStateMachine->apply($camera, 'to_starting');
 
         $configurations = $this->getConfigurations($camera);
@@ -72,7 +74,6 @@ class StartStreamService implements StreamInterface
             $this->streamStateMachine->apply($camera, 'to_failure');
             throw CouldNotStartLivestreamException::hostNotAvailable();
         }
-        $this->logger->info('host is available');
 
         $process = new Process([
             "{$configurations->ffmpegLocationApplication} -i {$configurations->inputCameraAddress} \
@@ -85,16 +86,15 @@ class StartStreamService implements StreamInterface
 			-a {$configurations->audioBitrate} --volume {$configurations->audioVolume} \
 			--videobitrate {$configurations->videoBitrate}"
         ]);
+        $process->setTimeout($this->getTimeout($configurations));
         $process->run();
 
         if (!$process->isSuccessful()) {
-            $this->logger->error('Start livestream not successful', ['errorOutput' => $process->getErrorOutput()]);
             $this->streamStateMachine->apply($camera, 'to_failure');
-            return;
+            throw CouldNotStartLivestreamException::runProcessFailed($process->getErrorOutput());
         }
 
         $this->streamStateMachine->apply($camera, 'to_running');
-        $this->logger->info('Livestream is streaming');
     }
 
     /**
@@ -112,8 +112,19 @@ class StartStreamService implements StreamInterface
             $attempts++;
             $this->logger->warning("host was not available, attempts: {$attempts}");
             sleep((int)$configurations->intervalIsServerAvailable);
-        } while ($attempts <= $configurations->retryIsServerAvailable);
+        } while ($attempts <= (int)$configurations->retryIsServerAvailable);
         return false;
+    }
+
+    /**
+     * @param object $configurations
+     * @return int
+     */
+    private function getTimeout(object $configurations): int
+    {
+        $interval = (int)$configurations->intervalIsServerAvailable;
+        $retries = $configurations->retryIsServerAvailable;
+        return 120 + ($interval * $retries);
     }
 
     /**

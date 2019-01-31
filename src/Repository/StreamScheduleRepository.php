@@ -94,4 +94,12 @@ class StreamScheduleRepository extends ServiceEntityRepository
     {
         return $this->findBy(['disabled' => false, 'wrecked' => false]);
     }
+
+    /**
+     * @return null|object|StreamSchedule
+     */
+    public function findRunningSchedule(): ?StreamSchedule
+    {
+        return $this->findOneBy(['isRunning' => true]);
+    }
 }

@@ -9,7 +9,7 @@ use App\Exception\CouldNotModifyCameraException;
 use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Exception\ExecutorCouldNotExecuteStreamException;
 use App\Service\StreamProcessing\StopStreamService;
-use App\Service\StreamProcessing\StreamExecutorService;
+use App\Service\StreamProcessing\StreamScheduleExecutor;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -22,8 +22,8 @@ class SchedulerExecuteCommand extends Command
     const ERROR_MESSAGE = '<error>%s - Aborted</error>';
     const INFO_MESSAGE = '<info>%s</info>';
 
-    /** @var StreamExecutorService */
-    private $streamExecutorService;
+    /** @var StreamScheduleExecutor */
+    private $streamScheduleExecutor;
 
     /** @var StopStreamService */
     private $stopStreamService;
@@ -33,16 +33,16 @@ class SchedulerExecuteCommand extends Command
 
     /**
      * SchedulerExecuteCommand constructor.
-     * @param StreamExecutorService $streamExecutorService
+     * @param StreamScheduleExecutor $streamScheduleExecutor
      * @param StopStreamService $stopStreamService
      * @param LoggerInterface $logger
      */
     public function __construct(
-        StreamExecutorService $streamExecutorService,
+        StreamScheduleExecutor $streamScheduleExecutor,
         StopStreamService $stopStreamService,
         LoggerInterface $logger
     ) {
-        $this->streamExecutorService = $streamExecutorService;
+        $this->streamScheduleExecutor = $streamScheduleExecutor;
         $this->stopStreamService = $stopStreamService;
         $this->logger = $logger;
         parent::__construct();
@@ -66,7 +66,7 @@ class SchedulerExecuteCommand extends Command
         $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution started'));
 
         try {
-            $streamSchedule = $this->streamExecutorService->getStreamToExecute();
+            $streamSchedule = $this->streamScheduleExecutor->getStreamToExecute();
         } catch (ConflictingScheduledStreamsException $exception) {
             $this->logger->error($exception->getMessage(), ['exception' => $exception]);
             $this->stopStreamService->process();
@@ -81,11 +81,11 @@ class SchedulerExecuteCommand extends Command
 
         try {
             if ($streamSchedule->streamTobeStarted()) {
-                $this->streamExecutorService->start($streamSchedule);
+                $this->streamScheduleExecutor->start($streamSchedule);
                 $output->writeln(sprintf(self::INFO_MESSAGE, 'Livestream successfully started'));
             }
             if ($streamSchedule->streamToBeStopped()) {
-                $this->streamExecutorService->stop($streamSchedule);
+                $this->streamScheduleExecutor->stop($streamSchedule);
                 $output->writeln(sprintf(self::INFO_MESSAGE, 'Livestream successfully stopped'));
             }
         } catch (ExecutorCouldNotExecuteStreamException $exception) {

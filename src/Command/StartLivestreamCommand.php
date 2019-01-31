@@ -5,7 +5,7 @@ namespace App\Command;
 
 use App\Exception\CouldNotStartLivestreamException;
 use App\Service\StreamProcessing\StartStreamService;
-use App\Service\StreamProcessing\StatusStreamService;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -17,18 +17,18 @@ class StartLivestreamCommand extends Command
     /** @var StartStreamService */
     private $startStreamService;
 
-    /** @var StatusStreamService */
-    private $statusStreamService;
+    /** @var LoggerInterface */
+    private $logger;
 
     /**
      * StartLivestreamCommand constructor.
-     * @param StartStreamService $stopStreamService
-     * @param StatusStreamService $statusStreamService
+     * @param StartStreamService $startStream
+     * @param LoggerInterface $logger
      */
-    public function __construct(StartStreamService $stopStreamService, StatusStreamService $statusStreamService)
+    public function __construct(StartStreamService $startStream, LoggerInterface $logger)
     {
-        $this->startStreamService = $stopStreamService;
-        $this->statusStreamService = $statusStreamService;
+        $this->startStreamService = $startStream;
+        $this->logger = $logger;
         parent::__construct();
     }
 
@@ -42,19 +42,16 @@ class StartLivestreamCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
-     * @throws CouldNotStartLivestreamException
      */
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-//      ->   if need to be start and stream is running:   Mark stream as running and don't perform any action.
-        if ($this->statusStreamService->isRunning() === true) {
-            $output->writeln('Livestream already started.');
-            return;
+        $output->writeln('Starting livestream running.');
+        try {
+            $this->startStreamService->process();
+            $output->writeln('Livestream running.');
+        } catch (CouldNotStartLivestreamException $exception) {
+            $output->writeln('Failed starting livestream.');
+            $this->logger->error('Could not start livestream', ['exception' => $exception]);
         }
-
-//      ->   if need to be start and stream is not running:   Start stream
-        $output->writeln('Process to start the livestream started.');
-        $this->startStreamService->process();
-        $output->writeln('Livestream started.');
     }
 }

@@ -3,8 +3,15 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Service\StreamProcessing\StatusStreamService;
+use App\Entity\StreamSchedule;
+use App\Exception\CouldNotModifyCameraException;
+use App\Exception\CouldNotModifyStreamScheduleException;
+use App\Exception\CouldNotStopLivestreamException;
+use App\Exception\ExecutorCouldNotExecuteStreamException;
+use App\Repository\StreamScheduleRepository;
 use App\Service\StreamProcessing\StopStreamService;
+use App\Service\StreamProcessing\StreamScheduleExecutor;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -16,19 +23,33 @@ class StopLivestreamCommand extends Command
     /** @var StopStreamService */
     private $stopStreamService;
 
-    /** @var StatusStreamService */
-    private $statusStreamService;
+    /** @var StreamScheduleRepository */
+    private $streamScheduleRepository;
+
+    /** @var StreamScheduleExecutor */
+    private $streamScheduleExecutor;
+
+    /** @var LoggerInterface */
+    private $logger;
 
     /**
-     * StartLivestreamCommand constructor.
+     * StopLivestreamCommand constructor.
      * @param StopStreamService $stopStreamService
-     * @param StatusStreamService $statusStreamService
+     * @param StreamScheduleRepository $streamScheduleRepository
+     * @param StreamScheduleExecutor $streamScheduleExecutor
+     * @param LoggerInterface $logger
      */
-    public function __construct(StopStreamService $stopStreamService, StatusStreamService $statusStreamService)
-    {
-        $this->stopStreamService = $stopStreamService;
-        $this->statusStreamService = $statusStreamService;
+    public function __construct(
+        StopStreamService $stopStreamService,
+        StreamScheduleRepository $streamScheduleRepository,
+        StreamScheduleExecutor $streamScheduleExecutor,
+        LoggerInterface $logger
+    ) {
         parent::__construct();
+        $this->stopStreamService = $stopStreamService;
+        $this->streamScheduleRepository = $streamScheduleRepository;
+        $this->streamScheduleExecutor = $streamScheduleExecutor;
+        $this->logger = $logger;
     }
 
     protected function configure()
@@ -44,15 +65,26 @@ class StopLivestreamCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-//      ->   if need to be stopped and stream is not running: Mark stream as stopped and don't perform any action.
-        if ($this->statusStreamService->isRunning() === false) {
-            $output->writeln('Livestream already stoped.');
+        $output->writeln('Process to stop the livestream started.');
+
+        $streamSchedule = $this->streamScheduleRepository->findRunningSchedule();
+        if (!$streamSchedule instanceof StreamSchedule) {
+            try {
+                $this->stopStreamService->process();
+                $output->writeln('Livestream stopped.');
+            } catch (CouldNotStopLivestreamException | CouldNotModifyCameraException $exception) {
+                $this->logger->error('Could not stop livestream', ['exception' => $exception]);
+                $output->writeln('Could not stop livestream.');
+            }
             return;
         }
 
-//      ->   if need to be stopped and stream is running: Stop stream
-        $output->writeln('Process to stop the livestream started.');
-        $this->stopStreamService->process();
-        $output->writeln('Livestream stoped.');
+        try {
+            $this->streamScheduleExecutor->stop($streamSchedule);
+            $output->writeln('Livestream stopped.');
+        } catch (ExecutorCouldNotExecuteStreamException | CouldNotModifyStreamScheduleException $exception) {
+            $this->logger->error('Could not stop livestream with stream schedule', ['exception' => $exception]);
+            $output->writeln('Could not stop livestream.');
+        }
     }
 }

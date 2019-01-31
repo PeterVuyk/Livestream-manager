@@ -9,7 +9,7 @@ use App\Exception\ConflictingScheduledStreamsException;
 use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Exception\ExecutorCouldNotExecuteStreamException;
 use App\Service\StreamProcessing\StopStreamService;
-use App\Service\StreamProcessing\StreamExecutorService;
+use App\Service\StreamProcessing\StreamScheduleExecutor;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -31,8 +31,8 @@ use Symfony\Component\HttpKernel\KernelInterface;
  */
 class SchedulerExecuteCommandTest extends TestCase
 {
-    /** @var StreamExecutorService|MockObject */
-    private $streamExecutorService;
+    /** @var StreamScheduleExecutor|MockObject */
+    private $streamScheduleExecutorMock;
 
     /** @var StopStreamService|MockObject */
     private $stopStreamServiceMock;
@@ -45,7 +45,7 @@ class SchedulerExecuteCommandTest extends TestCase
 
     public function setUp()
     {
-        $this->streamExecutorService = $this->createMock(StreamExecutorService::class);
+        $this->streamScheduleExecutorMock = $this->createMock(StreamScheduleExecutor::class);
         $this->stopStreamServiceMock = $this->createMock(StopStreamService::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);
 
@@ -56,7 +56,7 @@ class SchedulerExecuteCommandTest extends TestCase
         $kernelMock->expects($this->any())->method('getContainer')->willReturn($containerMock);
 
         $schedulerExecuteCommand = new SchedulerExecuteCommand(
-            $this->streamExecutorService,
+            $this->streamScheduleExecutorMock,
             $this->stopStreamServiceMock,
             $this->loggerMock
         );
@@ -76,8 +76,10 @@ class SchedulerExecuteCommandTest extends TestCase
         $streamSchedule = new StreamSchedule();
         $streamSchedule->setExecutionTime(new \DateTime('- 1 minutes'));
         $streamSchedule->setOnetimeExecutionDate(new \DateTime('- 1 minutes'));
-        $this->streamExecutorService->expects($this->once())->method('getStreamToExecute')->willReturn($streamSchedule);
-        $this->streamExecutorService->expects($this->once())->method('start');
+        $this->streamScheduleExecutorMock->expects($this->once())
+            ->method('getStreamToExecute')
+            ->willReturn($streamSchedule);
+        $this->streamScheduleExecutorMock->expects($this->once())->method('start');
         $this->stopStreamServiceMock->expects($this->never())->method('process');
 
         $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
@@ -92,8 +94,10 @@ class SchedulerExecuteCommandTest extends TestCase
         $streamSchedule->setIsRunning(true);
         $streamSchedule->setStreamDuration(5);
         $streamSchedule->setLastExecution(new \DateTime('- 10 minutes'));
-        $this->streamExecutorService->expects($this->once())->method('getStreamToExecute')->willReturn($streamSchedule);
-        $this->streamExecutorService->expects($this->once())->method('stop');
+        $this->streamScheduleExecutorMock->expects($this->once())
+            ->method('getStreamToExecute')
+            ->willReturn($streamSchedule);
+        $this->streamScheduleExecutorMock->expects($this->once())->method('stop');
 
         $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
     }
@@ -107,8 +111,10 @@ class SchedulerExecuteCommandTest extends TestCase
         $streamSchedule->setIsRunning(true);
         $streamSchedule->setStreamDuration(5);
         $streamSchedule->setLastExecution(new \DateTime('- 10 minutes'));
-        $this->streamExecutorService->expects($this->once())->method('getStreamToExecute')->willReturn($streamSchedule);
-        $this->streamExecutorService->expects($this->once())
+        $this->streamScheduleExecutorMock->expects($this->once())
+            ->method('getStreamToExecute')
+            ->willReturn($streamSchedule);
+        $this->streamScheduleExecutorMock->expects($this->once())
             ->method('stop')
             ->willThrowException(ExecutorCouldNotExecuteStreamException::couldNotStopLivestream(new \Exception()));
         $this->loggerMock->expects($this->once())->method('error');
@@ -125,8 +131,10 @@ class SchedulerExecuteCommandTest extends TestCase
         $streamSchedule->setIsRunning(true);
         $streamSchedule->setStreamDuration(5);
         $streamSchedule->setLastExecution(new \DateTime('- 10 minutes'));
-        $this->streamExecutorService->expects($this->once())->method('getStreamToExecute')->willReturn($streamSchedule);
-        $this->streamExecutorService->expects($this->once())
+        $this->streamScheduleExecutorMock->expects($this->once())
+            ->method('getStreamToExecute')
+            ->willReturn($streamSchedule);
+        $this->streamScheduleExecutorMock->expects($this->once())
             ->method('stop')
             ->willThrowException(CouldNotModifyStreamScheduleException::forError(new ORMException()));
         $this->loggerMock->expects($this->once())->method('error');
@@ -139,7 +147,9 @@ class SchedulerExecuteCommandTest extends TestCase
      */
     public function testExecuteNothingToExecute()
     {
-        $this->streamExecutorService->expects($this->once())->method('getStreamToExecute')->willReturn(null);
+        $this->streamScheduleExecutorMock->expects($this->once())
+            ->method('getStreamToExecute')
+            ->willReturn(null);
         $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
         $this->addToAssertionCount(1);
     }
@@ -149,7 +159,7 @@ class SchedulerExecuteCommandTest extends TestCase
      */
     public function testExecuteFailedGettingStreams()
     {
-        $this->streamExecutorService->expects($this->once())
+        $this->streamScheduleExecutorMock->expects($this->once())
             ->method('getStreamToExecute')
             ->willThrowException(ConflictingScheduledStreamsException::multipleSchedules([new StreamSchedule()]));
         $this->loggerMock->expects($this->once())->method('error');

@@ -4,10 +4,12 @@ declare(strict_types=1);
 namespace App\Tests\Command;
 
 use App\Command\StartLivestreamCommand;
+use App\Exception\CouldNotStartLivestreamException;
 use App\Service\StreamProcessing\StartStreamService;
 use App\Service\StreamProcessing\StatusStreamService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
+use Psr\Log\LoggerInterface;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Tester\CommandTester;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -26,8 +28,8 @@ class StartLivestreamCommandTest extends TestCase
     /** @var StartStreamService|MockObject */
     private $startStreamServiceMock;
 
-    /** @var StatusStreamService|MockObject */
-    private $statusStreamServiceMock;
+    /** @var LoggerInterface|MockObject */
+    private $logger;
 
     /** @var CommandTester */
     private $commandTester;
@@ -35,7 +37,7 @@ class StartLivestreamCommandTest extends TestCase
     public function setUp()
     {
         $this->startStreamServiceMock = $this->createMock(StartStreamService::class);
-        $this->statusStreamServiceMock = $this->createMock(StatusStreamService::class);
+        $this->logger = $this->createMock(LoggerInterface::class);
 
         $containerMock = $this->createMock(ContainerInterface::class);
         $kernelMock = $this->createMock(KernelInterface::class);
@@ -45,7 +47,7 @@ class StartLivestreamCommandTest extends TestCase
 
         $startLivestreamCommand = new StartLivestreamCommand(
             $this->startStreamServiceMock,
-            $this->statusStreamServiceMock
+            $this->logger
         );
 
         $application = new Application($kernelMock);
@@ -60,8 +62,8 @@ class StartLivestreamCommandTest extends TestCase
      */
     public function testExecuteSuccess()
     {
-        $this->statusStreamServiceMock->expects($this->once())->method('isRunning')->willReturn(false);
-        $this->startStreamServiceMock->expects($this->once())->method('process');
+        $this->startStreamServiceMock->expects($this->atLeastOnce())->method('process');
+        $this->logger->expects($this->never())->method('error');
 
         $this->commandTester->execute([StartLivestreamCommand::COMMAND_START_STREAM]);
     }
@@ -69,10 +71,12 @@ class StartLivestreamCommandTest extends TestCase
     /**
      * @covers ::execute
      */
-    public function testExecuteStreamAlreadyRunning()
+    public function testExecuteStreamFailed()
     {
-        $this->statusStreamServiceMock->expects($this->once())->method('isRunning')->willReturn(true);
-        $this->startStreamServiceMock->expects($this->never())->method('process');
+        $this->startStreamServiceMock->expects($this->atLeastOnce())
+            ->method('process')
+            ->willThrowException(CouldNotStartLivestreamException::hostNotAvailable());
+        $this->logger->expects($this->atLeastOnce())->method('error');
 
         $this->commandTester->execute([StartLivestreamCommand::COMMAND_START_STREAM]);
     }

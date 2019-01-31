@@ -1,6 +1,6 @@
 # Livestream Server
 
-A livestream with user interface and Restful API. Broadcast live video content remotely to a given host.
+A livestream with user interface, Restful API and messaging. Broadcast live video content remotely to a given host.
 
 ## Getting Started
 
@@ -23,6 +23,8 @@ Below procedure that tell you how to get a development environment running.
 3. Run the build file to; install the dependencies, setup the database, setup the service with docker, add the required command for the recurring schedule to crontab.
 
         sh build.sh
+
+4. Add the IAM Role to the EC2 machine. It Automatically uses the [IAM Instance Profile Credentials](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UsingIAM.html#UsingIAMrolesWithAmazonEC2Instances) on configured Amazon EC2 instances.
 
 ## Usage
 

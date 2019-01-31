@@ -6,6 +6,7 @@ namespace App\Service\StreamProcessing;
 use App\Entity\CameraConfiguration;
 use App\Entity\StateAwareInterface;
 use App\Exception\CouldNotModifyCameraException;
+use App\Exception\CouldNotStopLivestreamException;
 use App\Exception\InvalidConfigurationsException;
 use App\Repository\CameraRepository;
 use App\Service\CameraConfigurationService;
@@ -55,17 +56,19 @@ class StopStreamService implements StreamInterface
     /**
      * @throw InvalidConfigurationsException
      * @throws CouldNotModifyCameraException
+     * @throws CouldNotStopLivestreamException
      */
     public function process(): void
     {
         $camera = $this->cameraRepository->getMainCamera();
         $toStopping = $this->streamStateMachine->can($camera, 'to_stopping');
-        if (!$toStopping || !$this->statusStreamService->isRunning()) {
-            $this->logger->warning('Stream tried to stop while it wasn\'t running');
-            return;
-        }
-        $this->streamStateMachine->apply($camera, 'to_stopping');
+        $cameraStreaming = $this->statusStreamService->isRunning();
 
+        if (!$toStopping || !$cameraStreaming) {
+            throw CouldNotStopLivestreamException::invalidStateOrCameraStatus($toStopping, $cameraStreaming);
+        }
+
+        $this->streamStateMachine->apply($camera, 'to_stopping');
         $configurations = $this->getConfigurations($camera);
         if ($configurations->checkIfMixerIsRunning === 'true') {
             $attempts = 0;
@@ -80,16 +83,15 @@ class StopStreamService implements StreamInterface
         }
 
         $process = new Process([$configurations->stopStreamCommand]);
+        $process->setTimeout(120);
         $process->run();
 
         if (!$process->isSuccessful()) {
-            $this->logger->error('Stop livestream not successful', ['errorOutput' => $process->getErrorOutput()]);
             $this->streamStateMachine->apply($camera, 'to_failure');
-            return;
+            throw CouldNotStopLivestreamException::runProcessFailed($process->getErrorOutput());
         }
 
         $this->streamStateMachine->apply($camera, 'to_inactive');
-        $this->logger->info('Livestream is stopped successfully');
     }
 
     /**

@@ -12,7 +12,7 @@ use App\Repository\StreamScheduleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;
 
-class StreamExecutorService
+class StreamScheduleExecutor
 {
     /** @var EntityManagerInterface */
     private $entityManager;
@@ -30,7 +30,7 @@ class StreamExecutorService
     private $startStreamService;
 
     /**
-     * StreamExecutorService constructor.
+     * StreamScheduleExecutor constructor.
      * @param EntityManagerInterface $entityManager
      * @param StreamScheduleRepository $streamScheduleRepository
      * @param LoggerInterface $logger
@@ -86,7 +86,13 @@ class StreamExecutorService
             $scheduleLog = new ScheduleLog($streamSchedule, true, 'Livestream successfully started');
             $streamSchedule->addScheduleLog($scheduleLog);
             $streamSchedule->setIsRunning(true);
+            $this->logger->info('Livestream is streaming');
         } catch (\Exception $exception) {
+            $this->logger->error(
+                'Could not start livestream',
+                ['exception' => $exception, 'message' => $exception->getMessage()]
+            );
+
             $streamSchedule->setIsRunning(false);
             $streamSchedule->setWrecked(true);
             $scheduleLog = new ScheduleLog($streamSchedule, false, $exception->getMessage());
@@ -109,7 +115,13 @@ class StreamExecutorService
             $streamSchedule->setIsRunning(false);
             $scheduleLog = new ScheduleLog($streamSchedule, true, 'Livestream successfully stopped');
             $streamSchedule->addScheduleLog($scheduleLog);
+            $this->logger->info('Livestream is stopped successfully');
         } catch (\Exception $exception) {
+            $this->logger->error(
+                'Could not stop livestream',
+                ['exception' => $exception, 'message' => $exception->getMessage()]
+            );
+
             $streamSchedule->setIsRunning(true);
             $streamSchedule->setWrecked(true);
             $scheduleLog = new ScheduleLog($streamSchedule, false, $exception->getMessage());

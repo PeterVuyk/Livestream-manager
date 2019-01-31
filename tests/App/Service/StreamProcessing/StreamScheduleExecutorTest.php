@@ -11,20 +11,20 @@ use App\Exception\ExecutorCouldNotExecuteStreamException;
 use App\Repository\StreamScheduleRepository;
 use App\Service\StreamProcessing\StartStreamService;
 use App\Service\StreamProcessing\StopStreamService;
-use App\Service\StreamProcessing\StreamExecutorService;
+use App\Service\StreamProcessing\StreamScheduleExecutor;
 use Doctrine\ORM\EntityManagerInterface;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @coversDefaultClass \App\Service\StreamProcessing\StreamExecutorService
+ * @coversDefaultClass \App\Service\StreamProcessing\StreamScheduleExecutor
  * @covers ::<!public>
  * @covers ::__construct
  * @uses \App\Entity\StreamSchedule
  * @uses \App\Entity\ScheduleLog
  */
-class StreamExecutorServiceTest extends TestCase
+class StreamScheduleExecutorTest extends TestCase
 {
     /** @var EntityManagerInterface|MockObject */
     private $entityManagerMock;
@@ -41,8 +41,8 @@ class StreamExecutorServiceTest extends TestCase
     /** @var StartStreamService|MockObject */
     private $startStreamServiceMock;
 
-    /** @var StreamExecutorService */
-    private $streamExecutorService;
+    /** @var StreamScheduleExecutor */
+    private $streamScheduleExecutor;
 
     public function setUp()
     {
@@ -51,7 +51,7 @@ class StreamExecutorServiceTest extends TestCase
         $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->stopStreamServiceMock = $this->createMock(StopStreamService::class);
         $this->startStreamServiceMock = $this->createMock(StartStreamService::class);
-        $this->streamExecutorService = new StreamExecutorService(
+        $this->streamScheduleExecutor = new StreamScheduleExecutor(
             $this->entityManagerMock,
             $this->streamScheduleRepositoryMock,
             $this->loggerMock,
@@ -69,7 +69,7 @@ class StreamExecutorServiceTest extends TestCase
         $this->streamScheduleRepositoryMock->expects($this->once())
             ->method('findActiveSchedules')
             ->willReturn([]);
-        $this->assertNull($this->streamExecutorService->getStreamToExecute());
+        $this->assertNull($this->streamScheduleExecutor->getStreamToExecute());
     }
 
     /**
@@ -85,7 +85,7 @@ class StreamExecutorServiceTest extends TestCase
             ->method('findActiveSchedules')
             ->willReturn([$streamSchedule]);
 
-        $streamSchedule = $this->streamExecutorService->getStreamToExecute();
+        $streamSchedule = $this->streamScheduleExecutor->getStreamToExecute();
         $this->assertInstanceOf(StreamSchedule::class, $streamSchedule);
     }
 
@@ -107,7 +107,7 @@ class StreamExecutorServiceTest extends TestCase
         $this->entityManagerMock->expects($this->atLeastOnce())->method('persist');
         $this->entityManagerMock->expects($this->once())->method('flush');
 
-        $this->streamExecutorService->getStreamToExecute();
+        $this->streamScheduleExecutor->getStreamToExecute();
     }
 
     /**
@@ -119,7 +119,7 @@ class StreamExecutorServiceTest extends TestCase
     {
         $this->startStreamServiceMock->expects($this->once())->method('process');
         $this->streamScheduleRepositoryMock->expects($this->once())->method('save');
-        $this->streamExecutorService->start(new StreamSchedule());
+        $this->streamScheduleExecutor->start(new StreamSchedule());
         $this->addToAssertionCount(1);
     }
 
@@ -137,7 +137,7 @@ class StreamExecutorServiceTest extends TestCase
             ->willThrowException(CouldNotStartLivestreamException::hostNotAvailable());
         $this->streamScheduleRepositoryMock->expects($this->once())->method('save');
 
-        $this->streamExecutorService->start(new StreamSchedule());
+        $this->streamScheduleExecutor->start(new StreamSchedule());
     }
 
     /**
@@ -149,7 +149,7 @@ class StreamExecutorServiceTest extends TestCase
     {
         $this->stopStreamServiceMock->expects($this->once())->method('process');
         $this->streamScheduleRepositoryMock->expects($this->once())->method('save');
-        $this->streamExecutorService->stop(new StreamSchedule());
+        $this->streamScheduleExecutor->stop(new StreamSchedule());
         $this->addToAssertionCount(1);
     }
 
@@ -167,6 +167,6 @@ class StreamExecutorServiceTest extends TestCase
             ->willThrowException(new \InvalidArgumentException());
         $this->streamScheduleRepositoryMock->expects($this->once())->method('save');
 
-        $this->streamExecutorService->stop(new StreamSchedule());
+        $this->streamScheduleExecutor->stop(new StreamSchedule());
     }
 }

@@ -67,12 +67,11 @@ class StartStreamServiceTest extends TestCase
      */
     public function testProcessStreamAlreadyRunning()
     {
+        $this->expectException(CouldNotStartLivestreamException::class);
         $this->statusStreamServiceMock->expects($this->once())->method('isRunning')->willReturn(true);
-        $this->loggerMock->expects($this->once())->method('warning');
         $this->cameraRepositoryMock->expects($this->once())->method('getMainCamera')->willReturn(new Camera());
         $this->streamStateMachineMock->expects($this->once())->method('can')->willReturn(true);
         $this->startStreamService->process();
-        $this->addToAssertionCount(1);
     }
 
     /**
