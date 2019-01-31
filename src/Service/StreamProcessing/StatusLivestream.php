@@ -8,7 +8,7 @@ use App\Exception\InvalidConfigurationsException;
 use App\Service\CameraConfigurationService;
 use Webmozart\Assert\Assert;
 
-class StatusStreamService
+class StatusLivestream
 {
     const STATUS_RUNNING = 0;
 
@@ -16,7 +16,6 @@ class StatusStreamService
     private $cameraConfigurationService;
 
     /**
-     * StatusStreamService constructor.
      * @param CameraConfigurationService $cameraConfigurationService
      */
     public function __construct(

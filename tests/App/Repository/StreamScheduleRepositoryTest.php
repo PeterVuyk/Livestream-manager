@@ -174,6 +174,16 @@ class StreamScheduleRepositoryTest extends TestCase
         $this->assertInstanceOf(StreamSchedule::class, $streamSchedules[0]);
     }
 
+    /**
+     * @covers ::findRunningSchedule
+     */
+    public function testFindRunningSchedule()
+    {
+        $this->loadInvoked(new StreamSchedule());
+        $schedule = $this->streamScheduleRepository->findRunningSchedule();
+        $this->assertInstanceOf(StreamSchedule::class, $schedule);
+    }
+
     private function loadInvoked($returnedValue)
     {
         $method = (is_array($returnedValue)) ? 'loadAll': 'load';

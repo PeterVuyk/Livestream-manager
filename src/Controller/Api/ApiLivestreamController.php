@@ -3,27 +3,28 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Service\StreamProcessing\StatusStreamService;
+use App\Exception\CouldNotFindMainCameraException;
+use App\Service\LivestreamService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;
 use Swagger\Annotations as SWG;
 
 class ApiLivestreamController
 {
-    /** @var StatusStreamService */
-    private $statusStreamService;
+    /** @var LivestreamService */
+    private $livestreamService;
 
     /** @var LoggerInterface */
     private $logger;
 
     /**
      * ApiLivestreamController constructor.
-     * @param StatusStreamService $statusStreamService
+     * @param LivestreamService $livestreamService
      * @param LoggerInterface $logger
      */
-    public function __construct(StatusStreamService $statusStreamService, LoggerInterface $logger)
+    public function __construct(LivestreamService $livestreamService, LoggerInterface $logger)
     {
-        $this->statusStreamService = $statusStreamService;
+        $this->livestreamService = $livestreamService;
         $this->logger = $logger;
     }
 
@@ -32,7 +33,11 @@ class ApiLivestreamController
      *     response=200,
      *     description="Get the status livestream",
      *     @SWG\Schema(
-     *             @SWG\Property(property="livestreamIsLive", type="boolean"),
+     *             @SWG\Property(
+     *     property="status",
+     *     type="string",
+     *     enum={"inactive", "starting", "running", "stopping", "failure"}
+     *     ),
      *     )
      * )
      * @SWG\Response(
@@ -48,9 +53,9 @@ class ApiLivestreamController
     public function getStatusLivestream()
     {
         try {
-            $isRunning = $this->statusStreamService->isRunning();
-            return new JsonResponse(['livestreamIsLive' => $isRunning], JsonResponse::HTTP_OK);
-        } catch (\Exception $exception) {
+            $camera = $this->livestreamService->getMainCameraStatus();
+            return new JsonResponse(['status' => $camera->getState()], JsonResponse::HTTP_OK);
+        } catch (CouldNotFindMainCameraException $exception) {
             $this->logger->error('Could not retrieve status stream via API', ['exception' => $exception->getMessage()]);
         }
         return new JsonResponse(['message' => 'something went wrong'], JsonResponse::HTTP_INTERNAL_SERVER_ERROR);

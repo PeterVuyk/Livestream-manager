@@ -8,8 +8,8 @@ use App\Entity\StreamSchedule;
 use App\Exception\CouldNotModifyCameraException;
 use App\Exception\ExecutorCouldNotExecuteStreamException;
 use App\Repository\StreamScheduleRepository;
-use App\Service\StreamProcessing\StatusStreamService;
-use App\Service\StreamProcessing\StopStreamService;
+use App\Service\StreamProcessing\StatusLivestream;
+use App\Service\StreamProcessing\StopLivestream;
 use App\Service\StreamProcessing\StreamScheduleExecutor;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
@@ -23,15 +23,15 @@ use Symfony\Component\HttpKernel\KernelInterface;
  * @coversDefaultClass \App\Command\StopLivestreamCommand
  * @covers ::<!public>
  * @covers ::__construct
- * @uses \App\Service\StreamProcessing\StopStreamService
- * @uses \App\Service\StreamProcessing\StatusStreamService
+ * @uses \App\Service\StreamProcessing\StopLivestream
+ * @uses \App\Service\StreamProcessing\StatusLivestream
  * @uses \App\Entity\StreamSchedule
  * @uses \App\Command\StopLivestreamCommand
  */
 class StopLivestreamCommandTest extends TestCase
 {
-    /** @var StopStreamService|MockObject */
-    private $stopStreamServiceMock;
+    /** @var StopLivestream|MockObject */
+    private $stopLivestream;
 
     /** @var StreamScheduleRepository|MockObject */
     private $streamScheduleRepositoryMock;
@@ -47,7 +47,7 @@ class StopLivestreamCommandTest extends TestCase
 
     public function setUp()
     {
-        $this->stopStreamServiceMock = $this->createMock(StopStreamService::class);
+        $this->stopLivestream = $this->createMock(StopLivestream::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->streamScheduleExecutorMock = $this->createMock(StreamScheduleExecutor::class);
         $this->streamScheduleRepositoryMock = $this->createMock(StreamScheduleRepository::class);
@@ -59,7 +59,7 @@ class StopLivestreamCommandTest extends TestCase
         $kernelMock->expects($this->any())->method('getContainer')->willReturn($containerMock);
 
         $stopLivestreamCommand = new StopLivestreamCommand(
-            $this->stopStreamServiceMock,
+            $this->stopLivestream,
             $this->streamScheduleRepositoryMock,
             $this->streamScheduleExecutorMock,
             $this->loggerMock
@@ -78,7 +78,7 @@ class StopLivestreamCommandTest extends TestCase
     public function testExecuteWithoutRunningStreamScheduleSuccess()
     {
         $this->streamScheduleRepositoryMock->expects($this->once())->method('findRunningSchedule');
-        $this->stopStreamServiceMock->expects($this->once())->method('process');
+        $this->stopLivestream->expects($this->once())->method('process');
         $this->loggerMock->expects($this->never())->method('error');
 
         $this->commandTester->execute([StopLivestreamCommand::COMMAND_STOP_STREAM]);
@@ -90,7 +90,7 @@ class StopLivestreamCommandTest extends TestCase
     public function testExecuteWithoutRunningStreamScheduleFailed()
     {
         $this->streamScheduleRepositoryMock->expects($this->once())->method('findRunningSchedule');
-        $this->stopStreamServiceMock->expects($this->once())
+        $this->stopLivestream->expects($this->once())
             ->method('process')
             ->willThrowException(new CouldNotModifyCameraException());
         $this->loggerMock->expects($this->atLeastOnce())->method('error');

@@ -8,19 +8,19 @@ use App\Entity\CameraConfiguration;
 use App\Exception\CouldNotStopLivestreamException;
 use App\Repository\CameraRepository;
 use App\Service\CameraConfigurationService;
-use App\Service\StreamProcessing\StatusStreamService;
-use App\Service\StreamProcessing\StopStreamService;
+use App\Service\StreamProcessing\StatusLivestream;
+use App\Service\StreamProcessing\StopLivestream;
 use App\Service\StreamProcessing\StreamStateMachine;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
 
 /**
- * @coversDefaultClass \App\Service\StreamProcessing\StopStreamService
+ * @coversDefaultClass \App\Service\StreamProcessing\StopLivestream
  * @covers ::<!public>
  * @covers ::__construct()
  */
-class StopStreamServiceTest extends TestCase
+class StopLivestreamTest extends TestCase
 {
     /** @var LoggerInterface|MockObject */
     private $loggerMock;
@@ -28,8 +28,8 @@ class StopStreamServiceTest extends TestCase
     /** @var CameraConfigurationService|MockObject */
     private $cameraConfigurationServiceMock;
 
-    /** @var StatusStreamService|MockObject */
-    private $statusStreamServiceMock;
+    /** @var StatusLivestream|MockObject */
+    private $statusLivestreamMock;
 
     /** @var StreamStateMachine|MockObject */
     private $streamStateMachineMock;
@@ -37,19 +37,19 @@ class StopStreamServiceTest extends TestCase
     /** @var CameraRepository|MockObject */
     private $cameraRepositoryMock;
 
-    /** @var StopStreamService */
-    private $stopStreamService;
+    /** @var StopLivestream */
+    private $stopLivestream;
 
     public function setUp()
     {
         $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->cameraConfigurationServiceMock = $this->createMock(CameraConfigurationService::class);
-        $this->statusStreamServiceMock = $this->createMock(StatusStreamService::class);
+        $this->statusLivestreamMock = $this->createMock(StatusLivestream::class);
         $this->streamStateMachineMock = $this->createMock(StreamStateMachine::class);
         $this->cameraRepositoryMock = $this->createMock(CameraRepository::class);
-        $this->stopStreamService = new StopStreamService(
+        $this->stopLivestream = new StopLivestream(
             $this->cameraConfigurationServiceMock,
-            $this->statusStreamServiceMock,
+            $this->statusLivestreamMock,
             $this->loggerMock,
             $this->streamStateMachineMock,
             $this->cameraRepositoryMock
@@ -73,12 +73,12 @@ class StopStreamServiceTest extends TestCase
             ->method('getConfigurationsKeyValue')
             ->willReturn((object)$configurations);
 
-        $this->statusStreamServiceMock->expects($this->once())->method('isRunning')->willReturn(true);
+        $this->statusLivestreamMock->expects($this->once())->method('isRunning')->willReturn(true);
 
         $this->cameraRepositoryMock->expects($this->once())->method('getMainCamera')->willReturn(new Camera());
         $this->streamStateMachineMock->expects($this->once())->method('can')->willReturn(true);
 
-        $this->stopStreamService->process();
+        $this->stopLivestream->process();
         $this->addToAssertionCount(1);
     }
 
@@ -100,12 +100,12 @@ class StopStreamServiceTest extends TestCase
             ->willReturn((object)$configurations);
 
         $this->loggerMock->expects($this->atLeastOnce())->method('info');
-        $this->statusStreamServiceMock->expects($this->once())->method('isRunning')->willReturn(true);
+        $this->statusLivestreamMock->expects($this->once())->method('isRunning')->willReturn(true);
 
         $this->cameraRepositoryMock->expects($this->once())->method('getMainCamera')->willReturn(new Camera());
         $this->streamStateMachineMock->expects($this->once())->method('can')->willReturn(true);
 
-        $this->stopStreamService->process();
+        $this->stopLivestream->process();
         $this->addToAssertionCount(1);
     }
 
@@ -126,12 +126,12 @@ class StopStreamServiceTest extends TestCase
             ->method('getConfigurationsKeyValue')
             ->willReturn((object)$configurations);
 
-        $this->statusStreamServiceMock->expects($this->once())->method('isRunning')->willReturn(true);
+        $this->statusLivestreamMock->expects($this->once())->method('isRunning')->willReturn(true);
 
         $this->cameraRepositoryMock->expects($this->once())->method('getMainCamera')->willReturn(new Camera());
         $this->streamStateMachineMock->expects($this->once())->method('can')->willReturn(true);
 
-        $this->stopStreamService->process();
+        $this->stopLivestream->process();
         $this->addToAssertionCount(1);
     }
 
@@ -141,11 +141,11 @@ class StopStreamServiceTest extends TestCase
     public function testProcessStreamNotRunning()
     {
         $this->expectException(CouldNotStopLivestreamException::class);
-        $this->statusStreamServiceMock->expects($this->once())->method('isRunning')->willReturn(false);
+        $this->statusLivestreamMock->expects($this->once())->method('isRunning')->willReturn(false);
 
         $this->cameraRepositoryMock->expects($this->once())->method('getMainCamera')->willReturn(new Camera());
         $this->streamStateMachineMock->expects($this->once())->method('can')->willReturn(true);
 
-        $this->stopStreamService->process();
+        $this->stopLivestream->process();
     }
 }

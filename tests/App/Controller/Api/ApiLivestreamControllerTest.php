@@ -4,7 +4,9 @@ declare(strict_types=1);
 namespace App\Tests\App\Controller\Api;
 
 use App\Controller\Api\ApiLivestreamController;
-use App\Service\StreamProcessing\StatusStreamService;
+use App\Entity\Camera;
+use App\Exception\CouldNotFindMainCameraException;
+use App\Service\LivestreamService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -14,11 +16,12 @@ use Symfony\Component\HttpFoundation\JsonResponse;
  * @coversDefaultClass \App\Controller\Api\ApiLivestreamController
  * @covers ::<!public>
  * @covers ::__construct
+ * @uses \App\Entity\Camera
  */
 class ApiLivestreamControllerTest extends TestCase
 {
-    /** @var StatusStreamService|MockObject */
-    private $statusStreamServiceMock;
+    /** @var LivestreamService|MockObject */
+    private $livestreamServiceMock;
 
     /** @var LoggerInterface|MockObject */
     private $loggerMock;
@@ -28,10 +31,10 @@ class ApiLivestreamControllerTest extends TestCase
 
     public function setUp()
     {
-        $this->statusStreamServiceMock = $this->createMock(StatusStreamService::class);
+        $this->livestreamServiceMock = $this->createMock(LivestreamService::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->apiLivestreamController = new ApiLivestreamController(
-            $this->statusStreamServiceMock,
+            $this->livestreamServiceMock,
             $this->loggerMock
         );
     }
@@ -41,7 +44,9 @@ class ApiLivestreamControllerTest extends TestCase
      */
     public function testGetStatusLivestreamSuccess()
     {
-        $this->statusStreamServiceMock->expects($this->once())->method('isRunning')->willReturn(false);
+        $camera = new Camera();
+        $camera->setState('some-state');
+        $this->livestreamServiceMock->expects($this->once())->method('getMainCameraStatus')->willReturn($camera);
         $this->loggerMock->expects($this->never())->method('error');
 
         $response = $this->apiLivestreamController->getStatusLivestream();
@@ -53,9 +58,9 @@ class ApiLivestreamControllerTest extends TestCase
      */
     public function testGetStatusLivestreamFailed()
     {
-        $this->statusStreamServiceMock->expects($this->once())
-            ->method('isRunning')
-            ->willThrowException(new \InvalidArgumentException());
+        $this->livestreamServiceMock->expects($this->once())
+            ->method('getMainCameraStatus')
+            ->willThrowException(new CouldNotFindMainCameraException());
         $this->loggerMock->expects($this->once())->method('error');
 
         $response = $this->apiLivestreamController->getStatusLivestream();

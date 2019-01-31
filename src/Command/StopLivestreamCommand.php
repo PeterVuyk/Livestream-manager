@@ -9,7 +9,7 @@ use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Exception\CouldNotStopLivestreamException;
 use App\Exception\ExecutorCouldNotExecuteStreamException;
 use App\Repository\StreamScheduleRepository;
-use App\Service\StreamProcessing\StopStreamService;
+use App\Service\StreamProcessing\StopLivestream;
 use App\Service\StreamProcessing\StreamScheduleExecutor;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
@@ -20,8 +20,8 @@ class StopLivestreamCommand extends Command
 {
     const COMMAND_STOP_STREAM = 'stream:stop';
 
-    /** @var StopStreamService */
-    private $stopStreamService;
+    /** @var StopLivestream */
+    private $stopLivestream;
 
     /** @var StreamScheduleRepository */
     private $streamScheduleRepository;
@@ -34,19 +34,19 @@ class StopLivestreamCommand extends Command
 
     /**
      * StopLivestreamCommand constructor.
-     * @param StopStreamService $stopStreamService
+     * @param StopLivestream $stopLivestream
      * @param StreamScheduleRepository $streamScheduleRepository
      * @param StreamScheduleExecutor $streamScheduleExecutor
      * @param LoggerInterface $logger
      */
     public function __construct(
-        StopStreamService $stopStreamService,
+        StopLivestream $stopLivestream,
         StreamScheduleRepository $streamScheduleRepository,
         StreamScheduleExecutor $streamScheduleExecutor,
         LoggerInterface $logger
     ) {
         parent::__construct();
-        $this->stopStreamService = $stopStreamService;
+        $this->stopLivestream = $stopLivestream;
         $this->streamScheduleRepository = $streamScheduleRepository;
         $this->streamScheduleExecutor = $streamScheduleExecutor;
         $this->logger = $logger;
@@ -70,7 +70,8 @@ class StopLivestreamCommand extends Command
         $streamSchedule = $this->streamScheduleRepository->findRunningSchedule();
         if (!$streamSchedule instanceof StreamSchedule) {
             try {
-                $this->stopStreamService->process();
+                //TODO: Send an event instead of calling process directly. Should be a background process.
+                $this->stopLivestream->process();
                 $output->writeln('Livestream stopped.');
             } catch (CouldNotStopLivestreamException | CouldNotModifyCameraException $exception) {
                 $this->logger->error('Could not stop livestream', ['exception' => $exception]);

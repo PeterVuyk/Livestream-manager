@@ -5,29 +5,29 @@ namespace App\Tests\Service\StreamProcessing;
 
 use App\Entity\CameraConfiguration;
 use App\Service\CameraConfigurationService;
-use App\Service\StreamProcessing\StatusStreamService;
+use App\Service\StreamProcessing\StatusLivestream;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 
 /**
- * @coversDefaultClass \App\Service\StreamProcessing\StatusStreamService
+ * @coversDefaultClass \App\Service\StreamProcessing\StatusLivestream
  * @covers ::<!public>
  * @covers ::__construct()
  * @uses \App\Entity\CameraConfiguration
- * @uses \App\Service\StreamProcessing\StatusStreamService
+ * @uses \App\Service\StreamProcessing\StatusLivestream
  */
-class StatusStreamServiceTest extends TestCase
+class StatusLivestreamTest extends TestCase
 {
     /** @var CameraConfigurationService|MockObject */
     private $cameraConfigurationServiceMock;
 
-    /** @var StatusStreamService */
-    private $statusStreamService;
+    /** @var StatusLivestream */
+    private $statusLivestream;
 
     public function setUp()
     {
         $this->cameraConfigurationServiceMock = $this->createMock(CameraConfigurationService::class);
-        $this->statusStreamService = new StatusStreamService($this->cameraConfigurationServiceMock);
+        $this->statusLivestream = new StatusLivestream($this->cameraConfigurationServiceMock);
     }
 
     /**
@@ -40,7 +40,7 @@ class StatusStreamServiceTest extends TestCase
             ->method('getConfigurationsKeyValue')
             ->willReturn((object)$configurations);
 
-        $isRunning = $this->statusStreamService->isRunning();
+        $isRunning = $this->statusLivestream->isRunning();
         $this->assertFalse($isRunning);
     }
 }

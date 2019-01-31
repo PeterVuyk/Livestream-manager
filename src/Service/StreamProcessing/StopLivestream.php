@@ -14,13 +14,13 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Process;
 use Webmozart\Assert\Assert;
 
-class StopStreamService implements StreamInterface
+class StopLivestream implements LivestreamInterface
 {
     /** @var CameraConfigurationService */
     private $cameraConfigurationService;
 
-    /** @var StatusStreamService */
-    private $statusStreamService;
+    /** @var StatusLivestream */
+    private $statusLivestream;
 
     /** @var LoggerInterface */
     private $logger;
@@ -32,22 +32,21 @@ class StopStreamService implements StreamInterface
     private $cameraRepository;
 
     /**
-     * StopStreamService constructor.
      * @param CameraConfigurationService $cameraConfigurationService
-     * @param StatusStreamService $statusStreamService
+     * @param StatusLivestream $statusLivestream
      * @param LoggerInterface $logger
      * @param StreamStateMachine $streamStateMachine
      * @param CameraRepository $cameraRepository
      */
     public function __construct(
         CameraConfigurationService $cameraConfigurationService,
-        StatusStreamService $statusStreamService,
+        StatusLivestream $statusLivestream,
         LoggerInterface $logger,
         StreamStateMachine $streamStateMachine,
         CameraRepository $cameraRepository
     ) {
         $this->cameraConfigurationService = $cameraConfigurationService;
-        $this->statusStreamService = $statusStreamService;
+        $this->statusLivestream = $statusLivestream;
         $this->logger = $logger;
         $this->streamStateMachine = $streamStateMachine;
         $this->cameraRepository = $cameraRepository;
@@ -62,7 +61,7 @@ class StopStreamService implements StreamInterface
     {
         $camera = $this->cameraRepository->getMainCamera();
         $toStopping = $this->streamStateMachine->can($camera, 'to_stopping');
-        $cameraStreaming = $this->statusStreamService->isRunning();
+        $cameraStreaming = $this->statusLivestream->isRunning();
 
         if (!$toStopping || !$cameraStreaming) {
             throw CouldNotStopLivestreamException::invalidStateOrCameraStatus($toStopping, $cameraStreaming);

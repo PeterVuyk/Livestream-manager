@@ -6,8 +6,8 @@ namespace App\Controller;
 use App\Exception\CouldNotModifyCameraException;
 use App\Exception\CouldNotStartLivestreamException;
 use App\Repository\CameraRepository;
-use App\Service\StreamProcessing\StartStreamService;
-use App\Service\StreamProcessing\StopStreamService;
+use App\Service\StreamProcessing\StartLivestream;
+use App\Service\StreamProcessing\StopLivestream;
 use App\Service\StreamProcessing\StreamStateMachine;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -17,11 +17,11 @@ use Symfony\Component\Routing\RouterInterface;
 
 class LivestreamController extends Controller
 {
-    /** @var StartStreamService */
-    private $startStreamService;
+    /** @var StartLivestream */
+    private $startLivestream;
 
-    /** @var StopStreamService */
-    private $stopStreamService;
+    /** @var StopLivestream */
+    private $stopLivestream;
 
     /** @var RouterInterface */
     private $router;
@@ -40,8 +40,8 @@ class LivestreamController extends Controller
 
     /**
      * LivestreamController constructor.
-     * @param StartStreamService $startStreamService
-     * @param StopStreamService $stopStreamService
+     * @param StartLivestream $startLivestream
+     * @param StopLivestream $stopLivestream
      * @param RouterInterface $router
      * @param \Twig_Environment $twig
      * @param CameraRepository $cameraRepository
@@ -50,8 +50,8 @@ class LivestreamController extends Controller
      * @param StreamStateMachine $streamStateMachine
      */
     public function __construct(
-        StartStreamService $startStreamService,
-        StopStreamService $stopStreamService,
+        StartLivestream $startLivestream,
+        StopLivestream $stopLivestream,
         RouterInterface $router,
         \Twig_Environment $twig,
         CameraRepository $cameraRepository,
@@ -60,8 +60,8 @@ class LivestreamController extends Controller
         StreamStateMachine $streamStateMachine
     ) {
         parent::__construct($twig);
-        $this->startStreamService = $startStreamService;
-        $this->stopStreamService = $stopStreamService;
+        $this->startLivestream = $startLivestream;
+        $this->stopLivestream = $stopLivestream;
         $this->router = $router;
         $this->cameraRepository = $cameraRepository;
         $this->logger = $logger;
@@ -75,7 +75,8 @@ class LivestreamController extends Controller
     public function startStream()
     {
         try {
-            $this->startStreamService->process();
+            $this->startLivestream->process();
+            //TODO: Send event to start process stream, right now page keeps loading until stream started.
         } catch (CouldNotStartLivestreamException $exception) {
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.livestream.error.start_stream');
             $this->logger->error('Could not start livestream', ['exception' => $exception]);
@@ -89,7 +90,8 @@ class LivestreamController extends Controller
     public function stopStream()
     {
         try {
-            $this->stopStreamService->process();
+            $this->stopLivestream->process();
+            //TODO: Send event to stop process stream, right now page keeps loading until stream stopped.
         } catch (CouldNotModifyCameraException $exception) {
             $this->logger->error('Could not start livestream', ['exception' => $exception]);
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.livestream.error.stop_stream');

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Exception\CouldNotStartLivestreamException;
-use App\Service\StreamProcessing\StartStreamService;
+use App\Service\StreamProcessing\StartLivestream;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -14,20 +14,20 @@ class StartLivestreamCommand extends Command
 {
     const COMMAND_START_STREAM = 'stream:start';
 
-    /** @var StartStreamService */
-    private $startStreamService;
+    /** @var StartLivestream */
+    private $startLivestream;
 
     /** @var LoggerInterface */
     private $logger;
 
     /**
      * StartLivestreamCommand constructor.
-     * @param StartStreamService $startStream
+     * @param StartLivestream $startStream
      * @param LoggerInterface $logger
      */
-    public function __construct(StartStreamService $startStream, LoggerInterface $logger)
+    public function __construct(StartLivestream $startStream, LoggerInterface $logger)
     {
-        $this->startStreamService = $startStream;
+        $this->startLivestream = $startStream;
         $this->logger = $logger;
         parent::__construct();
     }
@@ -47,7 +47,8 @@ class StartLivestreamCommand extends Command
     {
         $output->writeln('Starting livestream running.');
         try {
-            $this->startStreamService->process();
+            $this->startLivestream->process();
+            //TODO: Send an event instead of calling process directly. Should be a background process.
             $output->writeln('Livestream running.');
         } catch (CouldNotStartLivestreamException $exception) {
             $output->writeln('Failed starting livestream.');

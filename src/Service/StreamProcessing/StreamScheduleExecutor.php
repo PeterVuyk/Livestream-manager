@@ -23,32 +23,32 @@ class StreamScheduleExecutor
     /** @var LoggerInterface */
     private $logger;
 
-    /** @var StopStreamService */
-    private $stopStreamService;
+    /** @var StopLivestream */
+    private $stopLivestream;
 
-    /** @var StartStreamService */
-    private $startStreamService;
+    /** @var StartLivestream */
+    private $startLivestream;
 
     /**
      * StreamScheduleExecutor constructor.
      * @param EntityManagerInterface $entityManager
      * @param StreamScheduleRepository $streamScheduleRepository
      * @param LoggerInterface $logger
-     * @param StopStreamService $stopStreamService
-     * @param StartStreamService $startStreamService
+     * @param StopLivestream $stopLivestream
+     * @param StartLivestream $startLivestream
      */
     public function __construct(
         EntityManagerInterface $entityManager,
         StreamScheduleRepository $streamScheduleRepository,
         LoggerInterface $logger,
-        StopStreamService $stopStreamService,
-        StartStreamService $startStreamService
+        StopLivestream $stopLivestream,
+        StartLivestream $startLivestream
     ) {
         $this->entityManager = $entityManager;
         $this->streamScheduleRepository = $streamScheduleRepository;
         $this->logger = $logger;
-        $this->stopStreamService = $stopStreamService;
-        $this->startStreamService = $startStreamService;
+        $this->stopLivestream = $stopLivestream;
+        $this->startLivestream = $startLivestream;
     }
 
     /**
@@ -81,7 +81,7 @@ class StreamScheduleExecutor
     public function start(StreamSchedule $streamSchedule)
     {
         try {
-            $this->startStreamService->process();
+            $this->startLivestream->process();
             $streamSchedule->setLastExecution(new \DateTime());
             $scheduleLog = new ScheduleLog($streamSchedule, true, 'Livestream successfully started');
             $streamSchedule->addScheduleLog($scheduleLog);
@@ -111,7 +111,7 @@ class StreamScheduleExecutor
     public function stop(StreamSchedule $streamSchedule)
     {
         try {
-            $this->stopStreamService->process();
+            $this->stopLivestream->process();
             $streamSchedule->setIsRunning(false);
             $scheduleLog = new ScheduleLog($streamSchedule, true, 'Livestream successfully stopped');
             $streamSchedule->addScheduleLog($scheduleLog);

@@ -14,13 +14,13 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Process;
 use Webmozart\Assert\Assert;
 
-class StartStreamService implements StreamInterface
+class StartLivestream implements LivestreamInterface
 {
     /** @var CameraConfigurationService */
     private $cameraConfigurationService;
 
-    /** @var StatusStreamService */
-    private $statusStreamService;
+    /** @var StatusLivestream */
+    private $statusLivestream;
 
     /** @var LoggerInterface */
     private $logger;
@@ -32,22 +32,21 @@ class StartStreamService implements StreamInterface
     private $streamStateMachine;
 
     /**
-     * StartStreamService constructor.
      * @param CameraConfigurationService $cameraConfigurationService
-     * @param StatusStreamService $statusStreamService
+     * @param StatusLivestream $statusLivestream
      * @param LoggerInterface $logger
      * @param CameraRepository $cameraRepository ;
      * @param StateMachineInterface $streamStateMachine
      */
     public function __construct(
         CameraConfigurationService $cameraConfigurationService,
-        StatusStreamService $statusStreamService,
+        StatusLivestream $statusLivestream,
         LoggerInterface $logger,
         cameraRepository $cameraRepository,
         StateMachineInterface $streamStateMachine
     ) {
         $this->cameraConfigurationService = $cameraConfigurationService;
-        $this->statusStreamService = $statusStreamService;
+        $this->statusLivestream = $statusLivestream;
         $this->logger = $logger;
         $this->cameraRepository = $cameraRepository;
         $this->streamStateMachine = $streamStateMachine;
@@ -61,7 +60,7 @@ class StartStreamService implements StreamInterface
     {
         $camera = $this->cameraRepository->getMainCamera();
         $toStarting = $this->streamStateMachine->can($camera, 'to_starting');
-        $cameraStreaming = $this->statusStreamService->isRunning();
+        $cameraStreaming = $this->statusLivestream->isRunning();
 
         if (!$toStarting || $cameraStreaming) {
             throw CouldNotStartLivestreamException::invalidStateOrCameraStatus($toStarting, $cameraStreaming);
