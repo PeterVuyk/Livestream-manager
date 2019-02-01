@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\EventSubscriber;
 
 use App\Exception\PublishMessageFailedException;
-use App\Service\MessagingDispatcher;
+use App\Messaging\Dispatcher\MessagingDispatcher;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\Event;
@@ -52,7 +52,7 @@ class FailureStateSubscriber implements EventSubscriberInterface
         $this->logger->alert($message);
 
         try {
-            $this->messagingDispatcher->sendMessage('', $message);
+            $this->messagingDispatcher->sendMessage($this->topicArn, $message);
         } catch (PublishMessageFailedException $exception) {
             $this->logger->error($exception->getMessage());
         }

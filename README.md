@@ -24,8 +24,6 @@ Below procedure that tell you how to get a development environment running.
 
         sh build.sh
 
-4. Add the IAM Role to the EC2 machine. It Automatically uses the [IAM Instance Profile Credentials](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/UsingIAM.html#UsingIAMrolesWithAmazonEC2Instances) on configured Amazon EC2 instances.
-
 ## Usage
 
 Once the installation is complete, let's take a look at the docker images we have running:

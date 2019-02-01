@@ -8,7 +8,6 @@ use App\Entity\StreamSchedule;
 use App\Exception\ConflictingScheduledStreamsException;
 use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Exception\ExecutorCouldNotExecuteStreamException;
-use App\Service\StreamProcessing\StopLivestream;
 use App\Service\StreamProcessing\StreamScheduleExecutor;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -24,8 +23,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
  * @covers ::<!public>
  * @covers ::__construct
  * @uses \App\Repository\StreamScheduleRepository
- * @uses \App\Service\StreamProcessing\StartLivestream
- * @uses \App\Service\StreamProcessing\StopLivestream
  * @uses \App\Entity\StreamSchedule
  * @uses \App\Entity\ScheduleLog
  */
@@ -33,9 +30,6 @@ class SchedulerExecuteCommandTest extends TestCase
 {
     /** @var StreamScheduleExecutor|MockObject */
     private $streamScheduleExecutorMock;
-
-    /** @var StopLivestream|MockObject */
-    private $stopLivestreamMock;
 
     /** @var LoggerInterface|MockObject */
     private $loggerMock;
@@ -46,7 +40,6 @@ class SchedulerExecuteCommandTest extends TestCase
     public function setUp()
     {
         $this->streamScheduleExecutorMock = $this->createMock(StreamScheduleExecutor::class);
-        $this->stopLivestreamMock = $this->createMock(StopLivestream::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);
 
         $containerMock = $this->createMock(ContainerInterface::class);
@@ -57,7 +50,6 @@ class SchedulerExecuteCommandTest extends TestCase
 
         $schedulerExecuteCommand = new SchedulerExecuteCommand(
             $this->streamScheduleExecutorMock,
-            $this->stopLivestreamMock,
             $this->loggerMock
         );
 
@@ -80,7 +72,6 @@ class SchedulerExecuteCommandTest extends TestCase
             ->method('getStreamToExecute')
             ->willReturn($streamSchedule);
         $this->streamScheduleExecutorMock->expects($this->once())->method('start');
-        $this->stopLivestreamMock->expects($this->never())->method('process');
 
         $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
     }
@@ -163,7 +154,6 @@ class SchedulerExecuteCommandTest extends TestCase
             ->method('getStreamToExecute')
             ->willThrowException(ConflictingScheduledStreamsException::multipleSchedules([new StreamSchedule()]));
         $this->loggerMock->expects($this->once())->method('error');
-        $this->stopLivestreamMock->expects($this->once())->method('process');
 
         $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
     }

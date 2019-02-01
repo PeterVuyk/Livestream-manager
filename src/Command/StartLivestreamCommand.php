@@ -5,6 +5,7 @@ namespace App\Command;
 
 use App\Exception\CouldNotStartLivestreamException;
 use App\Service\StreamProcessing\StartLivestream;
+use App\Messaging\Library\Command\StartLivestreamCommand as MessagingStartStreamCommand;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;

@@ -21,12 +21,6 @@ services:
         arguments:
             $formFactory: '@fos_user.registration.form.factory'
 
-    Aws\Sns\SnsClient:
-        lazy: true
-        arguments:
-        - region: '%env(AWS_SNS_REGION)%'
-          version: '%env(AWS_SNS_VERSION)%'
-
     App\EventSubscriber\FailureStateSubscriber:
         arguments:
             $topicArn: 'env(AWS_SNS_TOPIC_ARN)'
