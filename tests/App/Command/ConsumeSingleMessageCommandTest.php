@@ -3,9 +3,10 @@ declare(strict_types=1);
 
 namespace App\Tests\App\Command;
 
-use App\Command\ConsumeMessagesCommand;
+use App\Command\ConsumeSingleMessageCommand;
 use App\Exception\MessagingQueueConsumerException;
 use App\Messaging\Consumer\MessagingConsumer;
+use App\Service\MessageProcessor\ProcessMessageDelegator;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -15,17 +16,20 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\KernelInterface;
 
 /**
- * @coversDefaultClass \App\Command\ConsumeMessagesCommand
+ * @coversDefaultClass \App\Command\ConsumeSingleMessageCommand
  * @covers ::<!public>
  * @covers ::__construct
  */
-class ConsumeMessagesCommandTest extends TestCase
+class ConsumeSingleMessageCommandTest extends TestCase
 {
     /** @var MessagingConsumer|MockObject */
     private $messagingConsumerMock;
 
     /** @var LoggerInterface|MockObject */
     private $loggerMock;
+
+    /** @var ProcessMessageDelegator|MockObject */
+    private $processMessageDelegatorMock;
 
     /** @var CommandTester */
     private $commandTester;
@@ -34,6 +38,7 @@ class ConsumeMessagesCommandTest extends TestCase
     {
         $this->messagingConsumerMock = $this->createMock(MessagingConsumer::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);
+        $this->processMessageDelegatorMock = $this->createMock(ProcessMessageDelegator::class);
 
         $containerMock = $this->createMock(ContainerInterface::class);
         $kernelMock = $this->createMock(KernelInterface::class);
@@ -41,15 +46,16 @@ class ConsumeMessagesCommandTest extends TestCase
         $kernelMock->expects($this->any())->method('getBundles')->willReturn([]);
         $kernelMock->expects($this->any())->method('getContainer')->willReturn($containerMock);
 
-        $schedulerExecuteCommand = new ConsumeMessagesCommand(
+        $schedulerExecuteCommand = new ConsumeSingleMessageCommand(
             $this->messagingConsumerMock,
+            $this->processMessageDelegatorMock,
             $this->loggerMock
         );
 
         $application = new Application($kernelMock);
         $application->add($schedulerExecuteCommand);
 
-        $schedulerExecuteCommandMock = $application->find(ConsumeMessagesCommand::COMMAND_STREAM_MESSAGES);
+        $schedulerExecuteCommandMock = $application->find(ConsumeSingleMessageCommand::COMMAND_CONSUME_SINGLE_MESSAGE);
         $this->commandTester = new CommandTester($schedulerExecuteCommandMock);
     }
 
@@ -61,7 +67,7 @@ class ConsumeMessagesCommandTest extends TestCase
         $this->messagingConsumerMock->expects($this->once())->method('consume');
         $this->loggerMock->expects($this->never())->method('error');
 
-        $this->commandTester->execute([ConsumeMessagesCommand::COMMAND_STREAM_MESSAGES]);
+        $this->commandTester->execute([ConsumeSingleMessageCommand::COMMAND_CONSUME_SINGLE_MESSAGE]);
         $this->addToAssertionCount(1);
     }
 
@@ -75,7 +81,7 @@ class ConsumeMessagesCommandTest extends TestCase
             ->willThrowException(MessagingQueueConsumerException::fromError(new \Exception()));
         $this->loggerMock->expects($this->atLeastOnce())->method('error');
 
-        $this->commandTester->execute([ConsumeMessagesCommand::COMMAND_STREAM_MESSAGES]);
+        $this->commandTester->execute([ConsumeSingleMessageCommand::COMMAND_CONSUME_SINGLE_MESSAGE]);
         $this->addToAssertionCount(1);
     }
 }

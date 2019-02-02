@@ -90,8 +90,11 @@ More information: [Symfony security - Encoding the User's Password](https://symf
     $ docker-compose exec db /bin/bash -c "mysql -u<username> -p<password>"
     
     # Start / Stop livestream via command line
-    $ docker-compose exec php bash bin/console stream:start
-    $ docker-compose exec php bash bin/console stream:stop
+    $ docker-compose exec php bash bin/console app:livestream-start
+    $ docker-compose exec php bash bin/console app:livestream-stop
+    
+    # Consume one message from queue
+    $ docker-compose exec php bash bin/console app:consume-single-message
 
 ## Running the tests
 

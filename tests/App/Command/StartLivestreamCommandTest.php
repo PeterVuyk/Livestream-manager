@@ -64,7 +64,7 @@ class StartLivestreamCommandTest extends TestCase
         $application = new Application($kernelMock);
         $application->add($startLivestreamCommand);
 
-        $startLivestreamCommandMock = $application->find(StartLivestreamCommand::COMMAND_START_STREAM);
+        $startLivestreamCommandMock = $application->find(StartLivestreamCommand::COMMAND_START_LIVESTREAM);
         $this->commandTester = new CommandTester($startLivestreamCommandMock);
     }
 
@@ -80,7 +80,7 @@ class StartLivestreamCommandTest extends TestCase
         $this->messagingDispatcher->expects($this->once())->method('sendMessage');
         $this->logger->expects($this->never())->method('error');
 
-        $this->commandTester->execute([StartLivestreamCommand::COMMAND_START_STREAM]);
+        $this->commandTester->execute([StartLivestreamCommand::COMMAND_START_LIVESTREAM]);
     }
 
     /**
@@ -97,6 +97,6 @@ class StartLivestreamCommandTest extends TestCase
             ->willThrowException(PublishMessageFailedException::forMessage('topic', []));
         $this->logger->expects($this->atLeastOnce())->method('error');
 
-        $this->commandTester->execute([StartLivestreamCommand::COMMAND_START_STREAM]);
+        $this->commandTester->execute([StartLivestreamCommand::COMMAND_START_LIVESTREAM]);
     }
 }

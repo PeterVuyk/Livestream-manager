@@ -35,10 +35,10 @@ class MessagingConsumer
     }
 
     /**
-     * @return null|MessageInterface
+     * @return Result
      * @throws MessagingQueueConsumerException
      */
-    public function consume(): ?MessageInterface
+    public function consume(): Result
     {
         try {
             $result = $this->sqsClient->receiveMessage([
@@ -46,13 +46,20 @@ class MessagingConsumer
                 'MaxNumberOfMessages' => 1,
                 'ReceiveMessageWaitTimeSeconds' => 20
             ]);
-            if ($result->get('Messages') !== null) {
-
-                $message = $this->deserializer->deserialize($result->get('Messages')[0]);
-                $this->delete($result);
-            }
         } catch (AwsException $awsException) {
             throw MessagingQueueConsumerException::fromError($awsException);
+        }
+        return $result;
+    }
+
+    /**
+     * @param Result $result
+     * @return MessageInterface|null
+     */
+    public function deserializeResult(Result $result): ?MessageInterface
+    {
+        if ($result->get('Messages') !== null) {
+            $message = $this->deserializer->deserialize($result->get('Messages')[0]);
         }
         return $message ?? null;
     }
@@ -61,7 +68,7 @@ class MessagingConsumer
      * @param Result $result
      * @throws MessagingQueueConsumerException
      */
-    private function delete(Result $result): void
+    public function delete(Result $result): void
     {
         try {
             $this->sqsClient->deleteMessage([

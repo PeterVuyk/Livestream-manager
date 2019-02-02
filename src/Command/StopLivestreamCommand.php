@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class StopLivestreamCommand extends Command
 {
-    const COMMAND_STOP_STREAM = 'stream:stop';
+    const COMMAND_STOP_LIVESTREAM = 'app:livestream-stop';
 
     /** @var MessagingDispatcher */
     private $messagingDispatcher;
@@ -53,7 +53,7 @@ class StopLivestreamCommand extends Command
     protected function configure()
     {
         $this
-            ->setName(self::COMMAND_STOP_STREAM)
+            ->setName(self::COMMAND_STOP_LIVESTREAM)
             ->setDescription('Stop the livestream.');
     }
 
@@ -80,7 +80,7 @@ class StopLivestreamCommand extends Command
             $this->messagingDispatcher->sendMessage(MessageStopLivestreamCommand::create());
         } catch (PublishMessageFailedException $exception) {
             $this->logger->error('Could not send stop command livestream', ['exception' => $exception]);
-            $output->writeln('Could not stop livestream.');
+            $output->writeln("<error>Could not stop livestream: {$exception->getMessage()}</error>");
         }
     }
 }

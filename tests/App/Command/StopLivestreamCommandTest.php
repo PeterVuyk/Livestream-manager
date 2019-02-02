@@ -71,7 +71,7 @@ class StopLivestreamCommandTest extends TestCase
         $application = new Application($kernelMock);
         $application->add($stopLivestreamCommand);
 
-        $stopLivestreamCommandMock = $application->find(StopLivestreamCommand::COMMAND_STOP_STREAM);
+        $stopLivestreamCommandMock = $application->find(StopLivestreamCommand::COMMAND_STOP_LIVESTREAM);
         $this->commandTester = new CommandTester($stopLivestreamCommandMock);
     }
 
@@ -87,7 +87,7 @@ class StopLivestreamCommandTest extends TestCase
         $this->messagingDispatcher->expects($this->once())->method('sendMessage');
         $this->logger->expects($this->never())->method('error');
 
-        $this->commandTester->execute([StopLivestreamCommand::COMMAND_STOP_STREAM]);
+        $this->commandTester->execute([StopLivestreamCommand::COMMAND_STOP_LIVESTREAM]);
     }
 
     /**
@@ -105,6 +105,6 @@ class StopLivestreamCommandTest extends TestCase
 
         $this->logger->expects($this->atLeastOnce())->method('error');
 
-        $this->commandTester->execute([StopLivestreamCommand::COMMAND_STOP_STREAM]);
+        $this->commandTester->execute([StopLivestreamCommand::COMMAND_STOP_LIVESTREAM]);
     }
 }

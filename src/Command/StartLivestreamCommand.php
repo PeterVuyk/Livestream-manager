@@ -16,7 +16,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class StartLivestreamCommand extends Command
 {
-    const COMMAND_START_STREAM = 'stream:start';
+    const COMMAND_START_LIVESTREAM = 'app:livestream-start';
 
     /** @var MessagingDispatcher */
     private $messagingDispatcher;
@@ -53,7 +53,7 @@ class StartLivestreamCommand extends Command
     protected function configure()
     {
         $this
-            ->setName(self::COMMAND_START_STREAM)
+            ->setName(self::COMMAND_START_LIVESTREAM)
             ->setDescription('Start the livestream.');
     }
 

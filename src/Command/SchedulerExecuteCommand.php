@@ -13,7 +13,7 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class SchedulerExecuteCommand extends Command
 {
-    const COMMAND_SCHEDULER_EXECUTE = 'scheduler:execute';
+    const COMMAND_SCHEDULER_EXECUTE = 'app:scheduler-execute';
 
     const ERROR_MESSAGE = '<error>%s - Aborted</error>';
     const INFO_MESSAGE = '<info>%s</info>';
