@@ -23,4 +23,8 @@ services:
 
     App\Messaging\Dispatcher\MessagingDispatcher:
         arguments:
-            $topicArn: 'env(AWS_SNS_TOPIC_ARN)'
+            $topicArn: '%env(AWS_SNS_TOPIC_ARN)%'
+
+    App\Messaging\Consumer\MessagingConsumer:
+        arguments:
+            $queueUrl: '%env(AWS_SQS_URL_ARN)%'

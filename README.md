@@ -24,6 +24,11 @@ Below procedure that tell you how to get a development environment running.
 
         sh build.sh
 
+4. Setup a SNS, SQS and IAM role in AWS and add it to the environment variables.
+- [Creating an SNS Topic](https://docs.aws.amazon.com/sns/latest/api/API_CreateTopic.html)
+- [Creating an Amazon SQS Queue](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-create-queue.html)
+- [Create IAM Roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create.html)
+
 ## Usage
 
 Once the installation is complete, let's take a look at the docker images we have running:
@@ -83,6 +88,10 @@ More information: [Symfony security - Encoding the User's Password](https://symf
     
     # MySQL commands
     $ docker-compose exec db /bin/bash -c "mysql -u<username> -p<password>"
+    
+    # Start / Stop livestream via command line
+    $ docker-compose exec php bash bin/console stream:start
+    $ docker-compose exec php bash bin/console stream:stop
 
 ## Running the tests
 

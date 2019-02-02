@@ -17,23 +17,17 @@ class FailureStateSubscriber implements EventSubscriberInterface
     /** @var MessagingDispatcher */
     private $messagingDispatcher;
 
-    /** @var string */
-    private $topicArn;
-
     /**
      * FailureStateSubscriber constructor.
      * @param LoggerInterface $logger
      * @param MessagingDispatcher $messagingDispatcher
-     * @param string $topicArn
      */
     public function __construct(
         LoggerInterface $logger,
-        MessagingDispatcher $messagingDispatcher,
-        string $topicArn
+        MessagingDispatcher $messagingDispatcher
     ) {
         $this->logger = $logger;
         $this->messagingDispatcher = $messagingDispatcher;
-        $this->topicArn = $topicArn;
     }
 
     /**

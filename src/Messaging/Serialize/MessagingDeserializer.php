@@ -11,15 +11,17 @@ use Webmozart\Assert\Assert;
 
 class MessagingDeserializer implements DeserializeInterface
 {
+    const MESSAGE_BODY = 'Body';
+    const MESSAGE_PAYLOAD = 'Message';
+
     /**
-     * @param array $payload
+     * @param array $message
      * @return MessageInterface
      * @throws UnsupportedMessageException
      */
-    public function deserialize(array $payload): MessageInterface
+    public function deserialize(array $message): MessageInterface
     {
-        Assert::keyExists($payload, MessageInterface::RESOURCE_ID);
-        Assert::keyExists($payload, MessageInterface::RESOURCE_ID_KEY);
+        $payload = $this->validate($message);
         /** @var MessageInterface $className */
         $className = $this->getClassNameFromMessage($payload);
 
@@ -44,5 +46,25 @@ class MessagingDeserializer implements DeserializeInterface
                 throw UnsupportedMessageException::classNotFound($payload);
         }
         return $className;
+    }
+
+    /**
+     * @param array $message
+     * @return array
+     */
+    private function validate(array $message): array
+    {
+        Assert::keyExists($message, self::MESSAGE_BODY);
+
+        $body = json_decode($message[self::MESSAGE_BODY], true);
+        Assert::isArray($body);
+        Assert::keyExists($body, self::MESSAGE_PAYLOAD);
+
+        $payload = json_decode($body[self::MESSAGE_PAYLOAD], true);
+        Assert::isArray($payload);
+        Assert::keyExists($payload, MessageInterface::RESOURCE_ID);
+        Assert::keyExists($payload, MessageInterface::RESOURCE_ID_KEY);
+
+        return $payload;
     }
 }

@@ -7,5 +7,5 @@ use App\Messaging\Library\MessageInterface;
 
 interface DeserializeInterface
 {
-    public function deserialize(array $payload): MessageInterface;
+    public function deserialize(array $message): MessageInterface;
 }

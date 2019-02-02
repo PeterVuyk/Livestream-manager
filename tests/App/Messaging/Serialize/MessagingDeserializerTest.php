@@ -35,7 +35,9 @@ class MessagingDeserializerTest extends TestCase
             "resourceIdKey" => "stopLivestreamCommand",
             "commandDate" => "2019-02-01 07:49:26"
         ];
-        $stopLivestreamCommand = $this->messagingDeserializer->deserialize($payload);
+        $stopLivestreamCommand = $this->messagingDeserializer->deserialize(
+            ['Body' => json_encode(['Message' => json_encode($payload)])]
+        );
 
         $this->assertInstanceOf(StopLivestreamCommand::class, $stopLivestreamCommand);
     }
@@ -54,6 +56,6 @@ class MessagingDeserializerTest extends TestCase
             "resourceIdKey" => "some-command-name-that-does-not-exist",
             "commandDate" => "2019-02-01 07:49:26"
         ];
-        $this->messagingDeserializer->deserialize($payload);
+        $this->messagingDeserializer->deserialize(['Body' => json_encode(['Message' => json_encode($payload)])]);
     }
 }
