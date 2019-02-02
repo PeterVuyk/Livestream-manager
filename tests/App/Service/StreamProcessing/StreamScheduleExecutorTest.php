@@ -61,56 +61,6 @@ class StreamScheduleExecutorTest extends TestCase
     }
 
     /**
-     * @throws ConflictingScheduledStreamsException
-     * @covers ::getStreamToExecute
-     */
-    public function testGetStreamToExecuteNothingToExecute()
-    {
-        $this->streamScheduleRepositoryMock->expects($this->once())
-            ->method('findActiveSchedules')
-            ->willReturn([]);
-        $this->assertNull($this->streamScheduleExecutor->getStreamToExecute());
-    }
-
-    /**
-     * @throws ConflictingScheduledStreamsException
-     * @covers ::getStreamToExecute
-     */
-    public function testGetStreamToExecuteOneStreamForExecution()
-    {
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setExecutionTime(new \DateTime('- 1 minutes'));
-        $streamSchedule->setOnetimeExecutionDate(new \DateTime('- 1 minutes'));
-        $this->streamScheduleRepositoryMock->expects($this->once())
-            ->method('findActiveSchedules')
-            ->willReturn([$streamSchedule]);
-
-        $streamSchedule = $this->streamScheduleExecutor->getStreamToExecute();
-        $this->assertInstanceOf(StreamSchedule::class, $streamSchedule);
-    }
-
-    /**
-     * @throws ConflictingScheduledStreamsException
-     * @covers ::getStreamToExecute
-     */
-    public function testGetStreamToExecuteConflictingStreams()
-    {
-        $this->expectException(ConflictingScheduledStreamsException::class);
-
-        $streamSchedule = new StreamSchedule();
-        $streamSchedule->setExecutionTime(new \DateTime('- 1 minutes'));
-        $streamSchedule->setOnetimeExecutionDate(new \DateTime('- 1 minutes'));
-        $this->streamScheduleRepositoryMock->expects($this->once())
-            ->method('findActiveSchedules')
-            ->willReturn([$streamSchedule, $streamSchedule]);
-
-        $this->entityManagerMock->expects($this->atLeastOnce())->method('persist');
-        $this->entityManagerMock->expects($this->once())->method('flush');
-
-        $this->streamScheduleExecutor->getStreamToExecute();
-    }
-
-    /**
      * @throws CouldNotModifyStreamScheduleException
      * @throws ExecutorCouldNotExecuteStreamException
      * @covers ::start

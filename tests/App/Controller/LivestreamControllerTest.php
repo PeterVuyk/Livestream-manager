@@ -6,10 +6,9 @@ namespace App\Tests\Controller;
 use App\Controller\LivestreamController;
 use App\Entity\Camera;
 use App\Exception\CouldNotModifyCameraException;
-use App\Exception\CouldNotStartLivestreamException;
+use App\Exception\PublishMessageFailedException;
+use App\Messaging\Dispatcher\MessagingDispatcher;
 use App\Repository\CameraRepository;
-use App\Service\StreamProcessing\StartLivestream;
-use App\Service\StreamProcessing\StopLivestream;
 use App\Service\StreamProcessing\StreamStateMachine;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
@@ -24,16 +23,13 @@ use Symfony\Component\Routing\RouterInterface;
  * @covers ::<!public>
  * @covers ::__construct
  * @uses \App\Controller\Controller
- * @uses \App\Service\StreamProcessing\StartLivestream
- * @uses \App\Service\StreamProcessing\StopLivestream
+ * @uses \App\Messaging\Library\Command\StopLivestreamCommand
+ * @uses \App\Messaging\Library\Command\StartLivestreamCommand
  */
 class LivestreamControllerTest extends TestCase
 {
-    /** @var StartLivestream|MockObject */
-    private $startLivestream;
-
-    /** @var StopLivestream|MockObject */
-    private $stopLivestream;
+    /** @var MessagingDispatcher|MockObject */
+    private $messagingDispatcher;
 
     /** @var RouterInterface|MockObject */
     private $routerMock;
@@ -58,8 +54,7 @@ class LivestreamControllerTest extends TestCase
 
     public function setUp()
     {
-        $this->startLivestream = $this->createMock(StartLivestream::class);
-        $this->stopLivestream = $this->createMock(StopLivestream::class);
+        $this->messagingDispatcher = $this->createMock(MessagingDispatcher::class);
         $this->routerMock = $this->createMock(RouterInterface::class);
         $this->cameraRepositoryMock = $this->createMock(CameraRepository::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);
@@ -67,8 +62,7 @@ class LivestreamControllerTest extends TestCase
         $this->twigMock = $this->createMock(\Twig_Environment::class);
         $this->streamStateMachineMock = $this->createMock(StreamStateMachine::class);
         $this->livestreamController = new LivestreamController(
-            $this->startLivestream,
-            $this->stopLivestream,
+            $this->messagingDispatcher,
             $this->routerMock,
             $this->twigMock,
             $this->cameraRepositoryMock,
@@ -83,7 +77,7 @@ class LivestreamControllerTest extends TestCase
      */
     public function testStartStreamSuccess()
     {
-        $this->startLivestream->expects($this->once())->method('process');
+        $this->messagingDispatcher->expects($this->once())->method('sendMessage');
         $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');
         $this->loggerMock->expects($this->never())->method('error');
         $response = $this->livestreamController->startStream();
@@ -96,9 +90,9 @@ class LivestreamControllerTest extends TestCase
      */
     public function testStartStreamFailed()
     {
-        $this->startLivestream->expects($this->once())
-            ->method('process')
-            ->willThrowException(CouldNotStartLivestreamException::hostNotAvailable());
+        $this->messagingDispatcher->expects($this->once())
+            ->method('sendMessage')
+            ->willThrowException(PublishMessageFailedException::forMessage('topic', []));
         $this->loggerMock->expects($this->atLeastOnce())->method('error');
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');
@@ -111,7 +105,7 @@ class LivestreamControllerTest extends TestCase
      */
     public function testStopStreamSuccess()
     {
-        $this->stopLivestream->expects($this->once())->method('process');
+        $this->messagingDispatcher->expects($this->once())->method('sendMessage');
         $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');
         $this->loggerMock->expects($this->never())->method('error');
         $response = $this->livestreamController->stopStream();
@@ -123,9 +117,9 @@ class LivestreamControllerTest extends TestCase
      */
     public function testStopStreamFailed()
     {
-        $this->stopLivestream->expects($this->once())
-            ->method('process')
-            ->willThrowException(CouldNotModifyCameraException::forError(new ORMException()));
+        $this->messagingDispatcher->expects($this->once())
+            ->method('sendMessage')
+            ->willThrowException(PublishMessageFailedException::forMessage('topic', []));
         $this->loggerMock->expects($this->atLeastOnce())->method('error');
 
         $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');

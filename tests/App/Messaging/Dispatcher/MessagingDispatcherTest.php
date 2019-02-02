@@ -36,7 +36,7 @@ class MessagingDispatcherTest extends TestCase
             ->disableOriginalConstructor()
             ->setMethods(['publish'])
             ->getMock();
-        $this->messagingDispatcher = new MessagingDispatcher($this->snsClientMock, $this->serialize);
+        $this->messagingDispatcher = new MessagingDispatcher($this->snsClientMock, $this->serialize, 'topic');
     }
 
     /**
@@ -46,7 +46,7 @@ class MessagingDispatcherTest extends TestCase
     public function testSendMessageSuccess()
     {
         $this->snsClientMock->expects($this->once())->method('publish');
-        $this->messagingDispatcher->sendMessage('some-topic-arn', $this->getStopLivestreamCommand());
+        $this->messagingDispatcher->sendMessage($this->getStopLivestreamCommand());
         $this->addToAssertionCount(1);
     }
 
@@ -58,7 +58,7 @@ class MessagingDispatcherTest extends TestCase
     {
         $this->expectException(PublishMessageFailedException::class);
         $this->snsClientMock->expects($this->once())->method('publish')->willThrowException(new \Exception());
-        $this->messagingDispatcher->sendMessage('some-topic-arn', $this->getStopLivestreamCommand());
+        $this->messagingDispatcher->sendMessage($this->getStopLivestreamCommand());
     }
 
     private function getStopLivestreamCommand(): StopLivestreamCommand

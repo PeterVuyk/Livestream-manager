@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Messaging\Library\Command;
 
+use App\Entity\StreamSchedule;
 use App\Exception\UnsupportedMessageException;
 use App\Messaging\Library\MessageInterface;
 use Ramsey\Uuid\Uuid;
@@ -19,11 +20,12 @@ class StartLivestreamCommand extends Command
     /** @var \DateTimeInterface */
     private $commandDate;
 
-    public static function create(): self
+    public static function create(StreamSchedule $streamSchedule = null): self
     {
         $self = new self();
         $self->resourceId = (string)Uuid::uuid4();
         $self->commandDate = new \DateTimeImmutable();
+
         return $self;
     }
 

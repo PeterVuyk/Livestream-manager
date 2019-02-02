@@ -14,10 +14,10 @@ class CouldNotStopLivestreamException extends \Exception
         parent::__construct($reason, 0, $previous);
     }
 
-    public static function invalidStateOrCameraStatus(bool $toStopping, bool $cameraStreaming)
+    public static function invalidStateOrCameraStatus(bool $toStopping, bool $cameraStreaming = null)
     {
         return new self(
-            sprintf(self::INVALID_STATE_OR_CAMERA_STATUS_MESSAGE, (string)$toStopping, (string)$cameraStreaming)
+            sprintf(self::INVALID_STATE_OR_CAMERA_STATUS_MESSAGE, (string)$toStopping, (string)$cameraStreaming ?? '')
         );
     }
 

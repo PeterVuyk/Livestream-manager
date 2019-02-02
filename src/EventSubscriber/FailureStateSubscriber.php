@@ -52,7 +52,7 @@ class FailureStateSubscriber implements EventSubscriberInterface
         $this->logger->alert($message);
 
         try {
-            $this->messagingDispatcher->sendMessage($this->topicArn, $message);
+            $this->messagingDispatcher->sendMessage($message);
         } catch (PublishMessageFailedException $exception) {
             $this->logger->error($exception->getMessage());
         }

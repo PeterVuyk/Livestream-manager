@@ -8,7 +8,7 @@ use Symfony\Component\HttpFoundation\Response;
 abstract class Controller
 {
     protected const SUCCESS_MESSAGE = 'success';
-    protected const NOTICE_MESSAGE = 'notice';
+    protected const INFO_MESSAGE = 'info';
     protected const ERROR_MESSAGE = 'error';
 
     /** @var \Twig_Environment */

@@ -19,31 +19,35 @@ class MessagingDispatcher
     /** @var SerializeInterface */
     private $serialize;
 
+    /** @var string */
+    private $topicArn;
+
     /**
      * MessagingDispatcher constructor.
      * @param SnsClient $snsClient
      * @param SerializeInterface $serialize
+     * @param string $topicArn
      */
-    public function __construct(SnsClient $snsClient, SerializeInterface $serialize)
+    public function __construct(SnsClient $snsClient, SerializeInterface $serialize, string $topicArn)
     {
         $this->serialize = $serialize;
         $this->snsClient = $snsClient;
+        $this->topicArn = $topicArn;
     }
 
     /**
-     * @param string $topicArn
      * @param MessageInterface $message
      * @throws PublishMessageFailedException
      */
-    public function sendMessage(string $topicArn, MessageInterface $message): void
+    public function sendMessage(MessageInterface $message): void
     {
         try {
             $this->snsClient->publish([
                 self::SNS_MESSAGE => $this->serialize->serialize($message),
-                self::SNS_TOPIC_ARN => $topicArn
+                self::SNS_TOPIC_ARN => $this->topicArn,
             ]);
         } catch (\Exception $exception) {
-            throw PublishMessageFailedException::forMessage($topicArn, $message->getPayload(), $exception);
+            throw PublishMessageFailedException::forMessage($this->topicArn, $message->getPayload(), $exception);
         }
     }
 }

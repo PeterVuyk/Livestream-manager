@@ -11,4 +11,10 @@
             {{ flashMessage|trans }}<br>
         </div>
     {% endfor %}
+
+    {% for flashMessage in app.session.flashbag.get('info') %}
+        <div class="alert alert-dismissable alert-info">
+            {{ flashMessage|trans }}<br>
+        </div>
+    {% endfor %}
 {% endif %}

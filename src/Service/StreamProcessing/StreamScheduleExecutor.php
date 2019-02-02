@@ -5,7 +5,6 @@ namespace App\Service\StreamProcessing;
 
 use App\Entity\ScheduleLog;
 use App\Entity\StreamSchedule;
-use App\Exception\ConflictingScheduledStreamsException;
 use App\Exception\CouldNotModifyStreamScheduleException;
 use App\Exception\ExecutorCouldNotExecuteStreamException;
 use App\Repository\StreamScheduleRepository;
@@ -49,28 +48,6 @@ class StreamScheduleExecutor
         $this->logger = $logger;
         $this->stopLivestream = $stopLivestream;
         $this->startLivestream = $startLivestream;
-    }
-
-    /**
-     * @return StreamSchedule
-     * @throws ConflictingScheduledStreamsException
-     */
-    public function getStreamToExecute(): ?StreamSchedule
-    {
-        $streamSchedules = $this->streamScheduleRepository->findActiveSchedules();
-        $streamsToBeExecuted = [];
-        foreach ($streamSchedules as $streamSchedule) {
-            if ($streamSchedule->streamTobeStarted() || $streamSchedule->streamToBeStopped()) {
-                $streamsToBeExecuted[] = $streamSchedule;
-            }
-        }
-
-        if (count($streamsToBeExecuted) > 1) {
-            $this->markConflictingStreamsAsWrecked($streamsToBeExecuted);
-            throw ConflictingScheduledStreamsException::multipleSchedules($streamSchedules);
-        }
-
-        return $streamsToBeExecuted ? current($streamsToBeExecuted) : null;
     }
 
     /**
@@ -135,7 +112,7 @@ class StreamScheduleExecutor
     /**
      * @param StreamSchedule[] $streamSchedules
      */
-    private function markConflictingStreamsAsWrecked(array $streamSchedules)
+    public function markConflictingStreamsAsWrecked(array $streamSchedules)
     {
         foreach ($streamSchedules as $streamSchedule) {
             $streamSchedule->setWrecked(true);
@@ -145,5 +122,6 @@ class StreamScheduleExecutor
             $this->entityManager->persist($streamSchedule);
         }
         $this->entityManager->flush();
+        //TODO: Can entity manager be replaced by the repository itself?
     }
 }

@@ -5,9 +5,7 @@ namespace App\Command;
 
 use App\Entity\StreamSchedule;
 use App\Exception\ConflictingScheduledStreamsException;
-use App\Exception\CouldNotModifyStreamScheduleException;
-use App\Exception\ExecutorCouldNotExecuteStreamException;
-use App\Service\StreamProcessing\StreamScheduleExecutor;
+use App\Service\LivestreamService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,23 +18,23 @@ class SchedulerExecuteCommand extends Command
     const ERROR_MESSAGE = '<error>%s - Aborted</error>';
     const INFO_MESSAGE = '<info>%s</info>';
 
-    /** @var StreamScheduleExecutor */
-    private $streamScheduleExecutor;
-
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var LivestreamService */
+    private $livestreamService;
+
     /**
      * SchedulerExecuteCommand constructor.
-     * @param StreamScheduleExecutor $streamScheduleExecutor
      * @param LoggerInterface $logger
+     * @param LivestreamService $livestreamService
      */
     public function __construct(
-        StreamScheduleExecutor $streamScheduleExecutor,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        LivestreamService $livestreamService
     ) {
-        $this->streamScheduleExecutor = $streamScheduleExecutor;
         $this->logger = $logger;
+        $this->livestreamService = $livestreamService;
         parent::__construct();
     }
 
@@ -57,11 +55,10 @@ class SchedulerExecuteCommand extends Command
         $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution started'));
 
         try {
-            $streamSchedule = $this->streamScheduleExecutor->getStreamToExecute();
-            //TODO: Mark schedule as being processed so next cron won't pick up the same event.
+            $streamSchedule = $this->livestreamService->getStreamToExecute();
         } catch (ConflictingScheduledStreamsException $exception) {
-            $this->logger->error($exception->getMessage(), ['exception' => $exception]);
-            $output->writeln(sprintf(self::ERROR_MESSAGE, $exception->getMessage()));
+            $this->logger->warning('conflicting schedules, could not execute', ['exception' => $exception]);
+            $output->writeln(sprintf(self::ERROR_MESSAGE, 'conflicting schedules, could not execute'));
             return;
         }
 
@@ -71,22 +68,12 @@ class SchedulerExecuteCommand extends Command
         }
 
         try {
-            if ($streamSchedule->streamTobeStarted()) {
-                $this->streamScheduleExecutor->start($streamSchedule);
-                $output->writeln(sprintf(self::INFO_MESSAGE, 'Livestream successfully started'));
-            }
-            if ($streamSchedule->streamToBeStopped()) {
-                $this->streamScheduleExecutor->stop($streamSchedule);
-                $output->writeln(sprintf(self::INFO_MESSAGE, 'Livestream successfully stopped'));
-            }
-        } catch (ExecutorCouldNotExecuteStreamException $exception) {
-            $output->writeln(sprintf(self::ERROR_MESSAGE, $exception->getMessage()));
-            $this->logger->error('Could not execute stream command', ['exception' => $exception]);
-        } catch (CouldNotModifyStreamScheduleException $exception) {
-            $output->writeln(sprintf(self::ERROR_MESSAGE, $exception->getMessage()));
-            $this->logger->error('could not update stream schedule', ['message' => $exception->getMessage()]);
+            $this->livestreamService->sendLivestreamCommand($streamSchedule);
+        } catch (\Exception $exception) {
+            $this->logger->error('Could not publish message', ['exception' => $exception]);
+            $output->writeln(sprintf(self::ERROR_MESSAGE, 'Could not publish message'));
         }
 
-        $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution finished'));
+        $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution command send'));
     }
 }

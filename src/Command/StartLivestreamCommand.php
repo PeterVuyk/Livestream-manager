@@ -3,9 +3,12 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Exception\CouldNotStartLivestreamException;
-use App\Service\StreamProcessing\StartLivestream;
-use App\Messaging\Library\Command\StartLivestreamCommand as MessagingStartStreamCommand;
+use App\Exception\CouldNotFindMainCameraException;
+use App\Exception\PublishMessageFailedException;
+use App\Messaging\Dispatcher\MessagingDispatcher;
+use App\Service\LivestreamService;
+use App\Messaging\Library\Command\StartLivestreamCommand as MessageStartLivestreamCommand;
+use App\Service\StreamProcessing\StreamStateMachine;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -15,22 +18,36 @@ class StartLivestreamCommand extends Command
 {
     const COMMAND_START_STREAM = 'stream:start';
 
-    /** @var StartLivestream */
-    private $startLivestream;
+    /** @var MessagingDispatcher */
+    private $messagingDispatcher;
 
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var LivestreamService */
+    private $livestreamService;
+
+    /** @var StreamStateMachine */
+    private $streamStateMachine;
+
     /**
      * StartLivestreamCommand constructor.
-     * @param StartLivestream $startStream
+     * @param MessagingDispatcher $messagingDispatcher
      * @param LoggerInterface $logger
+     * @param LivestreamService $livestreamService
+     * @param StreamStateMachine $streamStateMachine
      */
-    public function __construct(StartLivestream $startStream, LoggerInterface $logger)
-    {
-        $this->startLivestream = $startStream;
-        $this->logger = $logger;
+    public function __construct(
+        MessagingDispatcher $messagingDispatcher,
+        LoggerInterface $logger,
+        LivestreamService $livestreamService,
+        StreamStateMachine $streamStateMachine
+    ) {
         parent::__construct();
+        $this->messagingDispatcher = $messagingDispatcher;
+        $this->logger = $logger;
+        $this->livestreamService = $livestreamService;
+        $this->streamStateMachine = $streamStateMachine;
     }
 
     protected function configure()
@@ -43,17 +60,27 @@ class StartLivestreamCommand extends Command
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @throws CouldNotFindMainCameraException
      */
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $output->writeln('Starting livestream running.');
+        $output->writeln('Requested to start livestream.');
+
+        $camera = $this->livestreamService->getMainCameraStatus();
+        $toStarting = $this->streamStateMachine->can($camera, 'to_starting');
+
+        if (!$toStarting) {
+            $message = "tried to start livestream while this is not possible, current state: {$camera->getState()}";
+            $this->logger->warning($message);
+            $output->writeln("<error>{$message}</error>");
+            return;
+        }
+
         try {
-            $this->startLivestream->process();
-            //TODO: Send an event instead of calling process directly. Should be a background process.
-            $output->writeln('Livestream running.');
-        } catch (CouldNotStartLivestreamException $exception) {
-            $output->writeln('Failed starting livestream.');
-            $this->logger->error('Could not start livestream', ['exception' => $exception]);
+            $this->messagingDispatcher->sendMessage(MessageStartLivestreamCommand::create());
+        } catch (PublishMessageFailedException $exception) {
+            $this->logger->error('Could not send start command livestream', ['exception' => $exception]);
+            $output->writeln('Could not start livestream.');
         }
     }
 }

@@ -3,14 +3,12 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\StreamSchedule;
-use App\Exception\CouldNotModifyCameraException;
-use App\Exception\CouldNotModifyStreamScheduleException;
-use App\Exception\CouldNotStopLivestreamException;
-use App\Exception\ExecutorCouldNotExecuteStreamException;
-use App\Repository\StreamScheduleRepository;
-use App\Service\StreamProcessing\StopLivestream;
-use App\Service\StreamProcessing\StreamScheduleExecutor;
+use App\Exception\CouldNotFindMainCameraException;
+use App\Exception\PublishMessageFailedException;
+use App\Messaging\Dispatcher\MessagingDispatcher;
+use App\Messaging\Library\Command\StopLivestreamCommand as MessageStopLivestreamCommand;
+use App\Service\LivestreamService;
+use App\Service\StreamProcessing\StreamStateMachine;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
@@ -20,71 +18,68 @@ class StopLivestreamCommand extends Command
 {
     const COMMAND_STOP_STREAM = 'stream:stop';
 
-    /** @var StopLivestream */
-    private $stopLivestream;
-
-    /** @var StreamScheduleRepository */
-    private $streamScheduleRepository;
-
-    /** @var StreamScheduleExecutor */
-    private $streamScheduleExecutor;
+    /** @var MessagingDispatcher */
+    private $messagingDispatcher;
 
     /** @var LoggerInterface */
     private $logger;
 
+    /** @var LivestreamService */
+    private $livestreamService;
+
+    /** @var StreamStateMachine */
+    private $streamStateMachine;
+
     /**
      * StopLivestreamCommand constructor.
-     * @param StopLivestream $stopLivestream
-     * @param StreamScheduleRepository $streamScheduleRepository
-     * @param StreamScheduleExecutor $streamScheduleExecutor
+     * @param MessagingDispatcher $messagingDispatcher
      * @param LoggerInterface $logger
+     * @param LivestreamService $livestreamService
+     * @param StreamStateMachine $streamStateMachine
      */
     public function __construct(
-        StopLivestream $stopLivestream,
-        StreamScheduleRepository $streamScheduleRepository,
-        StreamScheduleExecutor $streamScheduleExecutor,
-        LoggerInterface $logger
+        MessagingDispatcher $messagingDispatcher,
+        LoggerInterface $logger,
+        LivestreamService $livestreamService,
+        StreamStateMachine $streamStateMachine
     ) {
         parent::__construct();
-        $this->stopLivestream = $stopLivestream;
-        $this->streamScheduleRepository = $streamScheduleRepository;
-        $this->streamScheduleExecutor = $streamScheduleExecutor;
+        $this->messagingDispatcher = $messagingDispatcher;
         $this->logger = $logger;
+        $this->livestreamService = $livestreamService;
+        $this->streamStateMachine = $streamStateMachine;
     }
 
     protected function configure()
     {
         $this
             ->setName(self::COMMAND_STOP_STREAM)
-            ->setDescription('Start the livestream.');
+            ->setDescription('Stop the livestream.');
     }
 
     /**
      * @param InputInterface $input
      * @param OutputInterface $output
+     * @throws CouldNotFindMainCameraException
      */
     public function execute(InputInterface $input, OutputInterface $output): void
     {
-        $output->writeln('Process to stop the livestream started.');
+        $output->writeln('Requested to stop livestream.');
 
-        $streamSchedule = $this->streamScheduleRepository->findRunningSchedule();
-        if (!$streamSchedule instanceof StreamSchedule) {
-            try {
-                //TODO: Send an event instead of calling process directly. Should be a background process.
-                $this->stopLivestream->process();
-                $output->writeln('Livestream stopped.');
-            } catch (CouldNotStopLivestreamException | CouldNotModifyCameraException $exception) {
-                $this->logger->error('Could not stop livestream', ['exception' => $exception]);
-                $output->writeln('Could not stop livestream.');
-            }
+        $camera = $this->livestreamService->getMainCameraStatus();
+        $toStopping = $this->streamStateMachine->can($camera, 'to_stopping');
+
+        if (!$toStopping) {
+            $message = "tried to stop livestream while this is not possible, current state: {$camera->getState()}";
+            $this->logger->warning($message);
+            $output->writeln("<error>{$message}</error>");
             return;
         }
 
         try {
-            $this->streamScheduleExecutor->stop($streamSchedule);
-            $output->writeln('Livestream stopped.');
-        } catch (ExecutorCouldNotExecuteStreamException | CouldNotModifyStreamScheduleException $exception) {
-            $this->logger->error('Could not stop livestream with stream schedule', ['exception' => $exception]);
+            $this->messagingDispatcher->sendMessage(MessageStopLivestreamCommand::create());
+        } catch (PublishMessageFailedException $exception) {
+            $this->logger->error('Could not send stop command livestream', ['exception' => $exception]);
             $output->writeln('Could not stop livestream.');
         }
     }

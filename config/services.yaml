@@ -21,6 +21,6 @@ services:
         arguments:
             $formFactory: '@fos_user.registration.form.factory'
 
-    App\EventSubscriber\FailureStateSubscriber:
+    App\Messaging\Dispatcher\MessagingDispatcher:
         arguments:
             $topicArn: 'env(AWS_SNS_TOPIC_ARN)'
