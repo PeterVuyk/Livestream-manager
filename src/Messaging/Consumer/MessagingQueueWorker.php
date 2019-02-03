@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Messaging\Consumer;
 
-use App\Exception\InvalidMessageTypeException;
-use App\Exception\MessagingQueueConsumerException;
+use App\Exception\Messaging\InvalidMessageTypeException;
+use App\Exception\Messaging\MessagingQueueConsumerException;
 use App\Messaging\Library\MessageInterface;
 use App\Service\MessageProcessor\ProcessMessageDelegator;
 use Psr\Log\LoggerInterface;

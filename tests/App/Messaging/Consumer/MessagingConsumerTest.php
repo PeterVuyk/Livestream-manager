@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Messaging\Consumer;
 
-use App\Exception\MessagingQueueConsumerException;
+use App\Exception\Messaging\MessagingQueueConsumerException;
 use App\Messaging\Consumer\MessagingConsumer;
 use App\Messaging\Library\MessageInterface;
 use App\Messaging\Serialize\DeserializeInterface;

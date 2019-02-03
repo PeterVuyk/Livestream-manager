@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Messaging\Serialize;
+namespace App\Tests\Messaging\Serialize;
 
-use App\Exception\UnsupportedMessageException;
+use App\Exception\Messaging\UnsupportedMessageException;
 use App\Messaging\Library\Command\StopLivestreamCommand;
 use App\Messaging\Serialize\MessagingDeserializer;
 use PHPUnit\Framework\TestCase;

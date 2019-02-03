@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Exception\CouldNotModifyCameraException;
-use App\Exception\PublishMessageFailedException;
+use App\Exception\Repository\CouldNotModifyCameraException;
+use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
 use App\Messaging\Library\Command\StartLivestreamCommand;
 use App\Messaging\Library\Command\StopLivestreamCommand;

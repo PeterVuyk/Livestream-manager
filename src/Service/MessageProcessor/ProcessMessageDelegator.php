@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Service\MessageProcessor;
 
-use App\Exception\InvalidMessageTypeException;
+use App\Exception\Messaging\InvalidMessageTypeException;
 use App\Messaging\Library\Command\StartLivestreamCommand;
 use App\Messaging\Library\Command\StopLivestreamCommand;
 use App\Messaging\Library\MessageInterface;

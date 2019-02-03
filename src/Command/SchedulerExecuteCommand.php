@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Command;
 
 use App\Entity\StreamSchedule;
-use App\Exception\ConflictingScheduledStreamsException;
+use App\Exception\StreamSchedule\ConflictingScheduledStreamsException;
 use App\Service\LivestreamService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Service\StreamProcessing;
 
 use App\Entity\Camera;
-use App\Exception\CouldNotModifyCameraException;
+use App\Exception\Repository\CouldNotModifyCameraException;
 use App\Repository\CameraRepository;
 use App\Service\StreamProcessing\StreamStateMachine;
 use PHPUnit\Framework\MockObject\MockObject;

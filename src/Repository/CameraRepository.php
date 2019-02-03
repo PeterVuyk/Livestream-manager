@@ -5,7 +5,7 @@ namespace App\Repository;
 
 use App\Entity\Camera;
 use App\Entity\StateAwareInterface;
-use App\Exception\CouldNotModifyCameraException;
+use App\Exception\Repository\CouldNotModifyCameraException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;

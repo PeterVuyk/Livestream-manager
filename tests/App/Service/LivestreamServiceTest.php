@@ -1,15 +1,15 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Service;
+namespace App\Tests\Service;
 
 use App\Entity\Camera;
 use App\Entity\StreamSchedule;
-use App\Exception\ConflictingScheduledStreamsException;
-use App\Exception\CouldNotFindMainCameraException;
-use App\Exception\CouldNotStartLivestreamException;
-use App\Exception\CouldNotStopLivestreamException;
-use App\Exception\PublishMessageFailedException;
+use App\Exception\StreamSchedule\ConflictingScheduledStreamsException;
+use App\Exception\Repository\CouldNotFindMainCameraException;
+use App\Exception\Livestream\CouldNotStartLivestreamException;
+use App\Exception\Livestream\CouldNotStopLivestreamException;
+use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
 use App\Repository\CameraRepository;
 use App\Repository\StreamScheduleRepository;

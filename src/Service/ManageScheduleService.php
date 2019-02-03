@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Service;
 
 use App\Entity\StreamSchedule;
-use App\Exception\CouldNotModifyStreamScheduleException;
+use App\Exception\Repository\CouldNotModifyStreamScheduleException;
 use App\Repository\StreamScheduleRepository;
 
 class ManageScheduleService

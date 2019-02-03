@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Messaging\Serialize;
 
-use App\Exception\UnsupportedMessageException;
+use App\Exception\Messaging\UnsupportedMessageException;
 use App\Messaging\Library\Command\StartLivestreamCommand;
 use App\Messaging\Library\Command\StopLivestreamCommand;
 use App\Messaging\Library\MessageInterface;

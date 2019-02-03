@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Controller\Api;
 
 use App\Entity\Api\StreamScheduleDTO;
-use App\Exception\CouldNotCreateStreamScheduleDTOException;
+use App\Exception\StreamSchedule\CouldNotCreateStreamScheduleDTOException;
 use App\Service\ManageScheduleService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;

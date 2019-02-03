@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Service\MessageProcessor;
 
 use App\Entity\StreamSchedule;
-use App\Exception\ExecutorCouldNotExecuteStreamException;
+use App\Exception\Livestream\ExecutorCouldNotExecuteStreamException;
 use App\Repository\StreamScheduleRepository;
 use App\Service\MessageProcessor\StopLivestreamProcessor;
 use App\Service\StreamProcessing\StopLivestream;

@@ -5,7 +5,7 @@ namespace App\Service;
 
 use App\Entity\CameraConfiguration;
 use App\Entity\Configuration;
-use App\Exception\CouldNotModifyCameraConfigurationException;
+use App\Exception\Repository\CouldNotModifyCameraConfigurationException;
 use App\Repository\CameraConfigurationRepository;
 use Psr\Log\LoggerInterface;
 

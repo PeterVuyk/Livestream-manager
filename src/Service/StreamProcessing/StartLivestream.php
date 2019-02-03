@@ -5,8 +5,8 @@ namespace App\Service\StreamProcessing;
 
 use App\Entity\CameraConfiguration;
 use App\Entity\StateAwareInterface;
-use App\Exception\CouldNotStartLivestreamException;
-use App\Exception\InvalidConfigurationsException;
+use App\Exception\Livestream\CouldNotStartLivestreamException;
+use App\Exception\Livestream\InvalidConfigurationsException;
 use App\Repository\CameraRepository;
 use App\Service\CameraConfigurationService;
 use App\Service\StateMachineInterface;

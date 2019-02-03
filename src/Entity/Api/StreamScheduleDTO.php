@@ -5,7 +5,7 @@ namespace App\Entity\Api;
 
 use App\Entity\StreamSchedule;
 use App\Entity\Weekday;
-use App\Exception\CouldNotCreateStreamScheduleDTOException;
+use App\Exception\StreamSchedule\CouldNotCreateStreamScheduleDTOException;
 use Webmozart\Assert\Assert;
 use Swagger\Annotations as SWG;
 

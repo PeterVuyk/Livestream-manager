@@ -4,9 +4,9 @@ declare(strict_types=1);
 namespace App\Service\StreamProcessing;
 
 use App\Entity\StreamSchedule;
-use App\Exception\ConflictingScheduledStreamsException;
-use App\Exception\CouldNotModifyStreamScheduleException;
-use App\Exception\ExecutorCouldNotExecuteStreamException;
+use App\Exception\StreamSchedule\ConflictingScheduledStreamsException;
+use App\Exception\Repository\CouldNotModifyStreamScheduleException;
+use App\Exception\Livestream\ExecutorCouldNotExecuteStreamException;
 use App\Repository\StreamScheduleRepository;
 use App\Service\LivestreamService;
 use Psr\Log\LoggerInterface;

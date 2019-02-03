@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Messaging\Dispatcher;
 
-use App\Exception\PublishMessageFailedException;
+use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
 use App\Messaging\Library\Command\StopLivestreamCommand;
 use App\Messaging\Serialize\SerializeInterface;

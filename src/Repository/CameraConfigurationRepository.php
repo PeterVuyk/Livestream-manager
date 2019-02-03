@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Repository;
 
 use App\Entity\CameraConfiguration;
-use App\Exception\CouldNotModifyCameraConfigurationException;
+use App\Exception\Repository\CouldNotModifyCameraConfigurationException;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\ORM\ORMException;
 use Symfony\Bridge\Doctrine\RegistryInterface;

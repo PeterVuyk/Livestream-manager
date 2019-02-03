@@ -4,10 +4,9 @@ declare(strict_types=1);
 namespace App\Tests\Service\StreamProcessing;
 
 use App\Entity\StreamSchedule;
-use App\Exception\ConflictingScheduledStreamsException;
-use App\Exception\CouldNotModifyStreamScheduleException;
-use App\Exception\CouldNotStartLivestreamException;
-use App\Exception\ExecutorCouldNotExecuteStreamException;
+use App\Exception\Repository\CouldNotModifyStreamScheduleException;
+use App\Exception\Livestream\CouldNotStartLivestreamException;
+use App\Exception\Livestream\ExecutorCouldNotExecuteStreamException;
 use App\Repository\StreamScheduleRepository;
 use App\Service\StreamProcessing\StartLivestream;
 use App\Service\StreamProcessing\StopLivestream;

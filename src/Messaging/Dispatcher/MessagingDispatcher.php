@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Messaging\Dispatcher;
 
-use App\Exception\PublishMessageFailedException;
+use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Library\MessageInterface;
 use App\Messaging\Serialize\SerializeInterface;
 use Aws\Sns\SnsClient;

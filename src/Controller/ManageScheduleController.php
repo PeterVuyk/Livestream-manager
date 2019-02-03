@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\StreamSchedule;
-use App\Exception\CouldNotModifyStreamScheduleException;
+use App\Exception\Repository\CouldNotModifyStreamScheduleException;
 use App\Form\UpdateScheduleType;
 use App\Service\ManageScheduleService;
 use Symfony\Component\Form\FormFactoryInterface;

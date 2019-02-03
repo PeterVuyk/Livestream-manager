@@ -4,9 +4,8 @@ declare(strict_types=1);
 namespace App\Service\MessageProcessor;
 
 use App\Entity\StreamSchedule;
-use App\Exception\CouldNotModifyStreamScheduleException;
-use App\Exception\ExecutorCouldNotExecuteStreamException;
-use App\Messaging\Library\MessageInterface;
+use App\Exception\Repository\CouldNotModifyStreamScheduleException;
+use App\Exception\Livestream\ExecutorCouldNotExecuteStreamException;
 use App\Repository\StreamScheduleRepository;
 use App\Service\StreamProcessing\StopLivestream;
 use App\Service\StreamProcessing\StreamScheduleExecutor;

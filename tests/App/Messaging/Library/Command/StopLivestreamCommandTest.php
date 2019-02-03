@@ -1,9 +1,9 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Messaging\Library\Command;
+namespace App\Tests\Messaging\Library\Command;
 
-use App\Exception\UnsupportedMessageException;
+use App\Exception\Messaging\UnsupportedMessageException;
 use App\Messaging\Library\Command\StopLivestreamCommand;
 use PHPUnit\Framework\TestCase;
 use Webmozart\Assert\Assert;
@@ -76,8 +76,8 @@ class StopLivestreamCommandTest extends TestCase
     }
 
     /**
-     * @throws UnsupportedMessageException
      * @covers ::createFromPayload
+     * @throws UnsupportedMessageException
      */
     public function testCreateFromPayload()
     {

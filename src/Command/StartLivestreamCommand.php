@@ -3,8 +3,8 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Exception\CouldNotFindMainCameraException;
-use App\Exception\PublishMessageFailedException;
+use App\Exception\Repository\CouldNotFindMainCameraException;
+use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
 use App\Service\LivestreamService;
 use App\Messaging\Library\Command\StartLivestreamCommand as MessageStartLivestreamCommand;

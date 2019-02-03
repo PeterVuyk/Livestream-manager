@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Messaging\Serialize;
+namespace App\Tests\Messaging\Serialize;
 
 use App\Messaging\Library\Command\StopLivestreamCommand;
 use App\Messaging\Serialize\MessagingSerializer;

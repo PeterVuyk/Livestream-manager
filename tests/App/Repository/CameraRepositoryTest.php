@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Tests\Repository;
 
 use App\Entity\Camera;
-use App\Exception\CouldNotModifyCameraConfigurationException;
-use App\Exception\CouldNotModifyCameraException;
+use App\Exception\Repository\CouldNotModifyCameraConfigurationException;
+use App\Exception\Repository\CouldNotModifyCameraException;
 use App\Repository\CameraRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\ORMException;

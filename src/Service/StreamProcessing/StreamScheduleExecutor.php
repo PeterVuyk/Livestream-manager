@@ -5,8 +5,8 @@ namespace App\Service\StreamProcessing;
 
 use App\Entity\ScheduleLog;
 use App\Entity\StreamSchedule;
-use App\Exception\CouldNotModifyStreamScheduleException;
-use App\Exception\ExecutorCouldNotExecuteStreamException;
+use App\Exception\Repository\CouldNotModifyStreamScheduleException;
+use App\Exception\Livestream\ExecutorCouldNotExecuteStreamException;
 use App\Repository\StreamScheduleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Psr\Log\LoggerInterface;

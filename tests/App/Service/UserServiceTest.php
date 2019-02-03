@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\User;
-use App\Exception\CouldNotModifyUserException;
-use App\Exception\UserNotFoundException;
+use App\Exception\Repository\CouldNotModifyUserException;
+use App\Exception\User\UserNotFoundException;
 use App\Repository\UserRepository;
 use App\Service\UserService;
 use Doctrine\ORM\ORMException;

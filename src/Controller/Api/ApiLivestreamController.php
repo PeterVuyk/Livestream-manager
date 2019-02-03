@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller\Api;
 
-use App\Exception\CouldNotFindMainCameraException;
+use App\Exception\Repository\CouldNotFindMainCameraException;
 use App\Service\LivestreamService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\JsonResponse;

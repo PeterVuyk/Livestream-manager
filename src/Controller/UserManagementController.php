@@ -4,8 +4,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Exception\CouldNotModifyUserException;
-use App\Exception\UserNotFoundException;
+use App\Exception\Repository\CouldNotModifyUserException;
+use App\Exception\User\UserNotFoundException;
 use App\Form\UserDetailsType;
 use App\Service\UserService;
 use Symfony\Component\Form\FormFactoryInterface;

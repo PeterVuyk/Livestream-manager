@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\User;
-use App\Exception\CouldNotModifyUserException;
+use App\Exception\Repository\CouldNotModifyUserException;
 use App\Form\UserRegistrationType;
 use App\Service\UserService;
 use Symfony\Component\Form\FormFactoryInterface;

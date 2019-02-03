@@ -5,11 +5,11 @@ namespace App\Service;
 
 use App\Entity\Camera;
 use App\Entity\StreamSchedule;
-use App\Exception\ConflictingScheduledStreamsException;
-use App\Exception\CouldNotFindMainCameraException;
-use App\Exception\CouldNotStartLivestreamException;
-use App\Exception\CouldNotStopLivestreamException;
-use App\Exception\PublishMessageFailedException;
+use App\Exception\StreamSchedule\ConflictingScheduledStreamsException;
+use App\Exception\Repository\CouldNotFindMainCameraException;
+use App\Exception\Livestream\CouldNotStartLivestreamException;
+use App\Exception\Livestream\CouldNotStopLivestreamException;
+use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
 use App\Repository\CameraRepository;
 use App\Repository\StreamScheduleRepository;
@@ -71,10 +71,10 @@ class LivestreamService
 
     /**
      * @param StreamSchedule $streamSchedule
-     * @throws PublishMessageFailedException
-     * @throws CouldNotStopLivestreamException
      * @throws CouldNotFindMainCameraException
      * @throws CouldNotStartLivestreamException
+     * @throws CouldNotStopLivestreamException
+     * @throws PublishMessageFailedException
      */
     public function sendLivestreamCommand(StreamSchedule $streamSchedule): void
     {

@@ -5,7 +5,7 @@ namespace App\Tests\Entity;
 
 use App\Entity\ScheduleLog;
 use App\Entity\StreamSchedule;
-use App\Exception\InvalidWeekdayException;
+use App\Exception\StreamSchedule\InvalidWeekdayException;
 use App\Entity\Weekday;
 use PHPUnit\Framework\TestCase;
 

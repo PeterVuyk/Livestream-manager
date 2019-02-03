@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Entity\Api;
+namespace App\Tests\Entity\Api;
 
 use App\Entity\Api\StreamScheduleDTO;
 use App\Entity\StreamSchedule;
-use App\Exception\CouldNotCreateStreamScheduleDTOException;
+use App\Exception\StreamSchedule\CouldNotCreateStreamScheduleDTOException;
 use PHPUnit\Framework\TestCase;
 
 /**

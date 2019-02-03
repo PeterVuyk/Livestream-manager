@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Service\StreamProcessing;
 
 use App\Entity\StateAwareInterface;
-use App\Exception\CouldNotModifyCameraException;
+use App\Exception\Repository\CouldNotModifyCameraException;
 use App\Repository\CameraRepository;
 use App\Service\StateMachineInterface;
 use Symfony\Component\Workflow\Registry;

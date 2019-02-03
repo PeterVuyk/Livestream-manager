@@ -5,16 +5,9 @@ namespace App\Tests\Command;
 
 use App\Command\StopLivestreamCommand;
 use App\Entity\Camera;
-use App\Entity\StreamSchedule;
-use App\Exception\CouldNotModifyCameraException;
-use App\Exception\ExecutorCouldNotExecuteStreamException;
-use App\Exception\PublishMessageFailedException;
+use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
-use App\Repository\StreamScheduleRepository;
 use App\Service\LivestreamService;
-use App\Service\StreamProcessing\StatusLivestream;
-use App\Service\StreamProcessing\StopLivestream;
-use App\Service\StreamProcessing\StreamScheduleExecutor;
 use App\Service\StreamProcessing\StreamStateMachine;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

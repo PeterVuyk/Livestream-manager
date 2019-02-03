@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\StreamSchedule;
-use App\Exception\CouldNotModifyStreamScheduleException;
+use App\Exception\Repository\CouldNotModifyStreamScheduleException;
 use App\Form\CreateOnetimeScheduleType;
 use App\Form\CreateRecurringScheduleType;
 use App\Service\ManageScheduleService;

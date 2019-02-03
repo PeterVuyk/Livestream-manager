@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Service;
 
 use App\Entity\StreamSchedule;
-use App\Exception\CouldNotModifyStreamScheduleException;
+use App\Exception\Repository\CouldNotModifyStreamScheduleException;
 use App\Repository\StreamScheduleRepository;
 use App\Service\ManageScheduleService;
 use PHPUnit\Framework\MockObject\MockObject;

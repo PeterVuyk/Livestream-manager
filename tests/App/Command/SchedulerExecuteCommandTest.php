@@ -5,8 +5,8 @@ namespace App\Tests\Command;
 
 use App\Command\SchedulerExecuteCommand;
 use App\Entity\StreamSchedule;
-use App\Exception\ConflictingScheduledStreamsException;
-use App\Exception\PublishMessageFailedException;
+use App\Exception\StreamSchedule\ConflictingScheduledStreamsException;
+use App\Exception\Messaging\PublishMessageFailedException;
 use App\Service\LivestreamService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

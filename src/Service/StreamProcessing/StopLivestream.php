@@ -5,9 +5,9 @@ namespace App\Service\StreamProcessing;
 
 use App\Entity\CameraConfiguration;
 use App\Entity\StateAwareInterface;
-use App\Exception\CouldNotModifyCameraException;
-use App\Exception\CouldNotStopLivestreamException;
-use App\Exception\InvalidConfigurationsException;
+use App\Exception\Repository\CouldNotModifyCameraException;
+use App\Exception\Livestream\CouldNotStopLivestreamException;
+use App\Exception\Livestream\InvalidConfigurationsException;
 use App\Repository\CameraRepository;
 use App\Service\CameraConfigurationService;
 use Psr\Log\LoggerInterface;

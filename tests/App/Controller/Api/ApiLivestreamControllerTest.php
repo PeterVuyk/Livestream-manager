@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Controller\Api;
+namespace App\Tests\Controller\Api;
 
 use App\Controller\Api\ApiLivestreamController;
 use App\Entity\Camera;
-use App\Exception\CouldNotFindMainCameraException;
+use App\Exception\Repository\CouldNotFindMainCameraException;
 use App\Service\LivestreamService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;

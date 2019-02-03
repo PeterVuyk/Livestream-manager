@@ -5,7 +5,7 @@ namespace App\Tests\Controller;
 
 use App\Controller\UserManagementController;
 use App\Entity\User;
-use App\Exception\CouldNotModifyUserException;
+use App\Exception\Repository\CouldNotModifyUserException;
 use App\Service\UserService;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;

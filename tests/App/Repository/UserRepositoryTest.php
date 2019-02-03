@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Repository;
 
 use App\Entity\User;
-use App\Exception\CouldNotModifyUserException;
+use App\Exception\Repository\CouldNotModifyUserException;
 use App\Repository\UserRepository;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\Mapping\ClassMetadata;

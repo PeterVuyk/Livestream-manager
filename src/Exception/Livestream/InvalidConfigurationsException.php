@@ -1,7 +1,7 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Exception;
+namespace App\Exception\Livestream;
 
 class InvalidConfigurationsException extends \InvalidArgumentException
 {

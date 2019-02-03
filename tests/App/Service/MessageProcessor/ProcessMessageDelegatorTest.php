@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Tests\Service\MessageProcessor;
 
-use App\Exception\InvalidMessageTypeException;
+use App\Exception\Messaging\InvalidMessageTypeException;
 use App\Messaging\Library\Command\StartLivestreamCommand;
 use App\Messaging\Library\MessageInterface;
 use App\Service\MessageProcessor\ProcessMessageDelegator;
@@ -16,6 +16,7 @@ use PHPUnit\Framework\TestCase;
  * @coversDefaultClass \App\Service\MessageProcessor\ProcessMessageDelegator
  * @covers ::<!public>
  * @covers ::__construct
+ * @uses \App\Messaging\Library\Command\StartLivestreamCommand
  */
 class ProcessMessageDelegatorTest extends TestCase
 {

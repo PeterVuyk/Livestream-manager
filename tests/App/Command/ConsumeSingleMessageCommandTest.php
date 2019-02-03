@@ -1,10 +1,10 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Tests\App\Command;
+namespace App\Tests\Command;
 
 use App\Command\ConsumeSingleMessageCommand;
-use App\Exception\MessagingQueueConsumerException;
+use App\Exception\Messaging\MessagingQueueConsumerException;
 use App\Messaging\Consumer\MessagingConsumer;
 use App\Service\MessageProcessor\ProcessMessageDelegator;
 use PHPUnit\Framework\MockObject\MockObject;

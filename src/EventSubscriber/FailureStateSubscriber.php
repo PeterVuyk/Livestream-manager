@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\EventSubscriber;
 
-use App\Exception\PublishMessageFailedException;
+use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

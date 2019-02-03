@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Entity;
 
-use App\Exception\InvalidWeekdayException;
+use App\Exception\StreamSchedule\InvalidWeekdayException;
 
 class Weekday
 {

@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\Configuration;
-use App\Exception\CouldNotModifyCameraConfigurationException;
+use App\Exception\Repository\CouldNotModifyCameraConfigurationException;
 use App\Form\ConfigurationType;
 use App\Service\CameraConfigurationService;
 use Symfony\Component\HttpFoundation\RedirectResponse;

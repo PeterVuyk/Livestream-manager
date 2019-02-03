@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Entity;
 
 use App\Entity\Weekday;
-use App\Exception\InvalidWeekdayException;
+use App\Exception\StreamSchedule\InvalidWeekdayException;
 use PHPUnit\Framework\TestCase;
 
 /**

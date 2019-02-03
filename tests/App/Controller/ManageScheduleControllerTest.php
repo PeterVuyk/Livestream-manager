@@ -5,7 +5,7 @@ namespace App\Tests\Controller;
 
 use App\Controller\ManageScheduleController;
 use App\Entity\StreamSchedule;
-use App\Exception\CouldNotModifyStreamScheduleException;
+use App\Exception\Repository\CouldNotModifyStreamScheduleException;
 use App\Service\ManageScheduleService;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;

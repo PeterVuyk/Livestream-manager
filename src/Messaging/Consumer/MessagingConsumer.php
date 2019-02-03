@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Messaging\Consumer;
 
-use App\Exception\MessagingQueueConsumerException;
+use App\Exception\Messaging\MessagingQueueConsumerException;
 use App\Messaging\Library\MessageInterface;
 use App\Messaging\Serialize\DeserializeInterface;
 use Aws\Exception\AwsException;

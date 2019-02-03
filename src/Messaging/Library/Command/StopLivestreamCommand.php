@@ -3,7 +3,7 @@ declare(strict_types=1);
 
 namespace App\Messaging\Library\Command;
 
-use App\Exception\UnsupportedMessageException;
+use App\Exception\Messaging\UnsupportedMessageException;
 use App\Messaging\Library\MessageInterface;
 use Ramsey\Uuid\Uuid;
 use Webmozart\Assert\Assert;

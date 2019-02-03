@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\Tests\Repository;
 
 use App\Entity\StreamSchedule;
-use App\Exception\CouldNotModifyStreamScheduleException;
+use App\Exception\Repository\CouldNotModifyStreamScheduleException;
 use App\Repository\StreamScheduleRepository;
 use Doctrine\ORM\AbstractQuery;
 use Doctrine\ORM\ORMException;

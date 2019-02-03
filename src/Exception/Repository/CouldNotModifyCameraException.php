@@ -1,11 +1,11 @@
 <?php
 declare(strict_types=1);
 
-namespace App\Exception;
+namespace App\Exception\Repository;
 
 use Doctrine\ORM\ORMException;
 
-class CouldNotModifyCameraConfigurationException extends \Exception
+class CouldNotModifyCameraException extends \Exception
 {
     public static function forError(ORMException $error)
     {

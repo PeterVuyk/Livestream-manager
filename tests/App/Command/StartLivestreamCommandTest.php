@@ -5,7 +5,7 @@ namespace App\Tests\Command;
 
 use App\Command\StartLivestreamCommand;
 use App\Entity\Camera;
-use App\Exception\PublishMessageFailedException;
+use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
 use App\Service\LivestreamService;
 use App\Service\StreamProcessing\StreamStateMachine;

@@ -6,7 +6,7 @@ namespace App\Tests\Controller;
 use App\Controller\CameraConfigurationController;
 use App\Entity\CameraConfiguration;
 use App\Entity\Configuration;
-use App\Exception\CouldNotModifyCameraConfigurationException;
+use App\Exception\Repository\CouldNotModifyCameraConfigurationException;
 use App\Service\CameraConfigurationService;
 use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;

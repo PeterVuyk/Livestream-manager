@@ -5,8 +5,8 @@ namespace App\Tests\Controller;
 
 use App\Controller\LivestreamController;
 use App\Entity\Camera;
-use App\Exception\CouldNotModifyCameraException;
-use App\Exception\PublishMessageFailedException;
+use App\Exception\Repository\CouldNotModifyCameraException;
+use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
 use App\Repository\CameraRepository;
 use App\Service\StreamProcessing\StreamStateMachine;

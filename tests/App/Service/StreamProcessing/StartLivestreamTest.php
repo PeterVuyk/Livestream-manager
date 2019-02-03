@@ -5,7 +5,7 @@ namespace App\Tests\Service\StreamProcessing;
 
 use App\Entity\Camera;
 use App\Entity\CameraConfiguration;
-use App\Exception\CouldNotStartLivestreamException;
+use App\Exception\Livestream\CouldNotStartLivestreamException;
 use App\Repository\CameraRepository;
 use App\Service\CameraConfigurationService;
 use App\Service\StateMachineInterface;
