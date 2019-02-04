@@ -1,8 +1,8 @@
-FROM php:7.2.3-fpm
+FROM php:7.2-fpm
 
 RUN apt-get update \
     && apt-get install -y \
-     --no-install-recommends debconf subversion git apt-transport-https apt-utils \
+     --no-install-recommends supervisor debconf subversion git apt-transport-https apt-utils \
     build-essential locales acl mailutils wget zip unzip vim curl \
     gnupg gnupg1 gnupg2
 
@@ -26,5 +26,3 @@ RUN useradd -ms /bin/bash ${LIVESTREAM_USER}
 USER ${LIVESTREAM_USER}
 
 WORKDIR /var/www/livestream
-
-CMD ["php-fpm"]

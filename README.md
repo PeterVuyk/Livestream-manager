@@ -41,13 +41,14 @@ Once the installation is complete, let's take a look at the docker images we hav
 
 ```bash
 $ docker-compose ps
-        Name                       Command                  State                     Ports              
----------------------------------------------------------------------------------------------------------
-livestream-mysql        /entrypoint.sh mysqld            Up (healthy)   0.0.0.0:3306->3306/tcp, 33060/tcp
-livestream-nginx        nginx                            Up             443/tcp, 0.0.0.0:8080->80/tcp    
-livestream-php          docker-php-entrypoint php-fpm    Up             0.0.0.0:9000->9000/tcp           
-livestream-phpmyadmin   /run.sh supervisord -n -j  ...   Up             0.0.0.0:8081->80/tcp, 9000/tcp   
-livestream-yarn         node                             Up                                              
+        Name                       Command                       State                         Ports              
+------------------------------------------------------------------------------------------------------------------
+livestream-mysql        /entrypoint.sh mysqld            Up (health: starting)   0.0.0.0:3306->3306/tcp, 33060/tcp
+livestream-nginx        nginx                            Up                      443/tcp, 0.0.0.0:8080->80/tcp    
+livestream-php          docker-php-entrypoint php-fpm    Up                      0.0.0.0:9000->9000/tcp           
+livestream-phpmyadmin   /run.sh supervisord -n -j  ...   Up                      0.0.0.0:8081->80/tcp, 9000/tcp   
+livestream-supervisor   docker-php-entrypoint /usr ...   Up                      9000/tcp                         
+livestream-yarn         node                             Up                                                       
 ```
 
 Next open the application, you can view the application via URL `localhost:8080`, see also the image below for an impression.
@@ -93,8 +94,10 @@ More information: [Symfony security - Encoding the User's Password](https://symf
     $ docker-compose exec php bash bin/console app:livestream-start
     $ docker-compose exec php bash bin/console app:livestream-stop
     
-    # Consume one message from queue
-    $ docker-compose exec php bash bin/console app:consume-single-message
+    # Consume messages from the queue (When using docker, supervisor will start and supervise this command)
+    # The argument is the number of retries to get the messages from the queue, 
+    # when running in docker, supervisord will restart the process automatically.
+    $ docker-compose exec php bash bin/console app:messaging-queue-worker <argument>
 
 ## Running the tests
 

@@ -6,6 +6,7 @@ namespace App\Messaging\Consumer;
 use App\Exception\Messaging\InvalidMessageTypeException;
 use App\Exception\Messaging\MessagingQueueConsumerException;
 use App\Messaging\Library\MessageInterface;
+use App\Messaging\Serialize\DeserializeInterface;
 use App\Service\MessageProcessor\ProcessMessageDelegator;
 use Psr\Log\LoggerInterface;
 
@@ -20,33 +21,51 @@ class MessagingQueueWorker
     /** @var ProcessMessageDelegator */
     private $processMessageDelegator;
 
+    /** @var DeserializeInterface */
+    private $deserializer;
+
     /**
      * @param MessagingConsumer $messagingConsumer
      * @param ProcessMessageDelegator $processMessageDelegator
      * @param LoggerInterface $logger
+     * @param DeserializeInterface $deserializer
      */
     public function __construct(
         MessagingConsumer $messagingConsumer,
         ProcessMessageDelegator $processMessageDelegator,
-        LoggerInterface $logger
+        LoggerInterface $logger,
+        DeserializeInterface $deserializer
     ) {
         $this->messagingConsumer = $messagingConsumer;
         $this->processMessageDelegator = $processMessageDelegator;
         $this->logger = $logger;
+        $this->deserializer = $deserializer;
     }
 
-    public function __invoke()
+    public function __invoke(int $numberRetriesQueue)
     {
-        while (true) {
+        $retryCount = 0;
+        while ($retryCount < $numberRetriesQueue) {
+            $retryCount++;
+
             try {
-                $result = $this->messagingConsumer->consume();
-                $message = $this->messagingConsumer->deserializeResult($result);
+                $payload = $this->messagingConsumer->consume();
+                $message = $this->deserializer->deserialize($payload);
             } catch (MessagingQueueConsumerException $exception) {
                 $this->logger->error('Could not consume message', ['exception' => $exception]);
                 continue;
             }
 
-            if (empty($message) || !$message instanceof MessageInterface) {
+            if (!empty($payload) && !$message instanceof MessageInterface) {
+                try {
+                    $this->messagingConsumer->delete($payload);
+                } catch (MessagingQueueConsumerException $exception) {
+                    $this->logger->error('Could not delete from queue', ['exception' => $exception]);
+                }
+                continue;
+            }
+
+            if (!$message instanceof MessageInterface) {
                 continue;
             }
 
@@ -56,12 +75,7 @@ class MessagingQueueWorker
                 $this->logger->warning('Could not process message from worker', ['exception' => $exception]);
                 continue;
             }
-
-            try {
-                $this->messagingConsumer->delete($result);
-            } catch (MessagingQueueConsumerException $exception) {
-                $this->logger->error('Could not delete from queue', ['exception' => $exception]);
-            }
         }
+        $this->logger->info("Number of retries exceeded, Terminated");
     }
 }

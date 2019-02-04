@@ -6,7 +6,6 @@ namespace App\Tests\Messaging\Consumer;
 use App\Exception\Messaging\MessagingQueueConsumerException;
 use App\Messaging\Consumer\MessagingConsumer;
 use App\Messaging\Library\MessageInterface;
-use App\Messaging\Serialize\DeserializeInterface;
 use Aws\CommandInterface;
 use Aws\Exception\AwsException;
 use Aws\Result;
@@ -25,18 +24,13 @@ class MessagingConsumerTest extends TestCase
     /** @var SqsClient|MockObject */
     private $sqsClient;
 
-    /** @var DeserializeInterface|MockObject */
-    private $deserializer;
-
     /** @var MessagingConsumer */
     private $messagingConsumer;
 
     public function setUp()
     {
         $this->sqsClient = $this->createPartialMock(SqsClient::class, ['receiveMessage', 'deleteMessage']);
-        $this->deserializer = $this->createMock(DeserializeInterface::class);
-
-        $this->messagingConsumer = new MessagingConsumer($this->sqsClient, $this->deserializer, 'some-url');
+        $this->messagingConsumer = new MessagingConsumer($this->sqsClient, 'some-url');
     }
 
     /**
@@ -46,54 +40,25 @@ class MessagingConsumerTest extends TestCase
     public function testConsumeSuccess()
     {
         $resultMock = $this->createMock(Result::class);
+        $resultMock->expects($this->any())->method('get')->willReturn([['Messages' => 1]]);
         $this->sqsClient->expects($this->once())->method('receiveMessage')->willReturn($resultMock);
 
         $message = $this->messagingConsumer->consume();
-        $this->assertInstanceOf(Result::class, $message);
+        $this->assertArrayHasKey('Messages', $message);
     }
 
     /**
-     * @covers ::deserializeResult
-     */
-    public function testDeserializeResultWithResult()
-    {
-        $resultMock = $this->createMock(Result::class);
-        $resultMock->expects($this->atLeastOnce())->method('get')->willReturn([['message', 'ReceiptHandle' => '']]);
-        $this->deserializer->method('deserialize')->willReturn($this->createMock(MessageInterface::class));
-
-        $message = $this->messagingConsumer->deserializeResult($resultMock);
-
-        $this->assertInstanceOf(MessageInterface::class, $message);
-    }
-
-    /**
-     * @covers ::deserializeResult
-     */
-    public function testDeserializeResultFailed()
-    {
-        $resultMock = $this->createMock(Result::class);
-        $message = $this->messagingConsumer->deserializeResult($resultMock);
-        $this->assertNull($message);
-    }
-
-    /**
-     * @covers ::delete
+     * @covers ::consume
      * @throws MessagingQueueConsumerException
      */
-    public function testConsumeFailedDeleting()
+    public function testConsumeNoResult()
     {
-        $this->expectException(MessagingQueueConsumerException::class);
-
         $resultMock = $this->createMock(Result::class);
-        $resultMock->expects($this->atLeastOnce())->method('get')->willReturn([['message', 'ReceiptHandle' => '']]);
+        $resultMock->expects($this->any())->method('get')->willReturn(null);
+        $this->sqsClient->expects($this->once())->method('receiveMessage')->willReturn($resultMock);
 
-        $commandMock = $this->createMock(CommandInterface::class);
-        $this->sqsClient->expects($this->once())
-            ->method('deleteMessage')
-            ->willThrowException(new AwsException('', $commandMock));
-
-        $this->messagingConsumer->delete($resultMock);
-        $this->addToAssertionCount(1);
+        $message = $this->messagingConsumer->consume();
+        $this->assertSame([], $message);
     }
 
     /**
@@ -110,5 +75,34 @@ class MessagingConsumerTest extends TestCase
             ->willThrowException(new AwsException('', $commandMock));
 
         $this->messagingConsumer->consume();
+    }
+
+    /**
+     * @covers ::delete
+     * @throws MessagingQueueConsumerException
+     */
+    public function testDeleteSuccess()
+    {
+        $this->createMock(CommandInterface::class);
+        $this->sqsClient->expects($this->once())
+            ->method('deleteMessage');
+
+        $this->messagingConsumer->delete(['message' => '', 'ReceiptHandle' => '']);
+        $this->addToAssertionCount(1);
+    }
+
+    /**
+     * @covers ::delete
+     * @throws MessagingQueueConsumerException
+     */
+    public function testDeleteFailed()
+    {
+        $this->expectException(MessagingQueueConsumerException::class);
+        $commandMock = $this->createMock(CommandInterface::class);
+        $this->sqsClient->expects($this->once())
+            ->method('deleteMessage')
+            ->willThrowException(new AwsException('', $commandMock));
+
+        $this->messagingConsumer->delete(['message' => '', 'ReceiptHandle' => '']);
     }
 }

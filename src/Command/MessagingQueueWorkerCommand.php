@@ -6,12 +6,14 @@ namespace App\Command;
 use App\Messaging\Consumer\MessagingQueueWorker;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class MessagingQueueWorkerCommand extends Command
 {
     const COMMAND_MESSAGING_WORKER = 'app:messaging-queue-worker';
+    const NUMBER_RETRIES_TO_PROCESS = 500;
 
     /** @var MessagingQueueWorker */
     private $messagingQueueWorker;
@@ -34,7 +36,12 @@ class MessagingQueueWorkerCommand extends Command
     {
         $this
             ->setName(self::COMMAND_MESSAGING_WORKER)
-            ->setDescription('Worker to consume messages from the SQS queue.');
+            ->setDescription('Worker to consume messages from the SQS queue.')
+            ->addArgument(
+                'numberRetriesQueue',
+                InputArgument::OPTIONAL,
+                'A total of retries for the messaging queue'
+            );
     }
 
     /**
@@ -43,11 +50,10 @@ class MessagingQueueWorkerCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output): void
     {
+        $numberRetriesQueue = $input->getArgument('numberRetriesQueue') ?? self::NUMBER_RETRIES_TO_PROCESS;
+
         $output->writeln('Start process consuming messages.');
-
-        ($this->messagingQueueWorker)();
-
-        $this->logger->error('messaging queue worker stopped working');
-        $output->writeln('<error>messaging queue worker stopped working</error>');
+        ($this->messagingQueueWorker)((int)$numberRetriesQueue);
+        $output->writeln('Messaging queue worker finished');
     }
 }

@@ -58,7 +58,6 @@ class MessagingQueueWorkerCommandTest extends TestCase
     public function testExecute()
     {
         $this->messagingQueueWorker->expects($this->once())->method('__invoke');
-        $this->logger->expects($this->once())->method('error');
         $this->commandTester->execute([MessagingQueueWorkerCommand::COMMAND_MESSAGING_WORKER]);
         $this->addToAssertionCount(1);
     }

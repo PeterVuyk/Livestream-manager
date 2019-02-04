@@ -4,10 +4,7 @@ declare(strict_types=1);
 namespace App\Messaging\Consumer;
 
 use App\Exception\Messaging\MessagingQueueConsumerException;
-use App\Messaging\Library\MessageInterface;
-use App\Messaging\Serialize\DeserializeInterface;
 use Aws\Exception\AwsException;
-use Aws\Result;
 use Aws\Sqs\SqsClient;
 
 class MessagingConsumer
@@ -15,30 +12,25 @@ class MessagingConsumer
     /** @var SqsClient */
     private $sqsClient;
 
-    /** @var DeserializeInterface */
-    private $deserializer;
-
     /** @var string */
     private $queueUrl;
 
     /**
      * MessagingConsumer constructor.
      * @param SqsClient $sqsClient
-     * @param DeserializeInterface $deserializer
      * @param string $queueUrl
      */
-    public function __construct(SqsClient $sqsClient, DeserializeInterface $deserializer, string $queueUrl)
+    public function __construct(SqsClient $sqsClient, string $queueUrl)
     {
         $this->sqsClient = $sqsClient;
-        $this->deserializer = $deserializer;
         $this->queueUrl = $queueUrl;
     }
 
     /**
-     * @return Result
+     * @return array
      * @throws MessagingQueueConsumerException
      */
-    public function consume(): Result
+    public function consume(): array
     {
         try {
             $result = $this->sqsClient->receiveMessage([
@@ -49,31 +41,23 @@ class MessagingConsumer
         } catch (AwsException $awsException) {
             throw MessagingQueueConsumerException::fromError($awsException);
         }
-        return $result;
-    }
-
-    /**
-     * @param Result $result
-     * @return MessageInterface|null
-     */
-    public function deserializeResult(Result $result): ?MessageInterface
-    {
+        $payload = [];
         if ($result->get('Messages') !== null) {
-            $message = $this->deserializer->deserialize($result->get('Messages')[0]);
+            $payload = $result->get('Messages')[0];
         }
-        return $message ?? null;
+        return $payload;
     }
 
     /**
-     * @param Result $result
+     * @param array $payload
      * @throws MessagingQueueConsumerException
      */
-    public function delete(Result $result): void
+    public function delete(array $payload): void
     {
         try {
             $this->sqsClient->deleteMessage([
                 'QueueUrl'      => $this->queueUrl,
-                'ReceiptHandle' => $result->get('Messages')[0]['ReceiptHandle']
+                'ReceiptHandle' => $payload['ReceiptHandle']
             ]);
         } catch (AwsException $awsException) {
             throw MessagingQueueConsumerException::fromError($awsException);

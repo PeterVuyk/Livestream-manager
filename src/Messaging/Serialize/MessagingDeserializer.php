@@ -16,12 +16,16 @@ class MessagingDeserializer implements DeserializeInterface
 
     /**
      * @param array $message
-     * @return MessageInterface
+     * @return MessageInterface|null
      * @throws UnsupportedMessageException
      */
-    public function deserialize(array $message): MessageInterface
+    public function deserialize(array $message): ?MessageInterface
     {
-        $payload = $this->validate($message);
+        try {
+            $payload = $this->validate($message);
+        } catch (\InvalidArgumentException $exception) {
+            return null;
+        }
         /** @var MessageInterface $className */
         $className = $this->getClassNameFromMessage($payload);
 
@@ -64,7 +68,6 @@ class MessagingDeserializer implements DeserializeInterface
         Assert::isArray($payload);
         Assert::keyExists($payload, MessageInterface::RESOURCE_ID);
         Assert::keyExists($payload, MessageInterface::RESOURCE_ID_KEY);
-
         return $payload;
     }
 }
