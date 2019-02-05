@@ -9,6 +9,10 @@ docker-compose exec php composer install
 # Install node module dependencies & build/compile JS files through Webpack.
 docker-compose exec yarn /bin/bash -c "cd /usr/src/app && yarn install && yarn build"
 
+# Rebuild docker containers once dependencies are available so SQS worker can start running
+docker-compose down
+docker-compose up
+
 # Run the database migrations to setup the database tables.
 docker-compose exec php bin/console doctrine:migrations:migrate -n
 

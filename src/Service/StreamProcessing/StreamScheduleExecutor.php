@@ -122,6 +122,5 @@ class StreamScheduleExecutor
             $this->entityManager->persist($streamSchedule);
         }
         $this->entityManager->flush();
-        //TODO: Can entity manager be replaced by the repository itself?
     }
 }

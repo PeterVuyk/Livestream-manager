@@ -38,6 +38,7 @@ Once the installation is complete, let's take a look at the docker images we hav
 - `web`: This is the NGINX webserver container in which application volume is mounted too.
 - `yarn`: This is the yarn container which is used for the frontend dependencies.
 - `phpmyadmin`: Easy database access via phpMyAdmin, only available on a development machine.
+- `supervisor`: The supervisor will run the worker to get messages from the sqs queue. It will automatically restart the worker if the worker somehow stopped. 
 
 ```bash
 $ docker-compose ps

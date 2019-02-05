@@ -6,8 +6,8 @@
 ###< symfony/framework-bundle ###
 
 /tests/_reports
-docker-data/logs/*
-!docker-data/logs/.gitkeep
+docker-data/log/*
+!docker-data/log/.gitkeep
 
 ###> phpunit/phpunit ###
 /phpunit.xml

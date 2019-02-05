@@ -11,19 +11,19 @@ use Webmozart\Assert\Assert;
 class StartLivestreamCommand extends Command
 {
     const RESOURCE = 'StartLivestreamCommand';
-    const COMMAND_DATE = 'commandDate';
+    const MESSAGE_DATE = 'messageDate';
 
     /** @var string */
     private $resourceId;
 
     /** @var \DateTimeInterface */
-    private $commandDate;
+    private $messageDate;
 
     public static function create(): self
     {
         $self = new self();
         $self->resourceId = (string)Uuid::uuid4();
-        $self->commandDate = new \DateTimeImmutable();
+        $self->messageDate = new \DateTimeImmutable();
 
         return $self;
     }
@@ -37,7 +37,7 @@ class StartLivestreamCommand extends Command
     {
         self::validate($payload);
         $self = new self();
-        $self->commandDate = new \DateTimeImmutable($payload[self::COMMAND_DATE]);
+        $self->messageDate = new \DateTimeImmutable($payload[self::MESSAGE_DATE]);
         $self->resourceId = $payload[self::RESOURCE_ID];
         return $self;
     }
@@ -61,9 +61,9 @@ class StartLivestreamCommand extends Command
     /**
      * @return \DateTimeInterface
      */
-    public function getCommandDate(): \DateTimeInterface
+    public function getMessageDate(): \DateTimeInterface
     {
-        return $this->commandDate;
+        return $this->messageDate;
     }
 
     /**
@@ -75,7 +75,7 @@ class StartLivestreamCommand extends Command
             self::USED_MESSAGE_ACTION_KEY => $this->messageAction(),
             self::RESOURCE_ID => $this->getResourceId(),
             self::RESOURCE_ID_KEY => $this->getResourceIdKey(),
-            self::COMMAND_DATE => $this->getCommandDate()->format('Y-m-d H:i:s'),
+            self::MESSAGE_DATE => $this->getMessageDate()->format('Y-m-d H:i:s'),
         ];
     }
 
@@ -89,7 +89,7 @@ class StartLivestreamCommand extends Command
             Assert::keyExists($payload, self::USED_MESSAGE_ACTION_KEY, 'used method action is missing');
             Assert::keyExists($payload, self::RESOURCE_ID, 'Resource id from payload is missing');
             Assert::keyExists($payload, self::RESOURCE_ID_KEY, 'Resource id key from payload is missing');
-            Assert::keyExists($payload, self::COMMAND_DATE, 'command date from payload is missing');
+            Assert::keyExists($payload, self::MESSAGE_DATE, 'message date from payload is missing');
         } catch (\InvalidArgumentException $exception) {
             throw UnsupportedMessageException::validationFailed($payload, $exception);
         }

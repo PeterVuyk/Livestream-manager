@@ -33,4 +33,9 @@ interface MessageInterface
      * @return String
      */
     public function messageAction(): String;
+
+    /**
+     * @return \DateTimeInterface
+     */
+    public function getMessageDate(): \DateTimeInterface;
 }

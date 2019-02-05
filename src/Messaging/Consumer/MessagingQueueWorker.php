@@ -55,14 +55,12 @@ class MessagingQueueWorker
                 $this->logger->error('Could not consume message', ['exception' => $exception]);
                 continue;
             }
-
             if (!empty($payload) && !$message instanceof MessageInterface) {
                 try {
                     $this->messagingConsumer->delete($payload);
                 } catch (MessagingQueueConsumerException $exception) {
                     $this->logger->error('Could not delete from queue', ['exception' => $exception]);
                 }
-                continue;
             }
 
             if (!$message instanceof MessageInterface) {
@@ -75,6 +73,13 @@ class MessagingQueueWorker
                 $this->logger->warning('Could not process message from worker', ['exception' => $exception]);
                 continue;
             }
+
+            try {
+                $this->messagingConsumer->delete($payload);
+            } catch (MessagingQueueConsumerException $exception) {
+                $this->logger->error('Could not delete from queue', ['exception' => $exception]);
+            }
+            continue;
         }
         $this->logger->info("Number of retries exceeded, Terminated");
     }

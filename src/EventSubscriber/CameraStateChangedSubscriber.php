@@ -5,11 +5,12 @@ namespace App\EventSubscriber;
 
 use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
+use App\Messaging\Library\Event\CameraStateChangedEvent;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Workflow\Event\Event;
 
-class FailureStateSubscriber implements EventSubscriberInterface
+class CameraStateChangedSubscriber implements EventSubscriberInterface
 {
     /** @var LoggerInterface */
     private $logger;
@@ -33,22 +34,17 @@ class FailureStateSubscriber implements EventSubscriberInterface
     /**
      * @param Event $event
      */
-    public function alertForFailure(Event $event): void
+    public function sendCameraStateChangedEvent(Event $event): void
     {
-        $message = sprintf(
-            'Camera (id: "%s") performed transaction "%s" from "%s" to "%s"',
-            $event->getSubject()->getCamera(),
-            $event->getTransition()->getName(),
-            implode(', ', array_keys($event->getMarking()->getPlaces())),
-            implode(', ', $event->getTransition()->getTos())
-        );
+        $previousState = $event->getTransition()->getFroms();
+        $newState = $event->getTransition()->getTos();
 
-        $this->logger->alert($message);
+        $cameraStateChangedEvent = CameraStateChangedEvent::create(current($previousState), current($newState));
 
         try {
-            $this->messagingDispatcher->sendMessage($message);
+            $this->messagingDispatcher->sendMessage($cameraStateChangedEvent);
         } catch (PublishMessageFailedException $exception) {
-            $this->logger->error($exception->getMessage());
+            $this->logger->error($exception->getMessage(), ['exception' => $exception]);
         }
     }
 
@@ -57,6 +53,6 @@ class FailureStateSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-        return ['workflow.camera_stream.enter.failure'=> 'alertForFailure'];
+        return ['workflow.camera_stream.entered'=> 'sendCameraStateChangedEvent'];
     }
 }

@@ -31,11 +31,11 @@ class StartLivestreamCommandTest extends TestCase
     /**
      * @dataProvider startLivestreamCommandProvider
      * @param StartLivestreamCommand $startLivestreamCommand
-     * @covers ::getCommandDate
+     * @covers ::getMessageDate
      */
-    public function testGetCommandDate(StartLivestreamCommand $startLivestreamCommand)
+    public function testGetMessageDate(StartLivestreamCommand $startLivestreamCommand)
     {
-        $this->assertInstanceOf(\DateTimeInterface::class, $startLivestreamCommand->getCommandDate());
+        $this->assertInstanceOf(\DateTimeInterface::class, $startLivestreamCommand->getMessageDate());
     }
 
     /**
@@ -47,7 +47,7 @@ class StartLivestreamCommandTest extends TestCase
     {
         $this->assertArrayHasKey(StartLivestreamCommand::RESOURCE_ID_KEY, $startLivestreamCommand->getPayload());
         $this->assertArrayHasKey(StartLivestreamCommand::RESOURCE_ID, $startLivestreamCommand->getPayload());
-        $this->assertArrayHasKey(StartLivestreamCommand::COMMAND_DATE, $startLivestreamCommand->getPayload());
+        $this->assertArrayHasKey(StartLivestreamCommand::MESSAGE_DATE, $startLivestreamCommand->getPayload());
         $this->assertArrayHasKey(StartLivestreamCommand::USED_MESSAGE_ACTION_KEY, $startLivestreamCommand->getPayload());
     }
 
@@ -66,9 +66,9 @@ class StartLivestreamCommandTest extends TestCase
      * @covers ::getResourceIdKey
      * @param StartLivestreamCommand $startLivestreamCommand
      */
-    public function testDate(StartLivestreamCommand $startLivestreamCommand)
+    public function testMessageDate(StartLivestreamCommand $startLivestreamCommand)
     {
-        $this->assertInstanceOf(\DateTimeInterface::class, $startLivestreamCommand->getCommandDate());
+        $this->assertInstanceOf(\DateTimeInterface::class, $startLivestreamCommand->getMessageDate());
     }
 
     public function startLivestreamCommandProvider(): array
@@ -85,7 +85,7 @@ class StartLivestreamCommandTest extends TestCase
         $payload = [
             StartLivestreamCommand::RESOURCE_ID => 'some-id',
             StartLivestreamCommand::RESOURCE_ID_KEY => StartLivestreamCommand::RESOURCE,
-            StopLivestreamCommand::COMMAND_DATE => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+            StopLivestreamCommand::MESSAGE_DATE => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
             StartLivestreamCommand::USED_MESSAGE_ACTION_KEY => StartLivestreamCommand::USED_MESSAGE_ACTION,
         ];
         $result = StartLivestreamCommand::createFromPayload($payload);

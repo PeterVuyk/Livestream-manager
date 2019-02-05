@@ -3,7 +3,7 @@ version: '3'
 services:
   php:
     build:
-      context: docker-build/php
+      context: docker-data/build/php
       dockerfile: Dockerfile
       args:
         LIVESTREAM_USER: ${LIVESTREAM_USER}
@@ -12,10 +12,10 @@ services:
     - db
     volumes:
     - ./:/var/www/livestream:cached
-    - ./var/log:/var/log
+    - ./docker-data/log:/var/log
     command: ["php-fpm"]
   web:
-    build: docker-build/nginx
+    build: docker-data/build/nginx
     container_name: livestream-nginx
     restart: always
     ports:
@@ -25,7 +25,7 @@ services:
     - db
     volumes:
     - ./:/var/www/livestream:cached
-    - ./var/log:/var/log/nginx
+    - ./docker-data/log:/var/log/nginx
   db:
     image: mysql/mysql-server:5.7
     container_name: livestream-mysql
@@ -40,7 +40,7 @@ services:
     - database:/var/lib/mysql
   yarn:
     build:
-      context: docker-build/yarn
+      context: docker-data/build/yarn
       dockerfile: Dockerfile
     container_name: livestream-yarn
     volumes:
@@ -48,7 +48,7 @@ services:
     tty: true
   supervisor:
     build:
-      context: docker-build/php
+      context: docker-data/build/php
       dockerfile: Dockerfile
       args:
         LIVESTREAM_USER: ${LIVESTREAM_USER}
@@ -57,8 +57,8 @@ services:
       - php
     volumes:
       - ./:/var/www/livestream:cached
-      - ./var/log:/var/log
-      - ./docker-build/supervisor/conf/supervisord.conf:/etc/supervisor/supervisord.conf
+      - ./docker-data/log:/var/log
+      - ./docker-data/build/supervisor/conf/supervisord.conf:/etc/supervisor/supervisord.conf
     command: ["/usr/bin/supervisord", "-c", "/etc/supervisor/supervisord.conf"]
 
 volumes:

@@ -6,6 +6,7 @@ namespace App\Messaging\Serialize;
 use App\Exception\Messaging\UnsupportedMessageException;
 use App\Messaging\Library\Command\StartLivestreamCommand;
 use App\Messaging\Library\Command\StopLivestreamCommand;
+use App\Messaging\Library\Event\CameraStateChangedEvent;
 use App\Messaging\Library\MessageInterface;
 use Webmozart\Assert\Assert;
 
@@ -45,6 +46,9 @@ class MessagingDeserializer implements DeserializeInterface
                 break;
             case StopLivestreamCommand::RESOURCE:
                 $className = StopLivestreamCommand::class;
+                break;
+            case CameraStateChangedEvent::RESOURCE:
+                $className = CameraStateChangedEvent::class;
                 break;
             default:
                 throw UnsupportedMessageException::classNotFound($payload);

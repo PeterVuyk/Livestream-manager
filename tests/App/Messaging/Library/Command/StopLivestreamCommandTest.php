@@ -30,11 +30,11 @@ class StopLivestreamCommandTest extends TestCase
     /**
      * @dataProvider stopLivestreamCommandProvider
      * @param StopLivestreamCommand $stopLivestreamCommand
-     * @covers ::getCommandDate
+     * @covers ::getMessageDate
      */
-    public function testGetCommandDate(StopLivestreamCommand $stopLivestreamCommand)
+    public function testGetMessageDate(StopLivestreamCommand $stopLivestreamCommand)
     {
-        $this->assertInstanceOf(\DateTimeInterface::class, $stopLivestreamCommand->getCommandDate());
+        $this->assertInstanceOf(\DateTimeInterface::class, $stopLivestreamCommand->getMessageDate());
     }
 
     /**
@@ -46,7 +46,7 @@ class StopLivestreamCommandTest extends TestCase
     {
         $this->assertArrayHasKey(StopLivestreamCommand::RESOURCE_ID_KEY, $stopLivestreamCommand->getPayload());
         $this->assertArrayHasKey(StopLivestreamCommand::RESOURCE_ID, $stopLivestreamCommand->getPayload());
-        $this->assertArrayHasKey(StopLivestreamCommand::COMMAND_DATE, $stopLivestreamCommand->getPayload());
+        $this->assertArrayHasKey(StopLivestreamCommand::MESSAGE_DATE, $stopLivestreamCommand->getPayload());
         $this->assertArrayHasKey(StopLivestreamCommand::USED_MESSAGE_ACTION_KEY, $stopLivestreamCommand->getPayload());
     }
 
@@ -67,7 +67,7 @@ class StopLivestreamCommandTest extends TestCase
      */
     public function testDate(StopLivestreamCommand $stopLivestreamCommand)
     {
-        $this->assertInstanceOf(\DateTimeInterface::class, $stopLivestreamCommand->getCommandDate());
+        $this->assertInstanceOf(\DateTimeInterface::class, $stopLivestreamCommand->getMessageDate());
     }
 
     public function stopLivestreamCommandProvider(): array
@@ -84,7 +84,7 @@ class StopLivestreamCommandTest extends TestCase
         $payload = [
             StopLivestreamCommand::RESOURCE_ID => 'some-id',
             StopLivestreamCommand::RESOURCE_ID_KEY => StopLivestreamCommand::RESOURCE,
-            StopLivestreamCommand::COMMAND_DATE => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+            StopLivestreamCommand::MESSAGE_DATE => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
             StopLivestreamCommand::USED_MESSAGE_ACTION_KEY => StopLivestreamCommand::USED_MESSAGE_ACTION,
         ];
         $result = StopLivestreamCommand::createFromPayload($payload);
