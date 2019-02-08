@@ -10,6 +10,7 @@
         "ext-iconv": "*",
         "ext-json": "*",
         "aws/aws-sdk-php-symfony": "^2.0",
+        "bugsnag/bugsnag-symfony": "^1.5",
         "doctrine/annotations": "^1.6",
         "doctrine/doctrine-migrations-bundle": "^1.3",
         "doctrine/orm": "^2.6",

@@ -11,6 +11,15 @@
             "ref": "d1753f9e2a669c464b2b0618af9b0123426b67b4"
         }
     },
+    "bugsnag/bugsnag": {
+        "version": "v3.16.0"
+    },
+    "bugsnag/bugsnag-symfony": {
+        "version": "v1.5.0"
+    },
+    "composer/ca-bundle": {
+        "version": "1.1.4"
+    },
     "doctrine/annotations": {
         "version": "1.0",
         "recipe": {
@@ -357,15 +366,6 @@
         }
     },
     "symfony/security-core": {
-        "version": "v4.2.1"
-    },
-    "symfony/security-csrf": {
-        "version": "v4.2.1"
-    },
-    "symfony/security-guard": {
-        "version": "v4.2.1"
-    },
-    "symfony/security-http": {
         "version": "v4.2.1"
     },
     "symfony/stopwatch": {

@@ -24,10 +24,20 @@ Below procedure that tell you how to get a development environment running.
 
         sh build.sh
 
-4. Setup a SNS, SQS and IAM role in AWS and add it to the environment variables.
+### Configuration
+
+**AWS Services**
+
+Setup a SNS, SQS and IAM role in AWS and add it to the environment variables.
 - [Creating an SNS Topic](https://docs.aws.amazon.com/sns/latest/api/API_CreateTopic.html)
 - [Creating an Amazon SQS Queue](https://docs.aws.amazon.com/AWSSimpleQueueService/latest/SQSDeveloperGuide/sqs-create-queue.html)
 - [Create IAM Roles](https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_create.html)
+
+**Monitoring and alerting**
+
+For error handling the project uses Bugsnag. Bugsnag is an easy tool to manage error monitoring and alerting for your services. Create a [free Bugsnag account](https://www.bugsnag.com/) and generate an api key. Add the key to your environment variables `BUGSNAG_API_KEY`.
+
+Don't want to use Bugsnag? Remove the dependency from the project, command `composer remove bugsnag/bugsnag-symfony`. Remove the environment variable and config file, location: `config/packages/bugsnag.yaml`
 
 ## Usage
 
