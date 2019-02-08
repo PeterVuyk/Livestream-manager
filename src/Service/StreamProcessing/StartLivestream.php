@@ -104,7 +104,7 @@ class StartLivestream implements LivestreamInterface
     {
         $attempts = 0;
         do {
-            if ($socket =@ fsockopen($configurations->livestreamServer, 80, $errno, $errstr, 30)) {
+            if ($socket = @ fsockopen($configurations->livestreamServer, 80, $errno, $errstr, 30)) {
                 fclose($socket);
                 return true;
             }

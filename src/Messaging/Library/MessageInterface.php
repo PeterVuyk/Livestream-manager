@@ -32,7 +32,7 @@ interface MessageInterface
     /**
      * @return String
      */
-    public function messageAction(): String;
+    public function messageAction(): string;
 
     /**
      * @return \DateTimeInterface

@@ -8,8 +8,9 @@
     <arg name="colors"/>
     <arg name="extensions" value="php"/>
 
-    <rule ref="PSR2"/>
+    <rule ref="PSR12"/>
 
     <file>src/</file>
 	<exclude-pattern>src/Migrations/*</exclude-pattern>
+    <exclude-pattern>src/kernel.php</exclude-pattern>
 </ruleset>

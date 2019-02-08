@@ -75,7 +75,7 @@ class StreamScheduleDTO
         try {
             self::validate($streamSchedule);
             $this->executionDay = $streamSchedule->getExecutionDay() ?
-                    Weekday::getDayOfTheWeekById($streamSchedule->getExecutionDay()): null;
+                    Weekday::getDayOfTheWeekById($streamSchedule->getExecutionDay()) : null;
             $this->nextExecutionTime = $streamSchedule->getNextExecutionTime();
         } catch (\InvalidArgumentException $exception) {
             throw CouldNotCreateStreamScheduleDTOException::invalidArguments($streamSchedule, $exception);
@@ -83,7 +83,7 @@ class StreamScheduleDTO
         $this->id = $streamSchedule->getId();
         $this->name = $streamSchedule->getName();
         $this->executionTime =
-            $streamSchedule->getExecutionTime()? $streamSchedule->getExecutionTime()->format('H:i:s') : null;
+            $streamSchedule->getExecutionTime()     ? $streamSchedule->getExecutionTime()->format('H:i:s') : null;
         $this->onetimeExecutionDate = $streamSchedule->getOnetimeExecutionDate();
         $this->minutesStreamDuration = $streamSchedule->getStreamDuration();
         $this->isRunning = $streamSchedule->isRunning();

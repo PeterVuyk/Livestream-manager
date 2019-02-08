@@ -99,7 +99,7 @@ class StopLivestream implements LivestreamInterface
      */
     private function isMixerRunning(string $mixerIPAddress): bool
     {
-        if ($socket =@ fsockopen($mixerIPAddress, 80, $errno, $errstr, 30)) {
+        if ($socket = @ fsockopen($mixerIPAddress, 80, $errno, $errstr, 30)) {
             fclose($socket);
             return true;
         }

@@ -53,6 +53,6 @@ class CameraStateChangedSubscriber implements EventSubscriberInterface
      */
     public static function getSubscribedEvents(): array
     {
-        return ['workflow.camera_stream.entered'=> 'sendCameraStateChangedEvent'];
+        return ['workflow.camera_stream.entered' => 'sendCameraStateChangedEvent'];
     }
 }
