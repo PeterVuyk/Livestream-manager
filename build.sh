@@ -11,7 +11,7 @@ docker-compose exec yarn /bin/bash -c "cd /usr/src/app && yarn install && yarn b
 
 # Rebuild docker containers once dependencies are available so SQS worker can start running
 docker-compose down
-docker-compose up
+docker-compose up -d
 
 # Run the database migrations to setup the database tables.
 docker-compose exec php bin/console doctrine:migrations:migrate -n

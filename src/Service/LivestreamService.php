@@ -78,7 +78,6 @@ class LivestreamService
      */
     public function sendLivestreamCommand(StreamSchedule $streamSchedule): void
     {
-        //TODO: Mark schedule as being processed so next cron won't pick up the same event.
         $camera = $this->getMainCameraStatus();
         if ($streamSchedule->streamTobeStarted()) {
             $toStarting = $this->streamStateMachine->can($camera, 'to_starting');
