@@ -64,6 +64,7 @@ class StartLivestreamProcessorTest extends TestCase
             ->method('getStreamToExecute')
             ->willReturn(new StreamSchedule());
         $this->streamScheduleExecutor->expects($this->once())->method('start');
+        $this->startLivestream->expects($this->never())->method('process');
         $this->startLivestreamProcessor->process();
         $this->addToAssertionCount(1);
     }

@@ -58,6 +58,7 @@ class StopLivestreamProcessorTest extends TestCase
             ->method('findRunningSchedule')
             ->willReturn(new StreamSchedule());
         $this->streamScheduleExecutor->expects($this->once())->method('stop');
+        $this->stopLivestream->expects($this->never())->method('process');
         $this->stopLivestreamProcessor->process();
         $this->addToAssertionCount(1);
     }

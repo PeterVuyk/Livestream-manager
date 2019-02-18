@@ -7,7 +7,7 @@ class CouldNotStopLivestreamException extends \Exception
 {
     const RUN_PROCESS_FAILED_MESSAGE = 'Failed running stop stream process, ErrorOutput: %s';
     const INVALID_STATE_OR_CAMERA_STATUS_MESSAGE =
-        'Invalid state or camera status message, toStopping: %s cameraStreaming: %s';
+        'Invalid state or camera status message, to_Stopping: %s cameraStreaming: %s';
 
     public function __construct(string $reason, \Throwable $previous = null)
     {
@@ -16,9 +16,11 @@ class CouldNotStopLivestreamException extends \Exception
 
     public static function invalidStateOrCameraStatus(bool $toStopping, bool $cameraStreaming = null)
     {
-        return new self(
-            sprintf(self::INVALID_STATE_OR_CAMERA_STATUS_MESSAGE, (string)$toStopping, (string)$cameraStreaming ?? '')
-        );
+        return new self(sprintf(
+            self::INVALID_STATE_OR_CAMERA_STATUS_MESSAGE,
+            (string)$toStopping ?? 'false',
+            (string)$cameraStreaming ?? 'false'
+        ));
     }
 
     public static function runProcessFailed(string $errorOutput)

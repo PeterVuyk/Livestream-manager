@@ -63,6 +63,7 @@ class StartLivestreamProcessor implements MessageProcessorInterface
         if ($streamSchedule instanceof StreamSchedule) {
             try {
                 $this->streamScheduleExecutor->start($streamSchedule);
+                return;
             } catch (CouldNotModifyStreamScheduleException | ExecutorCouldNotExecuteStreamException $exception) {
                 //Do nothing, already logged;
                 return;

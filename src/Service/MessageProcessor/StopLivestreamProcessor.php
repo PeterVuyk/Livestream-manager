@@ -49,6 +49,7 @@ class StopLivestreamProcessor implements MessageProcessorInterface
         if ($streamSchedule instanceof StreamSchedule) {
             try {
                 $this->streamScheduleExecutor->stop($streamSchedule);
+                return;
             } catch (CouldNotModifyStreamScheduleException | ExecutorCouldNotExecuteStreamException $exception) {
                 //Do nothing, already logged;
                 return;

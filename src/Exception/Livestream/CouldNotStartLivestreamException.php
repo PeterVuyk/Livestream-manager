@@ -27,8 +27,10 @@ class CouldNotStartLivestreamException extends \Exception
 
     public static function invalidStateOrCameraStatus(bool $toStarting, bool $cameraStreaming = null)
     {
-        return new self(
-            sprintf(self::INVALID_STATE_OR_CAMERA_STATUS_MESSAGE, (string)$toStarting, (string)$cameraStreaming ?? '')
-        );
+        return new self(sprintf(
+                self::INVALID_STATE_OR_CAMERA_STATUS_MESSAGE,
+                (string)$toStarting ?? 'false',
+                (string)$cameraStreaming ?? 'false'
+        ));
     }
 }
