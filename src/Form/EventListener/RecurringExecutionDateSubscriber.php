@@ -49,7 +49,6 @@ class RecurringExecutionDateSubscriber implements EventSubscriberInterface
                     'input' => 'datetime',
                     'label' => 'stream.form.label.detail.label.time',
                     'translation_domain' => 'schedule_create',
-                    'data' => new \DateTime(),
                     'required' => true,
                 ]
             );

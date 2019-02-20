@@ -49,7 +49,6 @@ class UpdateScheduleType extends AbstractType
             [
                 'label' => 'stream.form.label.detail.minutes_to_run',
                 'translation_domain' => 'schedule_create',
-                'data' => 90,
                 'attr' => ['class' => 'form-control', 'min' => 1],
             ]
         );

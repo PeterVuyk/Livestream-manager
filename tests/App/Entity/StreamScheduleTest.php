@@ -283,7 +283,11 @@ class StreamScheduleTest extends TestCase
      */
     public function testGetExecutionEndTime(StreamSchedule $streamSchedule, $result)
     {
-        $this->assertEquals($result, $streamSchedule->getExecutionEndTime());
+        $executionEndTime = null;
+        if ($streamSchedule->getExecutionEndTime() instanceof \DateTimeInterface) {
+            $executionEndTime = $streamSchedule->getExecutionEndTime()->format('H:i');
+        }
+        $this->assertEquals($result, $executionEndTime);
     }
 
     public function getExecutionEndTimeProvider()
@@ -294,10 +298,9 @@ class StreamScheduleTest extends TestCase
         $streamScheduleNoStreamDuration = new StreamSchedule();
         $streamScheduleNoStreamDuration->setWrecked(false);
         $streamScheduleNoStreamDuration->setIsRunning(true);
-        $now = new \DateTime();
         $streamScheduleWithEndTime = new StreamSchedule();
         $streamScheduleWithEndTime->setStreamDuration(5);
-        $streamScheduleWithEndTime->setLastExecution(($now)->modify('-5 minutes'));
+        $streamScheduleWithEndTime->setLastExecution((new \DateTime())->modify('-5 minutes'));
 
         return [
             [
@@ -308,7 +311,7 @@ class StreamScheduleTest extends TestCase
                 'result' => null,
             ], [
                 'streamSchedule' => $streamScheduleWithEndTime,
-                'result' => $now,
+                'result' => (new \DateTime())->format('H:i'),
             ]
         ];
     }

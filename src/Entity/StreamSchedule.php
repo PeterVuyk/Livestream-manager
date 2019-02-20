@@ -297,10 +297,10 @@ class StreamSchedule
     }
 
     /**
-     * @return \DateTime|null
+     * @return \DateTimeInterface|null
      * @throws CouldNotGetExecutionEndTimeException
      */
-    public function getExecutionEndTime(): ?\DateTime
+    public function getExecutionEndTime(): ?\DateTimeInterface
     {
         if ($this->isWrecked() || $this->isRunning() === false) {
             return null;
@@ -311,7 +311,8 @@ class StreamSchedule
         }
 
         try {
-            return date_add($this->getLastExecution(), new \DateInterval('PT' . $this->getStreamDuration() . 'M'));
+            $lastExecution = \DateTimeImmutable::createFromMutable($this->getLastExecution());
+            return $lastExecution->modify(sprintf('+%s minutes', $this->getStreamDuration()));
         } catch (\Exception $exception) {
             throw CouldNotGetExecutionEndTimeException::forError($exception);
         }
@@ -346,7 +347,8 @@ class StreamSchedule
         if ($this->isRunning() !== true) {
             return false;
         }
-        if ($this->getExecutionEndTime() instanceof \DateTime && $this->getExecutionEndTime() <= new \DateTime()) {
+        if ($this->getExecutionEndTime() instanceof \DateTimeInterface &&
+            $this->getExecutionEndTime()->getTimestamp() < (new \DateTime())->getTimestamp()) {
             return true;
         }
         return false;
