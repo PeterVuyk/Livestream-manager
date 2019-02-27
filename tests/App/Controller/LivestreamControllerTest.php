@@ -14,6 +14,7 @@ use Doctrine\ORM\ORMException;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
@@ -30,9 +31,6 @@ class LivestreamControllerTest extends TestCase
 {
     /** @var MessagingDispatcher|MockObject */
     private $messagingDispatcher;
-
-    /** @var RouterInterface|MockObject */
-    private $routerMock;
 
     /** @var CameraRepository|MockObject */
     private $cameraRepositoryMock;
@@ -55,7 +53,6 @@ class LivestreamControllerTest extends TestCase
     public function setUp()
     {
         $this->messagingDispatcher = $this->createMock(MessagingDispatcher::class);
-        $this->routerMock = $this->createMock(RouterInterface::class);
         $this->cameraRepositoryMock = $this->createMock(CameraRepository::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->flashBagMock = $this->createMock(FlashBagInterface::class);
@@ -63,7 +60,6 @@ class LivestreamControllerTest extends TestCase
         $this->streamStateMachineMock = $this->createMock(StreamStateMachine::class);
         $this->livestreamController = new LivestreamController(
             $this->messagingDispatcher,
-            $this->routerMock,
             $this->twigMock,
             $this->cameraRepositoryMock,
             $this->loggerMock,
@@ -78,9 +74,8 @@ class LivestreamControllerTest extends TestCase
     public function testStartStreamSuccess()
     {
         $this->messagingDispatcher->expects($this->once())->method('sendMessage');
-        $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');
         $this->loggerMock->expects($this->never())->method('error');
-        $response = $this->livestreamController->startStream();
+        $response = $this->livestreamController->startStream($this->getRequest());
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
@@ -95,8 +90,7 @@ class LivestreamControllerTest extends TestCase
             ->willThrowException(PublishMessageFailedException::forMessage('topic', []));
         $this->loggerMock->expects($this->atLeastOnce())->method('error');
 
-        $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');
-        $response = $this->livestreamController->startStream();
+        $response = $this->livestreamController->startStream($this->getRequest());
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
@@ -106,9 +100,8 @@ class LivestreamControllerTest extends TestCase
     public function testStopStreamSuccess()
     {
         $this->messagingDispatcher->expects($this->once())->method('sendMessage');
-        $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');
         $this->loggerMock->expects($this->never())->method('error');
-        $response = $this->livestreamController->stopStream();
+        $response = $this->livestreamController->stopStream($this->getRequest());
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
@@ -122,8 +115,7 @@ class LivestreamControllerTest extends TestCase
             ->willThrowException(PublishMessageFailedException::forMessage('topic', []));
         $this->loggerMock->expects($this->atLeastOnce())->method('error');
 
-        $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');
-        $response = $this->livestreamController->stopStream();
+        $response = $this->livestreamController->stopStream($this->getRequest());
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
@@ -146,9 +138,8 @@ class LivestreamControllerTest extends TestCase
         $this->cameraRepositoryMock->expects($this->once())->method('getMainCamera')->willReturn(new Camera());
         $this->streamStateMachineMock->expects($this->once())->method('apply');
         $this->loggerMock->expects($this->never())->method('error');
-        $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');
 
-        $response = $this->livestreamController->resetFromFailure();
+        $response = $this->livestreamController->resetFromFailure($this->getRequest());
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
 
@@ -162,9 +153,15 @@ class LivestreamControllerTest extends TestCase
             ->method('apply')
             ->willThrowException(CouldNotModifyCameraException::forError(new ORMException()));
         $this->loggerMock->expects($this->atLeastOnce())->method('error');
-        $this->routerMock->expects($this->once())->method('generate')->willReturn('<p>hi</p>');
 
-        $response = $this->livestreamController->resetFromFailure();
+        $response = $this->livestreamController->resetFromFailure($this->getRequest());
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
+    }
+
+    private function getRequest(): Request
+    {
+        $request = new Request();
+        $request->headers->set('referer', 'url');
+        return $request;
     }
 }

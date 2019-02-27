@@ -17,6 +17,9 @@ use App\Service\StreamProcessing\StreamScheduleExecutor;
 use App\Messaging\Library\Command\StopLivestreamCommand;
 use App\Messaging\Library\Command\StartLivestreamCommand;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class LivestreamService
 {
     /** @var StateMachineInterface */

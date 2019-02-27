@@ -332,7 +332,7 @@ class StreamSchedule
             }
         }
         if ($this->getNextExecutionTime() <= new \DateTime()) {
-            if ($this->getNextExecutionTime() > new \DateTime('- 15 minutes')) {
+            if ($this->getNextExecutionTime() > new \DateTime('- 10 minutes')) {
                 return true;
             }
         }

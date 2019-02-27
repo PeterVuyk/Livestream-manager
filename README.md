@@ -116,6 +116,10 @@ By running the following command you can run the unit test suite:
 
     $ docker-compose exec php /bin/bash -c "php ./bin/phpunit"
 
-The coding style standard phpcs is used for this project. To start the CodeSniffer run:
+The coding style standard PSR12 is used for this project. To start the CodeSniffer run:
 
-    $ docker-compose exec php /bin/bash -c "./vendor/bin/phpcs src/"
+    $ docker-compose exec php /bin/bash -c "./bin/phpcs src/"
+
+To detect code smells for possible errors and bad practices, run the command below to analyze the code with help of PHPMD:
+
+    $ docker-compose exec php /bin/bash -c "./bin/phpmd src/ text phpmd.xml"

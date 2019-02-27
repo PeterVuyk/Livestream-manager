@@ -14,6 +14,9 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Process\Process;
 use Webmozart\Assert\Assert;
 
+/**
+ * @SuppressWarnings(PHPMD)
+ */
 class StartLivestream implements LivestreamInterface
 {
     /** @var CameraConfigurationService */
@@ -35,7 +38,7 @@ class StartLivestream implements LivestreamInterface
      * @param CameraConfigurationService $cameraConfigurationService
      * @param StatusLivestream $statusLivestream
      * @param LoggerInterface $logger
-     * @param CameraRepository $cameraRepository ;
+     * @param CameraRepository $cameraRepository
      * @param StateMachineInterface $streamStateMachine
      */
     public function __construct(

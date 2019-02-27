@@ -128,6 +128,9 @@
     "ocramius/proxy-manager": {
         "version": "2.2.2"
     },
+    "pdepend/pdepend": {
+        "version": "2.5.2"
+    },
     "phar-io/manifest": {
         "version": "1.0.3"
     },
@@ -142,6 +145,9 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "0.4.0"
+    },
+    "phpmd/phpmd": {
+        "version": "2.6.0"
     },
     "phpspec/prophecy": {
         "version": "1.8.0"

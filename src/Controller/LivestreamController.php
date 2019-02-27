@@ -12,17 +12,17 @@ use App\Repository\CameraRepository;
 use App\Service\StreamProcessing\StreamStateMachine;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
-use Symfony\Component\Routing\RouterInterface;
 
+/**
+ * @SuppressWarnings(PHPMD.CouplingBetweenObjects)
+ */
 class LivestreamController extends Controller
 {
     /** @var MessagingDispatcher */
     private $messagingDispatcher;
-
-    /** @var RouterInterface */
-    private $router;
 
     /** @var CameraRepository */
     private $cameraRepository;
@@ -39,7 +39,6 @@ class LivestreamController extends Controller
     /**
      * LivestreamController constructor.
      * @param MessagingDispatcher $messagingDispatcher
-     * @param RouterInterface $router
      * @param \Twig_Environment $twig
      * @param CameraRepository $cameraRepository
      * @param LoggerInterface $logger
@@ -48,7 +47,6 @@ class LivestreamController extends Controller
      */
     public function __construct(
         MessagingDispatcher $messagingDispatcher,
-        RouterInterface $router,
         \Twig_Environment $twig,
         CameraRepository $cameraRepository,
         LoggerInterface $logger,
@@ -57,7 +55,6 @@ class LivestreamController extends Controller
     ) {
         parent::__construct($twig);
         $this->messagingDispatcher = $messagingDispatcher;
-        $this->router = $router;
         $this->cameraRepository = $cameraRepository;
         $this->logger = $logger;
         $this->flashBag = $flashBag;
@@ -65,9 +62,10 @@ class LivestreamController extends Controller
     }
 
     /**
+     * @param Request $request
      * @return RedirectResponse
      */
-    public function startStream()
+    public function startStream(Request $request)
     {
         try {
             $this->messagingDispatcher->sendMessage(StartLivestreamCommand::create());
@@ -76,13 +74,14 @@ class LivestreamController extends Controller
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.livestream.error.start_stream');
             $this->logger->error('Could not start livestream', ['exception' => $exception]);
         }
-        return new RedirectResponse($this->router->generate('scheduler_list'));
+        return new RedirectResponse($request->headers->get('referer'));
     }
 
     /**
+     * @param Request $request
      * @return RedirectResponse
      */
-    public function stopStream()
+    public function stopStream(Request $request)
     {
         try {
             $this->messagingDispatcher->sendMessage(StopLivestreamCommand::create());
@@ -91,7 +90,7 @@ class LivestreamController extends Controller
             $this->logger->error('Could not start livestream', ['exception' => $exception]);
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.livestream.error.stop_stream');
         }
-        return new RedirectResponse($this->router->generate('scheduler_list'));
+        return new RedirectResponse($request->headers->get('referer'));
     }
 
     /**
@@ -104,9 +103,10 @@ class LivestreamController extends Controller
     }
 
     /**
+     * @param Request $request
      * @return RedirectResponse
      */
-    public function resetFromFailure()
+    public function resetFromFailure(Request $request)
     {
         try {
             $camera = $this->cameraRepository->getMainCamera();
@@ -115,6 +115,6 @@ class LivestreamController extends Controller
             $this->logger->error('Could not reset failure status', ['exception' => $exception]);
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.livestream.error.unable_to_reset');
         }
-        return new RedirectResponse($this->router->generate('scheduler_list'));
+        return new RedirectResponse($request->headers->get('referer'));
     }
 }
