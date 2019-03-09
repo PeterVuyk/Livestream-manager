@@ -9,7 +9,7 @@
         "ext-curl": "*",
         "ext-iconv": "*",
         "ext-json": "*",
-        "aws/aws-sdk-php-symfony": "^2.0",
+        "aws/aws-sdk-php": "^3.89",
         "bugsnag/bugsnag-symfony": "^1.5",
         "doctrine/annotations": "^1.6",
         "doctrine/doctrine-migrations-bundle": "^1.3",

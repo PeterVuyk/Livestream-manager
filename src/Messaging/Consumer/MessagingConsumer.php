@@ -36,7 +36,7 @@ class MessagingConsumer
             $result = $this->sqsClient->receiveMessage([
                 'QueueUrl' => $this->queueUrl,
                 'MaxNumberOfMessages' => 1,
-                'ReceiveMessageWaitTimeSeconds' => 20
+                'ReceiveMessageWaitTimeSeconds' => 20,
             ]);
         } catch (AwsException $awsException) {
             throw MessagingQueueConsumerException::fromError($awsException);

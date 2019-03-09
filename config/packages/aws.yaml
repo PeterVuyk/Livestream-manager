@@ -1,6 +1,29 @@
-aws:
-    version: latest
-    region: eu-central-1
-    credentials:
-        key: "%env(AWS_KEY)%"
-        secret: "%env(AWS_SECRET)%"
+services:
+  _defaults:
+    autowire: true
+    autoconfigure: true
+    public: false
+
+  aws_sqs_client:
+    class: 'Aws\Sqs\SqsClient'
+    arguments:
+      - region: '%env(AWS_REGION)%'
+        version: '%env(AWS_VERSION)%'
+        credentials:
+          key: '%env(AWS_KEY)%'
+          secret: '%env(AWS_SECRET)%'
+        http:
+          'timeout': 30
+          'connect_timeout': 5
+
+  aws_sns_client:
+    class: 'Aws\Sns\SnsClient'
+    arguments:
+      - region: '%env(AWS_REGION)%'
+        version: '%env(AWS_VERSION)%'
+        credentials:
+          key: '%env(AWS_KEY)%'
+          secret: '%env(AWS_SECRET)%'
+        http:
+          'timeout': 30
+          'connect_timeout': 5
