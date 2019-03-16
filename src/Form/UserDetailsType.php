@@ -53,6 +53,15 @@ class UserDetailsType extends AbstractType
                 ]
             )
             ->add(
+                'channel',
+                TextType::class,
+                [
+                    'label' => 'user_details.label_channel',
+                    'translation_domain' => 'users',
+                    'disabled' => true
+                ]
+            )
+            ->add(
                 'enabled',
                 CheckBoxType::class,
                 [

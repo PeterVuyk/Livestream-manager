@@ -16,6 +16,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * @coversDefaultClass \App\Controller\UserManagementController
@@ -42,6 +44,9 @@ class UserManagementControllerTest extends TestCase
     /** @var FlashBagInterface|MockObject */
     private $flashBagMock;
 
+    /** @var TokenStorageInterface|MockObject */
+    private $tokenStorageMock;
+
     /** @var UserManagementController */
     private $userManagementController;
 
@@ -51,9 +56,11 @@ class UserManagementControllerTest extends TestCase
         $this->userServiceMock = $this->createMock(UserService::class);
         $this->formFactoryMock = $this->createMock(FormFactoryInterface::class);
         $this->routerMock = $this->createMock(RouterInterface::class);
+        $this->tokenStorageMock = $this->createMock(TokenStorageInterface::class);
         $this->flashBagMock = $this->createMock(FlashBagInterface::class);
         $this->userManagementController = new UserManagementController(
             $this->twigMock,
+            $this->tokenStorageMock,
             $this->userServiceMock,
             $this->formFactoryMock,
             $this->routerMock,
@@ -66,9 +73,14 @@ class UserManagementControllerTest extends TestCase
      */
     public function testUsersList()
     {
-        $this->userServiceMock->expects($this->once())->method('getAllUsers')->willReturn([new User()]);
+        $this->userServiceMock->expects($this->once())->method('getUsersByChannel')->willReturn([new User()]);
         $this->twigMock->expects($this->once())->method('render')->willReturn('<p>hi</p>');
 
+        $user = new User();
+        $user->setChannel('some-channel');
+        $tokenMock = $this->createMock(TokenInterface::class);
+        $tokenMock->expects($this->once())->method('getUser')->willReturn($user);
+        $this->tokenStorageMock->expects($this->atLeastOnce())->method('getToken')->willReturn($tokenMock);
         $response = $this->userManagementController->usersList();
         $this->assertEquals(Response::HTTP_OK, $response->getStatusCode());
     }

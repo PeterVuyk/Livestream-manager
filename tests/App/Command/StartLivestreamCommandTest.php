@@ -80,7 +80,9 @@ class StartLivestreamCommandTest extends TestCase
         $this->messagingDispatcher->expects($this->once())->method('sendMessage');
         $this->logger->expects($this->never())->method('error');
 
-        $this->commandTester->execute([StartLivestreamCommand::COMMAND_START_LIVESTREAM]);
+        $this->commandTester->execute(
+            ['command' => StartLivestreamCommand::COMMAND_START_LIVESTREAM, 'channelName' => 'channelName']
+        );
     }
 
     /**
@@ -97,6 +99,8 @@ class StartLivestreamCommandTest extends TestCase
             ->willThrowException(PublishMessageFailedException::forMessage('topic', []));
         $this->logger->expects($this->atLeastOnce())->method('error');
 
-        $this->commandTester->execute([StartLivestreamCommand::COMMAND_START_LIVESTREAM]);
+        $this->commandTester->execute(
+            ['command' => StartLivestreamCommand::COMMAND_START_LIVESTREAM, 'channelName' => 'channelName']
+        );
     }
 }

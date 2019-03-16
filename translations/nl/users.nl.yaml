@@ -1,3 +1,4 @@
+users_list.column_channel: Kanaal
 users_list.column_username: Gebruikersnaam
 users_list.column_email: Email
 users_list.column_action: Acties
@@ -26,3 +27,5 @@ registration_form.label_password: 'Wachtwoord:'
 registration_form.label_username: 'Gebruikersnaam:'
 registration_form.label_email: 'email:'
 stream_schedule.new.title: 'Registreer gebruiker'
+user_details.label_channel: 'Kanaal:'
+registration_form.label_channel: 'Kanaal:'

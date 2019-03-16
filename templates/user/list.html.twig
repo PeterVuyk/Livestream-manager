@@ -10,6 +10,9 @@
         <thead>
         <tr>
             <th scope="col"></th>
+            {% if app.user.superAdmin == true %}
+                <th scope="col">{{ 'users_list.column_channel'|trans }}</th>
+            {% endif %}
             <th scope="col">{{ 'users_list.column_username'|trans }}</th>
             <th scope="col">{{ 'users_list.column_email'|trans }}</th>
             <th scope="col">{{ 'users_list.column_action'|trans }}</th>
@@ -27,6 +30,9 @@
                         {% endif %}
                     </a>
                 </td>
+                {% if app.user.superAdmin == true %}
+                    <td>{{ user.channel }}</td>
+                {% endif %}
                 <td>{{ user.username }}</td>
                 <td>{{ user.email }}</td>
                 <td>

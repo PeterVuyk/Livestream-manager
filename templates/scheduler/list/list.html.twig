@@ -10,6 +10,9 @@
         <thead>
             <tr>
                 <th>&nbsp;</th>
+                {% if app.user.superAdmin == true %}
+                    <th scope="col">{{ 'scheduler_list.column.channel'|trans }}</th>
+                {% endif %}
                 <th>{{ 'scheduler_list.column.name'|trans }}</th>
                 <th>{{ 'scheduler_list.column.scheduledExecution'|trans }}</th>
                 <th>{{ 'scheduler_list.column.duration'|trans }}</th>

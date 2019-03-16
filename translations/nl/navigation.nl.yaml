@@ -4,7 +4,6 @@ navigation.camera_configuration: 'Configuratie'
 navigation.users: Users
 navigation.user_list: 'Geautoriseerde gebruikers'
 navigation.register: 'Registreer gebruiker'
-navigation.account_name: 'ingelogd - '
 navigation.personal_details: 'My gegevens'
 navigation.sign_out: 'Uitloggen'
 navigation.change_password: 'Wachtwoord wijzigen'

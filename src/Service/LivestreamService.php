@@ -87,14 +87,14 @@ class LivestreamService
             if (!$toStarting) {
                 throw CouldNotStartLivestreamException::invalidStateOrCameraStatus($toStarting);
             }
-            $this->messagingDispatcher->sendMessage(StartLivestreamCommand::create());
+            $this->messagingDispatcher->sendMessage(StartLivestreamCommand::create($streamSchedule->getChannel()));
         }
         if ($streamSchedule->streamToBeStopped()) {
             $toStopping = $this->streamStateMachine->can($camera, 'to_stopping');
             if (!$toStopping) {
                 throw CouldNotStopLivestreamException::invalidStateOrCameraStatus($toStopping);
             }
-            $this->messagingDispatcher->sendMessage(StopLivestreamCommand::create());
+            $this->messagingDispatcher->sendMessage(StopLivestreamCommand::create($streamSchedule->getChannel()));
         }
     }
 

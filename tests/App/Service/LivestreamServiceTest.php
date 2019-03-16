@@ -180,6 +180,7 @@ class LivestreamServiceTest extends TestCase
     private function getStreamToBeStarted(): StreamSchedule
     {
         $streamSchedule = new StreamSchedule();
+        $streamSchedule->setChannel('channel');
         $streamSchedule->setExecutionTime(new \DateTime('- 1 minutes'));
         $streamSchedule->setOnetimeExecutionDate(new \DateTime('- 1 minutes'));
         return $streamSchedule;
@@ -188,6 +189,7 @@ class LivestreamServiceTest extends TestCase
     private function getStreamToBeStopped(): StreamSchedule
     {
         $streamSchedule = new StreamSchedule();
+        $streamSchedule->setChannel('channel');
         $streamSchedule->setIsRunning(true);
         $streamSchedule->setStreamDuration(5);
         $streamSchedule->setLastExecution(new \DateTime('- 10 minutes'));

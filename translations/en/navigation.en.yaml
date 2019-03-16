@@ -4,7 +4,6 @@ navigation.camera_configuration: 'Configuration'
 navigation.users: Users
 navigation.user_list: 'Authorized users'
 navigation.register: 'Register user'
-navigation.account_name: 'Logged in - '
 navigation.personal_details: 'My details'
 navigation.sign_out: 'Sign out'
 admin.list.title: 'Admin page'

@@ -30,7 +30,8 @@
                 {{ render(controller('App\\Controller\\LivestreamController::statusStream')) }}
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
-                        {{ 'navigation.account_name'|trans }}{{ app.user.username }}<span class="caret"></span>
+                        <i class="fa fa-user"></i>
+                        <strong>{{ app.user.channel }}</strong> - {{ app.user.username }}<span class="caret"></span>
                     </a>
                     <div class="dropdown-menu">
                         <a class="dropdown-item" href="{{ path('user_details', {userId: app.user.id}) }}">

@@ -48,6 +48,7 @@ class StartLivestreamCommandTest extends TestCase
         $this->assertArrayHasKey(StartLivestreamCommand::RESOURCE_ID_KEY, $startLivestreamCommand->getPayload());
         $this->assertArrayHasKey(StartLivestreamCommand::RESOURCE_ID, $startLivestreamCommand->getPayload());
         $this->assertArrayHasKey(StartLivestreamCommand::MESSAGE_DATE, $startLivestreamCommand->getPayload());
+        $this->assertArrayHasKey(StartLivestreamCommand::CHANNEL, $startLivestreamCommand->getPayload());
         $this->assertArrayHasKey(StartLivestreamCommand::USED_MESSAGE_ACTION_KEY, $startLivestreamCommand->getPayload());
     }
 
@@ -71,9 +72,19 @@ class StartLivestreamCommandTest extends TestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $startLivestreamCommand->getMessageDate());
     }
 
+    /**
+     * @dataProvider startLivestreamCommandProvider
+     * @covers ::getChannel
+     * @param StartLivestreamCommand $startLivestreamCommand
+     */
+    public function testGetChannel(StartLivestreamCommand $startLivestreamCommand)
+    {
+        $this->assertSame('channel-name', $startLivestreamCommand->getChannel());
+    }
+
     public function startLivestreamCommandProvider(): array
     {
-        return [[StartLivestreamCommand::create()]];
+        return [[StartLivestreamCommand::create('channel-name')]];
     }
 
     /**
@@ -85,7 +96,8 @@ class StartLivestreamCommandTest extends TestCase
         $payload = [
             StartLivestreamCommand::RESOURCE_ID => 'some-id',
             StartLivestreamCommand::RESOURCE_ID_KEY => StartLivestreamCommand::RESOURCE,
-            StopLivestreamCommand::MESSAGE_DATE => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+            StartLivestreamCommand::MESSAGE_DATE => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+            StartLivestreamCommand::CHANNEL => 'channel-name',
             StartLivestreamCommand::USED_MESSAGE_ACTION_KEY => StartLivestreamCommand::USED_MESSAGE_ACTION,
         ];
         $result = StartLivestreamCommand::createFromPayload($payload);

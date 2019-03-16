@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 abstract class Controller
 {
@@ -14,13 +16,31 @@ abstract class Controller
     /** @var \Twig_Environment */
     private $twig;
 
+    /** @var TokenStorage */
+    private $tokenStorage;
+
     /**
      * Controller constructor.
      * @param \Twig_Environment $twig
+     * @param TokenStorageInterface $tokenStorage
      */
-    public function __construct(\Twig_Environment $twig)
+    public function __construct(\Twig_Environment $twig, TokenStorageInterface $tokenStorage)
     {
         $this->twig = $twig;
+        $this->tokenStorage = $tokenStorage;
+    }
+
+    protected function getUser()
+    {
+        if (null === $token = $this->tokenStorage->getToken()) {
+            return;
+        }
+
+        if (!\is_object($user = $token->getUser())) {
+            // e.g. anonymous authentication
+            return;
+        }
+        return $user;
     }
 
     /**

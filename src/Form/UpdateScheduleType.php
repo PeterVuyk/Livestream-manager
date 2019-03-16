@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\StreamSchedule;
+use App\Entity\User;
 use App\Form\EventListener\OnetimeExecutionDateSubscriber;
 use App\Form\EventListener\RecurringExecutionDateSubscriber;
 use Ramsey\Uuid\Uuid;
@@ -30,6 +31,20 @@ class UpdateScheduleType extends AbstractType
     {
         $builder->add('id', HiddenType::class, ['empty_data' => Uuid::uuid4()]);
         $builder->add('wrecked', HiddenType::class, ['empty_data' => false]);
+
+        if ($options['user']->isSuperAdmin()) {
+            $builder
+                ->add(
+                    'channel',
+                    TextType::class,
+                    [
+                        'label' => 'stream.form.label.detail.channel',
+                        'translation_domain' => 'schedule_create',
+                    ]
+                );
+        } else {
+            $builder->add('channel', HiddenType::class, ['empty_data' => $options['user']->getChannel()]);
+        }
 
         $builder->add(
             'name',
@@ -85,6 +100,7 @@ class UpdateScheduleType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => StreamSchedule::class,
             'wrapper_attr' => 'default_wrapper',
+            'user' => User::class,
         ));
     }
 }

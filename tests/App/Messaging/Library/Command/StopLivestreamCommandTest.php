@@ -47,6 +47,7 @@ class StopLivestreamCommandTest extends TestCase
         $this->assertArrayHasKey(StopLivestreamCommand::RESOURCE_ID_KEY, $stopLivestreamCommand->getPayload());
         $this->assertArrayHasKey(StopLivestreamCommand::RESOURCE_ID, $stopLivestreamCommand->getPayload());
         $this->assertArrayHasKey(StopLivestreamCommand::MESSAGE_DATE, $stopLivestreamCommand->getPayload());
+        $this->assertArrayHasKey(StopLivestreamCommand::CHANNEL, $stopLivestreamCommand->getPayload());
         $this->assertArrayHasKey(StopLivestreamCommand::USED_MESSAGE_ACTION_KEY, $stopLivestreamCommand->getPayload());
     }
 
@@ -70,9 +71,19 @@ class StopLivestreamCommandTest extends TestCase
         $this->assertInstanceOf(\DateTimeInterface::class, $stopLivestreamCommand->getMessageDate());
     }
 
+    /**
+     * @dataProvider stopLivestreamCommandProvider
+     * @covers ::getChannel
+     * @param StopLivestreamCommand $stopLivestreamCommand
+     */
+    public function testGetChannel(StopLivestreamCommand $stopLivestreamCommand)
+    {
+        $this->assertSame('channel-name', $stopLivestreamCommand->getChannel());
+    }
+
     public function stopLivestreamCommandProvider(): array
     {
-        return [[StopLivestreamCommand::create()]];
+        return [[StopLivestreamCommand::create('channel-name')]];
     }
 
     /**
@@ -85,6 +96,7 @@ class StopLivestreamCommandTest extends TestCase
             StopLivestreamCommand::RESOURCE_ID => 'some-id',
             StopLivestreamCommand::RESOURCE_ID_KEY => StopLivestreamCommand::RESOURCE,
             StopLivestreamCommand::MESSAGE_DATE => (new \DateTimeImmutable())->format('Y-m-d H:i:s'),
+            StopLivestreamCommand::CHANNEL => 'channel-name',
             StopLivestreamCommand::USED_MESSAGE_ACTION_KEY => StopLivestreamCommand::USED_MESSAGE_ACTION,
         ];
         $result = StopLivestreamCommand::createFromPayload($payload);

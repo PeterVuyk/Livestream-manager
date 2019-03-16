@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @coversDefaultClass \App\Controller\RegistrationController
@@ -36,14 +37,24 @@ class RegistrationControllerTest extends TestCase
     private $router;
     /** @var RegistrationController */
     private $registrationController;
+    /** @var TokenStorageInterface|MockObject */
+    private $tokenStorageMock;
+
 
     public function setUp()
     {
         $twigMock = $this->twigMock = $this->createMock(\Twig_Environment::class);
         $formFactoryMock = $this->formFactory = $this->createMock(FormFactoryInterface::class);
         $userService = $this->userService = $this->createMock(UserService::class);
+        $this->tokenStorageMock = $this->createMock(TokenStorageInterface::class);
         $router = $this->router = $this->createMock(RouterInterface::class);
-        $this->registrationController = new RegistrationController($twigMock, $formFactoryMock, $userService, $router);
+        $this->registrationController = new RegistrationController(
+            $twigMock,
+            $this->tokenStorageMock,
+            $formFactoryMock,
+            $userService,
+            $router
+        );
     }
 
     /**

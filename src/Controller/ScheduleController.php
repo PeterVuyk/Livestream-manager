@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ScheduleController extends Controller
 {
@@ -33,6 +34,7 @@ class ScheduleController extends Controller
      * SchedulerController constructor.
      * @param ManageScheduleService $manageScheduleService
      * @param \Twig_Environment $twig
+     * @param TokenStorageInterface $tokenStorage
      * @param FormFactoryInterface $formFactory
      * @param RouterInterface $router
      * @param FlashBagInterface $flashBag
@@ -40,11 +42,12 @@ class ScheduleController extends Controller
     public function __construct(
         ManageScheduleService $manageScheduleService,
         \Twig_Environment $twig,
+        TokenStorageInterface $tokenStorage,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         FlashBagInterface $flashBag
     ) {
-        parent::__construct($twig);
+        parent::__construct($twig, $tokenStorage);
         $this->manageScheduleService = $manageScheduleService;
         $this->formFactory = $formFactory;
         $this->router = $router;
@@ -71,8 +74,11 @@ class ScheduleController extends Controller
      */
     public function createRecurringSchedule(Request $request)
     {
-
-        $form = $this->formFactory->create(CreateRecurringScheduleType::class, new StreamSchedule());
+        $form = $this->formFactory->create(
+            CreateRecurringScheduleType::class,
+            new StreamSchedule(),
+            ['user' => $this->getUser()]
+        );
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {
@@ -95,7 +101,11 @@ class ScheduleController extends Controller
      */
     public function createOnetimeSchedule(Request $request)
     {
-        $form = $this->formFactory->create(CreateOnetimeScheduleType::class, new StreamSchedule());
+        $form = $this->formFactory->create(
+            CreateOnetimeScheduleType::class,
+            new StreamSchedule(),
+            ['user' => $this->getUser()]
+        );
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             try {

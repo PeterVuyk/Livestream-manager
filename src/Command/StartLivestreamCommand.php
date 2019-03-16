@@ -11,6 +11,7 @@ use App\Messaging\Library\Command\StartLivestreamCommand as MessageStartLivestre
 use App\Service\StreamProcessing\StreamStateMachine;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -54,7 +55,12 @@ class StartLivestreamCommand extends Command
     {
         $this
             ->setName(self::COMMAND_START_LIVESTREAM)
-            ->setDescription('Start the livestream.');
+            ->setDescription('Start the livestream.')
+            ->addArgument(
+                'channelName',
+                InputArgument::REQUIRED,
+                'The name of the channel that you would like to start'
+            );
     }
 
     /**
@@ -64,6 +70,7 @@ class StartLivestreamCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output): void
     {
+        $channel = $input->getArgument('channelName');
         $output->writeln('Requested to start livestream.');
 
         $camera = $this->livestreamService->getMainCameraStatus();
@@ -77,7 +84,7 @@ class StartLivestreamCommand extends Command
         }
 
         try {
-            $this->messagingDispatcher->sendMessage(MessageStartLivestreamCommand::create());
+            $this->messagingDispatcher->sendMessage(MessageStartLivestreamCommand::create($channel));
         } catch (PublishMessageFailedException $exception) {
             $this->logger->error('Could not send start command livestream', ['exception' => $exception]);
             $output->writeln('Could not start livestream.');

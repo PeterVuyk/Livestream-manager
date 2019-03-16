@@ -63,6 +63,6 @@ class MessagingDispatcherTest extends TestCase
 
     private function getStopLivestreamCommand(): StopLivestreamCommand
     {
-        return StopLivestreamCommand::create();
+        return StopLivestreamCommand::create('some-channel');
     }
 }

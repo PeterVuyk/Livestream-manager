@@ -37,6 +37,6 @@ class MessagingSerializerTest extends TestCase
 
     private function getStopLivestreamCommand(): StopLivestreamCommand
     {
-        return StopLivestreamCommand::create();
+        return StopLivestreamCommand::create('channel-name');
     }
 }

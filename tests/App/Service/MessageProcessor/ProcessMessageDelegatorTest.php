@@ -46,7 +46,7 @@ class ProcessMessageDelegatorTest extends TestCase
     public function testProcessSuccess()
     {
         $this->startLivestreamProcessor->expects($this->once())->method('process');
-        $this->processMessageDelegator->process(StartLivestreamCommand::create());
+        $this->processMessageDelegator->process(StartLivestreamCommand::create('some-channel'));
     }
 
     /**

@@ -16,6 +16,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @coversDefaultClass \App\Controller\ManageScheduleController
@@ -42,6 +43,9 @@ class ManageScheduleControllerTest extends TestCase
     /** @var FormFactoryInterface|MockObject */
     private $formFactoryMock;
 
+    /** @var TokenStorageInterface|MockObject */
+    private $tokenStorageMock;
+
     /** @var \Twig_Environment|MockObject */
     private $twigMock;
 
@@ -52,8 +56,10 @@ class ManageScheduleControllerTest extends TestCase
         $this->flashBagMock = $this->createMock(FlashBagInterface::class);
         $this->formFactoryMock = $this->createMock(FormFactoryInterface::class);
         $this->twigMock = $this->createMock(\Twig_Environment::class);
+        $this->tokenStorageMock = $this->createMock(TokenStorageInterface::class);
         $this->manageScheduleController = new ManageScheduleController(
             $this->twigMock,
+            $this->tokenStorageMock,
             $this->manageScheduleService,
             $this->routerMock,
             $this->flashBagMock,

@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 
 use App\Controller\LivestreamController;
 use App\Entity\Camera;
+use App\Entity\User;
 use App\Exception\Repository\CouldNotModifyCameraException;
 use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
@@ -18,6 +19,8 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * @coversDefaultClass \App\Controller\LivestreamController
@@ -26,6 +29,7 @@ use Symfony\Component\Routing\RouterInterface;
  * @uses \App\Controller\Controller
  * @uses \App\Messaging\Library\Command\StopLivestreamCommand
  * @uses \App\Messaging\Library\Command\StartLivestreamCommand
+ * @uses \App\Entity\User
  */
 class LivestreamControllerTest extends TestCase
 {
@@ -44,6 +48,9 @@ class LivestreamControllerTest extends TestCase
     /** @var \Twig_Environment|MockObject */
     private $twigMock;
 
+    /** @var TokenStorageInterface|MockObject */
+    private $tokenStorageMock;
+
     /** @var StreamStateMachine|MockObject */
     private $streamStateMachineMock;
 
@@ -58,9 +65,11 @@ class LivestreamControllerTest extends TestCase
         $this->flashBagMock = $this->createMock(FlashBagInterface::class);
         $this->twigMock = $this->createMock(\Twig_Environment::class);
         $this->streamStateMachineMock = $this->createMock(StreamStateMachine::class);
+        $this->tokenStorageMock = $this->createMock(TokenStorageInterface::class);
         $this->livestreamController = new LivestreamController(
             $this->messagingDispatcher,
             $this->twigMock,
+            $this->tokenStorageMock,
             $this->cameraRepositoryMock,
             $this->loggerMock,
             $this->flashBagMock,
@@ -75,6 +84,13 @@ class LivestreamControllerTest extends TestCase
     {
         $this->messagingDispatcher->expects($this->once())->method('sendMessage');
         $this->loggerMock->expects($this->never())->method('error');
+
+        $user = new User();
+        $user->setChannel('some-channel');
+        $tokenMock = $this->createMock(TokenInterface::class);
+        $tokenMock->expects($this->once())->method('getUser')->willReturn($user);
+        $this->tokenStorageMock->expects($this->atLeastOnce())->method('getToken')->willReturn($tokenMock);
+
         $response = $this->livestreamController->startStream($this->getRequest());
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
@@ -90,6 +106,12 @@ class LivestreamControllerTest extends TestCase
             ->willThrowException(PublishMessageFailedException::forMessage('topic', []));
         $this->loggerMock->expects($this->atLeastOnce())->method('error');
 
+        $user = new User();
+        $user->setChannel('some-channel');
+        $tokenMock = $this->createMock(TokenInterface::class);
+        $tokenMock->expects($this->once())->method('getUser')->willReturn($user);
+        $this->tokenStorageMock->expects($this->atLeastOnce())->method('getToken')->willReturn($tokenMock);
+
         $response = $this->livestreamController->startStream($this->getRequest());
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
@@ -101,6 +123,13 @@ class LivestreamControllerTest extends TestCase
     {
         $this->messagingDispatcher->expects($this->once())->method('sendMessage');
         $this->loggerMock->expects($this->never())->method('error');
+
+        $user = new User();
+        $user->setChannel('some-channel');
+        $tokenMock = $this->createMock(TokenInterface::class);
+        $tokenMock->expects($this->once())->method('getUser')->willReturn($user);
+        $this->tokenStorageMock->expects($this->atLeastOnce())->method('getToken')->willReturn($tokenMock);
+
         $response = $this->livestreamController->stopStream($this->getRequest());
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());
     }
@@ -114,6 +143,12 @@ class LivestreamControllerTest extends TestCase
             ->method('sendMessage')
             ->willThrowException(PublishMessageFailedException::forMessage('topic', []));
         $this->loggerMock->expects($this->atLeastOnce())->method('error');
+
+        $user = new User();
+        $user->setChannel('some-channel');
+        $tokenMock = $this->createMock(TokenInterface::class);
+        $tokenMock->expects($this->once())->method('getUser')->willReturn($user);
+        $this->tokenStorageMock->expects($this->atLeastOnce())->method('getToken')->willReturn($tokenMock);
 
         $response = $this->livestreamController->stopStream($this->getRequest());
         $this->assertSame(Response::HTTP_FOUND, $response->getStatusCode());

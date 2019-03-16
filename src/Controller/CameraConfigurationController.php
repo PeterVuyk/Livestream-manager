@@ -13,6 +13,7 @@ use Symfony\Component\Form\FormFactoryInterface;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class CameraConfigurationController extends Controller
 {
@@ -31,6 +32,7 @@ class CameraConfigurationController extends Controller
     /**
      * CameraConfigurationController constructor.
      * @param \Twig_Environment $twig
+     * @param TokenStorageInterface $tokenStorage
      * @param CameraConfigurationService $cameraConfigurationService
      * @param FormFactoryInterface $formFactory
      * @param RouterInterface $router
@@ -38,6 +40,7 @@ class CameraConfigurationController extends Controller
      */
     public function __construct(
         \Twig_Environment $twig,
+        TokenStorageInterface $tokenStorage,
         CameraConfigurationService $cameraConfigurationService,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
@@ -47,7 +50,7 @@ class CameraConfigurationController extends Controller
         $this->formFactory = $formFactory;
         $this->router = $router;
         $this->flashBag = $flashBag;
-        parent::__construct($twig);
+        parent::__construct($twig, $tokenStorage);
     }
 
     /**

@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Form;
 
 use App\Entity\StreamSchedule;
+use App\Entity\User;
 use Ramsey\Uuid\Uuid;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\DateTimeType;
@@ -30,6 +31,20 @@ class CreateOnetimeScheduleType extends AbstractType
         $builder->add('id', HiddenType::class, ['empty_data' => Uuid::uuid4()]);
         $builder->add('wrecked', HiddenType::class, ['empty_data' => false]);
         $builder->add('isRunning', HiddenType::class, ['empty_data' => false]);
+
+        if ($options['user']->isSuperAdmin()) {
+            $builder
+                ->add(
+                    'channel',
+                    TextType::class,
+                    [
+                        'label' => 'stream.form.label.detail.channel',
+                        'translation_domain' => 'schedule_create',
+                    ]
+                );
+        } else {
+            $builder->add('channel', HiddenType::class, ['empty_data' => $options['user']->getChannel()]);
+        }
 
         $builder->add(
             'name',
@@ -92,6 +107,7 @@ class CreateOnetimeScheduleType extends AbstractType
         $resolver->setDefaults(array(
             'data_class' => StreamSchedule::class,
             'wrapper_attr' => 'default_wrapper',
+            'user' => User::class,
         ));
     }
 }

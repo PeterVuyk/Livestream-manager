@@ -80,7 +80,9 @@ class StopLivestreamCommandTest extends TestCase
         $this->messagingDispatcher->expects($this->once())->method('sendMessage');
         $this->logger->expects($this->never())->method('error');
 
-        $this->commandTester->execute([StopLivestreamCommand::COMMAND_STOP_LIVESTREAM]);
+        $this->commandTester->execute(
+            ['command' => StopLivestreamCommand::COMMAND_STOP_LIVESTREAM, 'channelName' => 'channelName']
+        );
     }
 
     /**
@@ -98,6 +100,8 @@ class StopLivestreamCommandTest extends TestCase
 
         $this->logger->expects($this->atLeastOnce())->method('error');
 
-        $this->commandTester->execute([StopLivestreamCommand::COMMAND_STOP_LIVESTREAM]);
+        $this->commandTester->execute(
+            ['command' => StopLivestreamCommand::COMMAND_STOP_LIVESTREAM, 'channelName' => 'channelName']
+        );
     }
 }

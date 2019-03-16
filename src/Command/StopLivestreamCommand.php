@@ -11,6 +11,7 @@ use App\Service\LivestreamService;
 use App\Service\StreamProcessing\StreamStateMachine;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
@@ -54,7 +55,12 @@ class StopLivestreamCommand extends Command
     {
         $this
             ->setName(self::COMMAND_STOP_LIVESTREAM)
-            ->setDescription('Stop the livestream.');
+            ->setDescription('Stop the livestream.')
+            ->addArgument(
+                'channelName',
+                InputArgument::REQUIRED,
+                'The name of the channel that you would like to start'
+            );
     }
 
     /**
@@ -64,6 +70,7 @@ class StopLivestreamCommand extends Command
      */
     public function execute(InputInterface $input, OutputInterface $output): void
     {
+        $channel = $input->getArgument('channelName');
         $output->writeln('Requested to stop livestream.');
 
         $camera = $this->livestreamService->getMainCameraStatus();
@@ -77,7 +84,7 @@ class StopLivestreamCommand extends Command
         }
 
         try {
-            $this->messagingDispatcher->sendMessage(MessageStopLivestreamCommand::create());
+            $this->messagingDispatcher->sendMessage(MessageStopLivestreamCommand::create($channel));
         } catch (PublishMessageFailedException $exception) {
             $this->logger->error('Could not send stop command livestream', ['exception' => $exception]);
             $output->writeln("<error>Could not stop livestream: {$exception->getMessage()}</error>");

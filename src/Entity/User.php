@@ -27,6 +27,12 @@ class User extends BaseUser
 
     /**
      * @var string
+     * @ORM\Column(name="channel", type="string")
+     */
+    protected $channel;
+
+    /**
+     * @var string
      * @ORM\Column(name="locale", type="string", length=5)
      */
     private $locale;
@@ -53,5 +59,21 @@ class User extends BaseUser
     public function setLocale(string $locale): void
     {
         $this->locale = $locale;
+    }
+
+    /**
+     * @return string
+     */
+    public function getChannel(): string
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @param string $channel
+     */
+    public function setChannel(string $channel): void
+    {
+        $this->channel = $channel;
     }
 }

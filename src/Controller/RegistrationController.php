@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class RegistrationController extends Controller
 {
@@ -22,31 +23,39 @@ class RegistrationController extends Controller
     private $userService;
     /** @var RouterInterface */
     private $router;
+
     /**
      * RegistrationController constructor.
      * @param \Twig_Environment $twig
+     * @param TokenStorageInterface $tokenStorage
      * @param FormFactoryInterface $formFactory
      * @param UserService $userService
      * @param RouterInterface $router
      */
     public function __construct(
         \Twig_Environment $twig,
+        TokenStorageInterface $tokenStorage,
         FormFactoryInterface $formFactory,
         UserService $userService,
         RouterInterface $router
     ) {
-        parent::__construct($twig);
+        parent::__construct($twig, $tokenStorage);
         $this->formFactory = $formFactory;
         $this->userService = $userService;
         $this->router = $router;
     }
+
     /**
      * @param Request $request
      * @return RedirectResponse|Response
      */
     public function register(Request $request)
     {
-        $form = $this->formFactory->create(UserRegistrationType::class, $user = new User());
+        $form = $this->formFactory->create(
+            UserRegistrationType::class,
+            $user = new User(),
+            ['user' => $this->getUser()]
+        );
         $form->handleRequest($request);
         if ($form->isSubmitted() && $form->isValid()) {
             /** @var Session $session */

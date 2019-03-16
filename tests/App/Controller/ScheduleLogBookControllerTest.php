@@ -11,6 +11,7 @@ use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @coversDefaultClass \App\Controller\ScheduleLogBookController
@@ -34,6 +35,9 @@ class ScheduleLogBookControllerTest extends TestCase
     /** @var RouterInterface|MockObject */
     private $routerMock;
 
+    /** @var TokenStorageInterface|MockObject */
+    private $tokenStorageMock;
+
     /** @var FlashBagInterface|MockObject */
     private $flashBagMock;
 
@@ -42,9 +46,11 @@ class ScheduleLogBookControllerTest extends TestCase
         $this->twigMock = $this->createMock(\Twig_Environment::class);
         $this->manageScheduleServiceMock = $this->createMock(ManageScheduleService::class);
         $this->routerMock = $this->createMock(RouterInterface::class);
+        $this->tokenStorageMock = $this->createMock(TokenStorageInterface::class);
         $this->flashBagMock = $this->createMock(FlashBagInterface::class);
         $this->streamLoggingController = new ScheduleLogBookController(
             $this->twigMock,
+            $this->tokenStorageMock,
             $this->manageScheduleServiceMock,
             $this->routerMock,
             $this->flashBagMock

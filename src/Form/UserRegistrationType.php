@@ -6,6 +6,7 @@ namespace App\Form;
 use App\Entity\User;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\EmailType;
+use Symfony\Component\Form\Extension\Core\Type\HiddenType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 use Symfony\Component\Form\Extension\Core\Type\RepeatedType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
@@ -25,6 +26,20 @@ class UserRegistrationType extends AbstractType
      */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if ($options['user']->isSuperAdmin()) {
+            $builder
+                ->add(
+                    'channel',
+                    TextType::class,
+                    [
+                        'label' => 'registration_form.label_channel',
+                        'translation_domain' => 'users',
+                    ]
+                );
+        } else {
+            $builder->add('channel', HiddenType::class, ['empty_data' => $options['user']->getChannel()]);
+        }
+
         $builder
             ->add(
                 'email',
@@ -66,6 +81,7 @@ class UserRegistrationType extends AbstractType
                 ]
             );
     }
+
     /**
      * @param OptionsResolver $resolver
      */
@@ -73,6 +89,7 @@ class UserRegistrationType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => User::class,
+            'user' => User::class,
         ));
     }
 }

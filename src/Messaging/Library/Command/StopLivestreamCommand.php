@@ -12,6 +12,7 @@ class StopLivestreamCommand extends Command
 {
     const RESOURCE = 'stopLivestreamCommand';
     const MESSAGE_DATE = 'messageDate';
+    const CHANNEL = 'channel';
 
     /** @var string */
     private $resourceId;
@@ -19,10 +20,14 @@ class StopLivestreamCommand extends Command
     /** @var \DateTimeInterface */
     private $messageDate;
 
-    public static function create(): self
+    /** @var string */
+    private $channel;
+
+    public static function create(string $channel): self
     {
         $self = new self();
         $self->resourceId = (string)Uuid::uuid4();
+        $self->channel = $channel;
         $self->messageDate = new \DateTimeImmutable();
         return $self;
     }
@@ -36,6 +41,7 @@ class StopLivestreamCommand extends Command
     {
         self::validate($payload);
         $self = new self();
+        $self->channel = $payload[self::CHANNEL];
         $self->messageDate = new \DateTimeImmutable($payload[self::MESSAGE_DATE]);
         $self->resourceId = $payload[self::RESOURCE_ID];
         return $self;
@@ -66,6 +72,14 @@ class StopLivestreamCommand extends Command
     }
 
     /**
+     * @return string
+     */
+    public function getChannel(): string
+    {
+        return $this->channel;
+    }
+
+    /**
      * @return array
      */
     public function getPayload(): array
@@ -74,6 +88,7 @@ class StopLivestreamCommand extends Command
             self::USED_MESSAGE_ACTION_KEY => $this->messageAction(),
             self::RESOURCE_ID => $this->getResourceId(),
             self::RESOURCE_ID_KEY => $this->getResourceIdKey(),
+            self::CHANNEL => $this->getChannel(),
             self::MESSAGE_DATE => $this->getMessageDate()->format('Y-m-d H:i:s'),
         ];
     }
@@ -89,6 +104,7 @@ class StopLivestreamCommand extends Command
             Assert::keyExists($payload, self::RESOURCE_ID, 'Resource id from payload is missing');
             Assert::keyExists($payload, self::RESOURCE_ID_KEY, 'Resource id key from payload is missing');
             Assert::keyExists($payload, self::MESSAGE_DATE, 'message date from payload is missing');
+            Assert::keyExists($payload, self::CHANNEL, 'channel from payload is missing');
         } catch (\InvalidArgumentException $exception) {
             throw UnsupportedMessageException::validationFailed($payload, $exception);
         }

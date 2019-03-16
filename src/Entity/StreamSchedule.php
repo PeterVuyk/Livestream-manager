@@ -88,6 +88,12 @@ class StreamSchedule
     private $isRunning;
 
     /**
+     * @var string|null
+     * @ORM\Column(type="string", length=100, unique=false)
+     */
+    private $channel;
+
+    /**
      * @return null|string
      */
     public function getId(): ?string
@@ -276,6 +282,22 @@ class StreamSchedule
     public function setIsRunning(?bool $isRunning): void
     {
         $this->isRunning = $isRunning;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getChannel(): ?string
+    {
+        return $this->channel;
+    }
+
+    /**
+     * @param string|null $channel
+     */
+    public function setChannel(?string $channel): void
+    {
+        $this->channel = $channel;
     }
 
     /**

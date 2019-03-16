@@ -14,6 +14,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class UserManagementController extends Controller
 {
@@ -32,6 +33,7 @@ class UserManagementController extends Controller
     /**
      * UserManagementController constructor.
      * @param \Twig_Environment $twig
+     * @param TokenStorageInterface $tokenStorage
      * @param UserService $userService
      * @param FormFactoryInterface $formFactory
      * @param RouterInterface $router
@@ -39,12 +41,13 @@ class UserManagementController extends Controller
      */
     public function __construct(
         \Twig_Environment $twig,
+        TokenStorageInterface $tokenStorage,
         UserService $userService,
         FormFactoryInterface $formFactory,
         RouterInterface $router,
         FlashBagInterface $flashBag
     ) {
-        parent::__construct($twig);
+        parent::__construct($twig, $tokenStorage);
         $this->userService = $userService;
         $this->formFactory = $formFactory;
         $this->router = $router;
@@ -56,8 +59,13 @@ class UserManagementController extends Controller
      */
     public function usersList()
     {
-        $users = $this->userService->getAllUsers();
-
+        /** @var User $user */
+        $user = $this->getUser();
+        if ($user->isSuperAdmin()) {
+            $users = $this->userService->getAllUsers();
+        } else {
+            $users = $this->userService->getUsersByChannel($user->getChannel());
+        }
         return $this->render('user/list.html.twig', ['users' => $users]);
     }
 

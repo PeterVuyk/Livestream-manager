@@ -33,7 +33,8 @@ class MessagingDeserializerTest extends TestCase
             "methodAction" => "command",
             "resourceId" => "706b3a6e-90ff-4b81-b82e-cded17913620",
             "resourceIdKey" => "stopLivestreamCommand",
-            "messageDate" => "2019-02-01 07:49:26"
+            "messageDate" => "2019-02-01 07:49:26",
+            "channel" => "some-channel",
         ];
         $stopLivestreamCommand = $this->messagingDeserializer->deserialize(
             ['Body' => json_encode(['Message' => json_encode($payload)])]

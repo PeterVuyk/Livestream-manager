@@ -13,6 +13,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 class ManageScheduleController extends Controller
 {
@@ -31,6 +32,7 @@ class ManageScheduleController extends Controller
     /**
      * StreamLoggingController constructor.
      * @param \Twig_Environment $twig
+     * @param TokenStorageInterface $tokenStorage
      * @param ManageScheduleService $manageScheduleService
      * @param RouterInterface $router
      * @param FlashBagInterface $flashBag
@@ -38,12 +40,13 @@ class ManageScheduleController extends Controller
      */
     public function __construct(
         \Twig_Environment $twig,
+        TokenStorageInterface $tokenStorage,
         ManageScheduleService $manageScheduleService,
         RouterInterface $router,
         FlashBagInterface $flashBag,
         FormFactoryInterface $formFactory
     ) {
-        parent::__construct($twig);
+        parent::__construct($twig, $tokenStorage);
         $this->manageScheduleService = $manageScheduleService;
         $this->router = $router;
         $this->flashBag = $flashBag;
@@ -107,7 +110,7 @@ class ManageScheduleController extends Controller
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.manage_schedule.error.can_not_edit_schedule');
             return new RedirectResponse($this->router->generate('scheduler_list'));
         }
-        $form = $this->formFactory->create(UpdateScheduleType::class, $streamSchedule);
+        $form = $this->formFactory->create(UpdateScheduleType::class, $streamSchedule, ['user' => $this->getUser()]);
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {

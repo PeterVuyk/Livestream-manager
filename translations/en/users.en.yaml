@@ -1,3 +1,4 @@
+users_list.column_channel: Channel
 users_list.column_username: Username
 users_list.column_email: Email
 users_list.column_action: Actions
@@ -25,5 +26,6 @@ registration_form.label_repeat_password: 'Repeat password:'
 registration_form.label_password: 'Password:'
 registration_form.label_username: 'Username:'
 registration_form.label_email: 'email:'
+user_details.label_channel: 'Channel:'
+registration_form.label_channel: 'Channel:'
 stream_schedule.new.title: 'Register user'
-

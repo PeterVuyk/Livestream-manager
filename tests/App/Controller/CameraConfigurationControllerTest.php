@@ -17,6 +17,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @coversDefaultClass \App\Controller\CameraConfigurationController
@@ -44,6 +45,9 @@ class CameraConfigurationControllerTest extends TestCase
     /** @var \Twig_Environment|MockObject */
     private $twigMock;
 
+    /** @var TokenStorageInterface|MockObject */
+    private $tokenStorageMock;
+
     /** @var CameraConfigurationController */
     private $cameraConfigurationController;
 
@@ -53,9 +57,11 @@ class CameraConfigurationControllerTest extends TestCase
         $this->formFactoryMock = $this->createMock(FormFactoryInterface::class);
         $this->routerMock = $this->createMock(RouterInterface::class);
         $this->flashBagMock = $this->createMock(FlashBagInterface::class);
+        $this->tokenStorageMock = $this->createMock(TokenStorageInterface::class);
         $this->twigMock = $this->createMock(\Twig_Environment::class);
         $this->cameraConfigurationController = new CameraConfigurationController(
             $this->twigMock,
+            $this->tokenStorageMock,
             $this->cameraConfigurationServiceMock,
             $this->formFactoryMock,
             $this->routerMock,

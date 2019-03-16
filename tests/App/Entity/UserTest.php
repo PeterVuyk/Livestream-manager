@@ -43,4 +43,15 @@ class UserTest extends TestCase
         $user->setLocale('nl');
         $this->assertSame('nl', $user->getLocale());
     }
+
+    /**
+     * @covers ::setChannel
+     * @covers ::getChannel
+     */
+    public function testChannel()
+    {
+        $user = new User();
+        $user->setChannel('name');
+        $this->assertSame('name', $user->getChannel());
+    }
 }

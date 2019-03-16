@@ -10,6 +10,9 @@
             {% endif %}
         </a>
     </td>
+    {% if app.user.superAdmin == true %}
+        <td>{{ streamSchedule.channel }}</td>
+    {% endif %}
     <td>{{ streamSchedule.name }}</td>
     <td>
         {% if streamSchedule.isRecurring == false and isDateTime(streamSchedule.onetimeExecutionDate) %}

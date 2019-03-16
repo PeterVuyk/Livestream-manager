@@ -32,6 +32,7 @@ class StreamScheduleTest extends TestCase
         $streamSchedule->setExecutionTime(new \DateTime());
         $streamSchedule->setIsRunning(true);
         $streamSchedule->setOnetimeExecutionDate(new \DateTime());
+        $streamSchedule->setChannel('channel-name');
         $streamSchedule->setExecutionDay(1);
         $scheduleLog = new ScheduleLog(new StreamSchedule(), true, 'message');
         $streamSchedule->addScheduleLog($scheduleLog);
@@ -129,6 +130,15 @@ class StreamScheduleTest extends TestCase
         $this->expectException(InvalidWeekdayException::class);
         $streamSchedule = new StreamSchedule();
         $streamSchedule->setExecutionDay(999);
+    }
+
+    /**
+     * @covers ::setChannel
+     * @covers ::getChannel
+     */
+    public function testChannel()
+    {
+        $this->assertSame('channel-name', $this->streamSchedule->getChannel());
     }
 
     /**
@@ -325,7 +335,6 @@ class StreamScheduleTest extends TestCase
     public function testStreamToBeStopped(bool $expectedResult, StreamSchedule $streamSchedule)
     {
         $this->assertSame($expectedResult, $streamSchedule->streamToBeStopped());
-
     }
 
     public function streamToBeStoppedProvider()

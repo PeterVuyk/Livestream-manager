@@ -7,6 +7,7 @@ use App\Controller\Controller;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
 
 /**
  * @coversDefaultClass \App\Controller\Controller
@@ -18,13 +19,17 @@ class ControllerTest extends TestCase
     /** @var \Twig_Environment|MockObject */
     private $twig;
 
+    /** @var TokenStorageInterface|MockObject */
+    private $tokenStorage;
+
     /** @var TestController */
     private $controller;
 
     public function setUp()
     {
         $this->twig = $this->createMock(\Twig_Environment::class);
-        $this->controller = new TestController($this->twig);
+        $this->tokenStorage = $this->createMock(TokenStorageInterface::class);
+        $this->controller = new TestController($this->twig, $this->tokenStorage);
     }
 
     /**
