@@ -17,3 +17,4 @@ stream.form.label.detail.minutes_to_run: 'Totale duur livestream:'
 stream.form.label.detail.onetime_execution_date: 'Uitvoertijd:'
 stream_schedule.action.cancel: Cancel
 stream_schedule.new.title: 'Voeg een schema toe'
+stream_schedule.form.placeholder.channel_choice: 'Kies een kanaal'

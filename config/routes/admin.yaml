@@ -1,0 +1,10 @@
+channel_list:
+  path: /channels/list
+  defaults: { _controller: App\Controller\ChannelController:channelList }
+  methods: [GET]
+
+channel_create:
+  path: /channels/create
+  defaults: { _controller: App\Controller\ChannelController:createChannel }
+  methods: [GET|POST]
+

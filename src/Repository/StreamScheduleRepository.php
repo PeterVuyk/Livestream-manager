@@ -52,30 +52,36 @@ class StreamScheduleRepository extends ServiceEntityRepository
     }
 
     /**
+     * @param string $channel
      * @return StreamSchedule[]
      */
-    public function getActiveOnetimeScheduledItems(): array
+    public function getActiveOnetimeScheduledItems(string $channel): array
     {
-        return $this->createQueryBuilder('s')
+        $queryBuilder = $this->createQueryBuilder('s')
             ->where('s.onetimeExecutionDate IS NOT NULL')
             ->andWhere('s.executionDay IS NULL')
-            ->andWhere('s.executionTime IS NULL')
-            ->orderBy('s.onetimeExecutionDate', 'ASC')
-            ->getQuery()
-            ->getResult();
+            ->andWhere('s.executionTime IS NULL');
+        if ($channel !== 'admin') {
+            $queryBuilder->andWhere('s.channel = :channel')->setParameter('channel', $channel);
+        }
+        return $queryBuilder
+            ->orderBy('s.onetimeExecutionDate', 'ASC')->getQuery()->getResult();
     }
 
     /**
+     * @param string $channel
      * @return StreamSchedule[]
      */
-    public function getRecurringScheduledItems(): array
+    public function getRecurringScheduledItems(string $channel): array
     {
-        return $this->createQueryBuilder('s')
+        $queryBuilder = $this->createQueryBuilder('s')
             ->where('s.onetimeExecutionDate IS NULL')
             ->andWhere('s.executionDay IS NOT NULL')
-            ->andWhere('s.executionTime IS NOT NULL')
-            ->getQuery()
-            ->getResult();
+            ->andWhere('s.executionTime IS NOT NULL');
+        if ($channel !== 'admin') {
+            $queryBuilder->andWhere('s.channel = :channel')->setParameter('channel', $channel);
+        }
+        return $queryBuilder->getQuery()->getResult();
     }
 
     /**

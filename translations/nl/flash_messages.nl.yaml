@@ -18,3 +18,5 @@ flash.livestream.error.start_stream: 'Het is niet gelukt om de stream te starten
 flash.livestream.error.unable_to_reset: 'Het is niet gelukt om de stream te resetten.'
 flash.livestream.success.stop_stream: 'Verzoek om de stream te stoppen, wordt verwerkt.'
 flash.livestream.success.start_stream: 'Verzoek om de stream te starten, wordt verwerkt.'
+flash.channel_management.success.channel_created: 'Kanaal is aangemaakt.'
+flash.channel_management.error.failed_saving_channel: 'Het is niet gelukt het kanaal aan te maken.'

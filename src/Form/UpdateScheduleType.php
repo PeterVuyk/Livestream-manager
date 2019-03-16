@@ -36,8 +36,9 @@ class UpdateScheduleType extends AbstractType
             $builder
                 ->add(
                     'channel',
-                    TextType::class,
+                    ChannelType::class,
                     [
+                        'placeholder' => 'stream_schedule.form.placeholder.channel_choice',
                         'label' => 'stream.form.label.detail.channel',
                         'translation_domain' => 'schedule_create',
                     ]

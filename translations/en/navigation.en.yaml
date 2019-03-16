@@ -1,5 +1,6 @@
 navigation.manual: 'Manual'
 navigation.schedule: 'Schedule'
+navigation.channel: 'Channels'
 navigation.camera_configuration: 'Configuration'
 navigation.users: Users
 navigation.user_list: 'Authorized users'

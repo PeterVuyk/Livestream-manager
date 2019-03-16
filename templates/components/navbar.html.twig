@@ -5,6 +5,11 @@
             <li class="nav-item {% if active_page is defined and active_page == 'schedule' %}active{% endif %}">
                 <a class="nav-link" href="{{ path('scheduler_list') }}">{{ 'navigation.schedule'|trans }}</a>
             </li>
+            {% if app.user is not null and app.user.superAdmin == true %}
+                <li class="nav-item {% if active_page is defined and active_page == 'channels' %}active{% endif %}">
+                    <a class="nav-link" href="{{ path('channel_list') }}">{{ 'navigation.channel'|trans }}</a>
+                </li>
+            {% endif %}
             <li class="nav-item {% if active_page is defined and active_page == 'camera_configuration' %}active{% endif %}">
                 <a class="nav-link" href="{{ path('camera_configuration_list') }}">{{ 'navigation.camera_configuration'|trans }}</a>
             </li>

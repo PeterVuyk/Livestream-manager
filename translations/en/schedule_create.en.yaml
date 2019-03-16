@@ -17,3 +17,4 @@ stream.form.label.detail.minutes_to_run: 'Total run time in minutes'
 stream.form.label.detail.onetime_execution_date: 'Execution time'
 stream_schedule.action.cancel: Cancel
 stream_schedule.new.title: 'Add a schedule'
+stream_schedule.form.placeholder.channel_choice: 'Choose a channel'

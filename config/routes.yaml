@@ -5,6 +5,13 @@ api:
 fos_user_security:
   resource: "@FOSUserBundle/Resources/config/routing/security.xml"
 
+admin:
+  prefix: /{_locale}/admin
+  resource: "routes/admin.yaml"
+  defaults:   { _locale: '%locale%' }
+  requirements:
+    _locale: '%app.locales%'
+
 account:
   prefix: /{_locale}/account
   resource: "routes/account.yaml"

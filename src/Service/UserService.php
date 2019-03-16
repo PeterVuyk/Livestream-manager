@@ -99,7 +99,7 @@ class UserService
      * @param String $channel
      * @return User[]
      */
-    public function getUsersByChannel(String $channel): ?array
+    public function getUsersByChannel(string $channel): ?array
     {
         return $this->userRepository->findBy(['channel' => $channel]);
     }

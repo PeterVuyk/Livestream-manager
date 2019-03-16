@@ -1,0 +1,6 @@
+channels_list.page_title: 'Kanalen'
+channel_create.label_channel: 'Naam:'
+channel.new.title: 'Kanaal aanmaken'
+channel.action.cancel: 'Cancel'
+channel_list.column_action: 'Naam'
+button.action.new_channel: 'Kanaal toevoegen'

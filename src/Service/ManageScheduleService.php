@@ -21,19 +21,21 @@ class ManageScheduleService
     }
 
     /**
+     * @param string $channel
      * @return StreamSchedule[]
      */
-    public function getRecurringSchedules(): array
+    public function getRecurringSchedules(string $channel): array
     {
-        return $this->streamScheduleRepository->getRecurringScheduledItems();
+        return $this->streamScheduleRepository->getRecurringScheduledItems($channel);
     }
 
     /**
+     * @param string $channel
      * @return StreamSchedule[]
      */
-    public function getOnetimeSchedules(): array
+    public function getOnetimeSchedules(string $channel): array
     {
-        return $this->streamScheduleRepository->getActiveOnetimeScheduledItems();
+        return $this->streamScheduleRepository->getActiveOnetimeScheduledItems($channel);
     }
 
     /**

@@ -38,7 +38,7 @@ class ManageScheduleServiceTest extends TestCase
         $this->streamScheduleRepository->expects($this->once())
             ->method('getRecurringScheduledItems')
             ->willReturn([new StreamSchedule()]);
-        $scheduledItems = $this->manageScheduleService->getRecurringSchedules();
+        $scheduledItems = $this->manageScheduleService->getRecurringSchedules('channel');
         $this->assertInstanceOf(StreamSchedule::class, $scheduledItems[0]);
     }
 
@@ -50,7 +50,7 @@ class ManageScheduleServiceTest extends TestCase
         $this->streamScheduleRepository->expects($this->once())
             ->method('getActiveOnetimeScheduledItems')
             ->willReturn([new StreamSchedule()]);
-        $scheduledItems = $this->manageScheduleService->getOnetimeSchedules();
+        $scheduledItems = $this->manageScheduleService->getOnetimeSchedules('channel');
         $this->assertInstanceOf(StreamSchedule::class, $scheduledItems[0]);
     }
 

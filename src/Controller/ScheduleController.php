@@ -4,6 +4,7 @@ declare(strict_types=1);
 namespace App\Controller;
 
 use App\Entity\StreamSchedule;
+use App\Entity\User;
 use App\Exception\Repository\CouldNotModifyStreamScheduleException;
 use App\Form\CreateOnetimeScheduleType;
 use App\Form\CreateRecurringScheduleType;
@@ -59,8 +60,10 @@ class ScheduleController extends Controller
      */
     public function list()
     {
-        $onetimeScheduledItems = $this->manageScheduleService->getOnetimeSchedules();
-        $recurringScheduledItems = $this->manageScheduleService->getRecurringSchedules();
+        /** @var User $user */
+        $user = $this->getUser();
+        $onetimeScheduledItems = $this->manageScheduleService->getOnetimeSchedules($user->getChannel());
+        $recurringScheduledItems = $this->manageScheduleService->getRecurringSchedules($user->getChannel());
 
         return $this->render(
             'scheduler/list/list.html.twig',

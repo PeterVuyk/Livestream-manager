@@ -30,10 +30,12 @@ class UserRegistrationType extends AbstractType
             $builder
                 ->add(
                     'channel',
-                    TextType::class,
+                    ChannelType::class,
                     [
                         'label' => 'registration_form.label_channel',
+                        'placeholder' => 'user.form.placeholder.channel_choice',
                         'translation_domain' => 'users',
+                        'attr' => ['class' => 'form-control'],
                     ]
                 );
         } else {

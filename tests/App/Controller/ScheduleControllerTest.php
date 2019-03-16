@@ -5,6 +5,7 @@ namespace App\Tests\Controller;
 
 use App\Controller\ScheduleController;
 use App\Entity\StreamSchedule;
+use App\Entity\User;
 use App\Exception\Repository\CouldNotModifyStreamScheduleException;
 use App\Service\ManageScheduleService;
 use Doctrine\ORM\ORMException;
@@ -17,6 +18,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpFoundation\Session\Flash\FlashBagInterface;
 use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
+use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 
 /**
  * @coversDefaultClass \App\Controller\ScheduleController
@@ -25,6 +27,7 @@ use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInt
  * @uses \App\Controller\Controller
  * @uses \App\Service\ManageScheduleService
  * @uses \App\Entity\StreamSchedule
+ * @uses \App\Entity\User
  */
 class ScheduleControllerTest extends TestCase
 {
@@ -77,6 +80,13 @@ class ScheduleControllerTest extends TestCase
         $this->manageScheduleService->expects($this->once())
             ->method('getRecurringSchedules')->willReturn([new StreamSchedule()]);
         $this->twigMock->expects($this->once())->method('render')->willReturn('<p>hi</p>');
+
+        $user = new User();
+        $user->setChannel('some-channel');
+        $tokenMock = $this->createMock(TokenInterface::class);
+        $tokenMock->expects($this->once())->method('getUser')->willReturn($user);
+        $this->tokenStorageMock->expects($this->atLeastOnce())->method('getToken')->willReturn($tokenMock);
+
         $response = $this->scheduleController->list();
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }

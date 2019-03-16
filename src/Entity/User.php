@@ -62,9 +62,9 @@ class User extends BaseUser
     }
 
     /**
-     * @return string
+     * @return string|null
      */
-    public function getChannel(): string
+    public function getChannel(): ?string
     {
         return $this->channel;
     }

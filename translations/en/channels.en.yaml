@@ -1,0 +1,6 @@
+channels_list.page_title: 'Channels'
+channel_create.label_channel: 'Name:'
+channel.new.title: 'Create channel'
+channel.action.cancel: 'Cancel'
+channel_list.column_action: 'Name'
+button.action.new_channel: 'Add channel'
