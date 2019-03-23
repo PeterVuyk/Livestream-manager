@@ -13,8 +13,10 @@
                     <a class="nav-link active" id="v-pills-schedule-tab" data-toggle="pill" href="#v-pills-schedule" role="tab" aria-controls="v-pills-profile" aria-selected="false">{{ 'home.tab.title_schedule'|trans }}</a>
                     <a class="nav-link" id="v-pills-livestream-tab" data-toggle="pill" href="#v-pills-livestream" role="tab" aria-controls="v-pills-messages" aria-selected="false">{{ 'home.tab.title_livestream'|trans }}</a>
                     <a class="nav-link" id="v-pills-user-management-tab" data-toggle="pill" href="#v-pills-user-management" role="tab" aria-controls="v-pills-settings" aria-selected="false">{{ 'home.tab.title_user_management'|trans }}</a>
-                    <a class="nav-link" id="v-pills-configuration-tab" data-toggle="pill" href="#v-pills-configuration" role="tab" aria-controls="v-pills-settings" aria-selected="true">{{ 'home.tab.title_configuration'|trans }}</a>
-                    <a class="nav-link" id="v-pills-api-tab" data-toggle="pill" href="#v-pills-api" role="tab" aria-controls="v-pills-settings" aria-selected="true">{{ 'home.tab.title_api'|trans }}</a>
+                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+                        <a class="nav-link" id="v-pills-configuration-tab" data-toggle="pill" href="#v-pills-configuration" role="tab" aria-controls="v-pills-settings" aria-selected="true">{{ 'home.tab.title_configuration'|trans }}</a>
+                        <a class="nav-link" id="v-pills-api-tab" data-toggle="pill" href="#v-pills-api" role="tab" aria-controls="v-pills-settings" aria-selected="true">{{ 'home.tab.title_api'|trans }}</a>
+                    {% endif %}
                 </div>
             </div>
             <div class="col-9">
@@ -28,12 +30,14 @@
                     <div class="tab-pane fade" id="v-pills-user-management" role="tabpanel" aria-labelledby="v-pills-messages-tab">
                         {{ include('manual/userManagement.html.twig') }}
                     </div>
-                    <div class="tab-pane fade" id="v-pills-configuration" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                        {{ include('manual/configuration.html.twig') }}
-                    </div>
-                    <div class="tab-pane fade" id="v-pills-api" role="tabpanel" aria-labelledby="v-pills-profile-tab">
-                        {{ include('manual/api.html.twig') }}
-                    </div>
+                    {% if is_granted('ROLE_SUPER_ADMIN') %}
+                        <div class="tab-pane fade" id="v-pills-configuration" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                            {{ include('manual/configuration.html.twig') }}
+                        </div>
+                        <div class="tab-pane fade" id="v-pills-api" role="tabpanel" aria-labelledby="v-pills-profile-tab">
+                            {{ include('manual/api.html.twig') }}
+                        </div>
+                    {% endif %}
                 </div>
             </div>
         </div>

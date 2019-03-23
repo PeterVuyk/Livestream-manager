@@ -15,7 +15,7 @@ security:
         in_memory:
             memory:
                 users:
-                    livestream_server:
+                    livestream_manager:
                         password: $2y$13$olnfLCvgbF70xjiwgaZLuOYX7gkqYLWa/JkbyKrBepJMgqV9VafGG
                         roles: ROLE_API
 
@@ -43,7 +43,7 @@ security:
 
     access_control:
     - { path: ^/login$, role: IS_AUTHENTICATED_ANONYMOUSLY }
-    - { path: ^/api/doc, role: ROLE_USER }
+    - { path: ^/api/doc, role: ROLE_SUPER_ADMIN }
     - { path: ^/api, role: ROLE_API }
     - { path: /.*/admin/.*, role: ROLE_SUPER_ADMIN }
     - { path: /.*, role: ROLE_USER }

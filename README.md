@@ -6,7 +6,7 @@ A livestream with user interface, Restful API and messaging. Broadcast live vide
 
 This project gives you everything you need to control and stream the livestream towards a host. It is not a client to show the footage!
 
-Follow the installing steps to setup the server on your machine, make sure that Docker and Docker-compose is installed.
+Follow the installing steps to setup the manager on your machine, make sure that Docker and Docker-compose is installed.
 
 ### Installing
 
@@ -14,7 +14,7 @@ Below procedure that tell you how to get a development environment running.
 
 1. Clone the project on your machine.
 
-        git clone https://github.com/PeterVuyk/Livestream-server.git
+        git clone https://github.com/PeterVuyk/Livestream-manager.git
 
 2. Create a .env from the .env.dist file. Adapt it according to your needs.
 
@@ -79,13 +79,13 @@ Lastly: To get used more familiar with the functionality and definitions, in the
 
 ## Restful API
 
-The application have a Restful API with username 'livestream_server'. If you would like to use the Restful API we advice you to update the password:
+The application have a Restful API with username 'livestream_manager'. If you would like to use the Restful API we advice you to update the password:
 
 Run the command below, choose for encoder `Symfony\Component\Security\Core\User\User` and fill in a secret password:
 
     $ php bin/console security:encode-password
 
-Copy the encoded password and overwrite the existing encrypted password in the file: `security.yaml`. Key: `security.providers.in_memory.memory.users.livestream_server.password`.
+Copy the encoded password and overwrite the existing encrypted password in the file: `security.yaml`. Key: `security.providers.in_memory.memory.users.livestream_manager.password`.
 
 More information: [Symfony security - Encoding the User's Password](https://symfony.com/doc/4.0/security.html#b-configuring-how-users-are-loaded)
 
