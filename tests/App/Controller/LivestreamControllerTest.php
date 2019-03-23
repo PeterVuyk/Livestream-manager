@@ -4,14 +4,11 @@ declare(strict_types=1);
 namespace App\Tests\Controller;
 
 use App\Controller\LivestreamController;
-use App\Entity\Camera;
 use App\Entity\User;
-use App\Exception\Repository\CouldNotModifyCameraException;
+use App\Exception\Livestream\CouldNotApiCallBroadcastException;
 use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
-use App\Repository\CameraRepository;
-use App\Service\StreamProcessing\StreamStateMachine;
-use Doctrine\ORM\ORMException;
+use App\Service\Api\BroadcastApiService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -35,9 +32,6 @@ class LivestreamControllerTest extends TestCase
     /** @var MessagingDispatcher|MockObject */
     private $messagingDispatcher;
 
-    /** @var CameraRepository|MockObject */
-    private $cameraRepositoryMock;
-
     /** @var LoggerInterface|MockObject */
     private $loggerMock;
 
@@ -50,29 +44,27 @@ class LivestreamControllerTest extends TestCase
     /** @var TokenStorageInterface|MockObject */
     private $tokenStorageMock;
 
-    /** @var StreamStateMachine|MockObject */
-    private $streamStateMachineMock;
-
     /** @var LivestreamController */
     private $livestreamController;
+
+    /** @var BroadcastApiService|MockObject */
+    private $broadcastApiServiceMock;
 
     public function setUp()
     {
         $this->messagingDispatcher = $this->createMock(MessagingDispatcher::class);
-        $this->cameraRepositoryMock = $this->createMock(CameraRepository::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);
         $this->flashBagMock = $this->createMock(FlashBagInterface::class);
         $this->twigMock = $this->createMock(\Twig_Environment::class);
-        $this->streamStateMachineMock = $this->createMock(StreamStateMachine::class);
         $this->tokenStorageMock = $this->createMock(TokenStorageInterface::class);
+        $this->broadcastApiServiceMock = $this->createMock(BroadcastApiService::class);
         $this->livestreamController = new LivestreamController(
             $this->messagingDispatcher,
             $this->twigMock,
             $this->tokenStorageMock,
-            $this->cameraRepositoryMock,
             $this->loggerMock,
             $this->flashBagMock,
-            $this->streamStateMachineMock
+            $this->broadcastApiServiceMock
         );
     }
 
@@ -158,8 +150,14 @@ class LivestreamControllerTest extends TestCase
      */
     public function testStatusStream()
     {
+        $user = new User();
+        $user->setChannel('some-channel');
+        $tokenMock = $this->createMock(TokenInterface::class);
+        $tokenMock->expects($this->any())->method('getUser')->willReturn($user);
+        $this->tokenStorageMock->expects($this->any())->method('getToken')->willReturn($tokenMock);
+
         $this->twigMock->expects($this->once())->method('render')->willReturn('<p>hi</p>');
-        $this->cameraRepositoryMock->expects($this->once())->method('getMainCamera')->willReturn(new Camera());
+        $this->broadcastApiServiceMock->expects($this->once())->method('getStatusLivestream')->willReturn('status');
         $response = $this->livestreamController->statusStream();
         $this->assertSame(Response::HTTP_OK, $response->getStatusCode());
     }
@@ -169,8 +167,13 @@ class LivestreamControllerTest extends TestCase
      */
     public function testResetFromFailureSuccess()
     {
-        $this->cameraRepositoryMock->expects($this->once())->method('getMainCamera')->willReturn(new Camera());
-        $this->streamStateMachineMock->expects($this->once())->method('apply');
+        $user = new User();
+        $user->setChannel('some-channel');
+        $tokenMock = $this->createMock(TokenInterface::class);
+        $tokenMock->expects($this->any())->method('getUser')->willReturn($user);
+        $this->tokenStorageMock->expects($this->any())->method('getToken')->willReturn($tokenMock);
+
+        $this->broadcastApiServiceMock->expects($this->once())->method('resetFromFailure');
         $this->loggerMock->expects($this->never())->method('error');
 
         $response = $this->livestreamController->resetFromFailure($this->getRequest());
@@ -182,10 +185,16 @@ class LivestreamControllerTest extends TestCase
      */
     public function testResetFromFailureFailed()
     {
-        $this->cameraRepositoryMock->expects($this->once())->method('getMainCamera')->willReturn(new Camera());
-        $this->streamStateMachineMock->expects($this->once())
-            ->method('apply')
-            ->willThrowException(CouldNotModifyCameraException::forError(new ORMException()));
+        $user = new User();
+        $user->setChannel('some-channel');
+        $tokenMock = $this->createMock(TokenInterface::class);
+        $tokenMock->expects($this->any())->method('getUser')->willReturn($user);
+        $this->tokenStorageMock->expects($this->any())->method('getToken')->willReturn($tokenMock);
+
+        $this->broadcastApiServiceMock->expects($this->once())
+            ->method('resetFromFailure')
+            ->willThrowException(CouldNotApiCallBroadcastException::channelNotFound('channel'));
+
         $this->loggerMock->expects($this->atLeastOnce())->method('error');
 
         $response = $this->livestreamController->resetFromFailure($this->getRequest());

@@ -3,6 +3,7 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorageInterface;
@@ -41,6 +42,13 @@ abstract class Controller
             return;
         }
         return $user;
+    }
+
+    protected function getUserChannel(): string
+    {
+        /** @var User $user */
+        $user = $this->getUser();
+        return $user->getChannel();
     }
 
     /**

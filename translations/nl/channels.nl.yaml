@@ -1,6 +1,15 @@
 channels_list.page_title: 'Kanalen'
-channel_create.label_channel: 'Naam:'
+channel_create.label_channel: 'Kanaal naam:'
 channel.new.title: 'Kanaal aanmaken'
 channel.action.cancel: 'Cancel'
-channel_list.column_action: 'Naam'
+channel_list.column.channel_name: 'Kanaal naam'
+channel_list.column.username: 'Gebruikersnaam'
+channel_list.column.host: 'Host'
+channel_list.column.actions: 'Acties'
+channel.action.edit: Wijzig
 button.action.new_channel: 'Kanaal toevoegen'
+registration_form.label_host: 'Host'
+channel_create.label_username: Gebruikersnaam
+channel_create.label_secret: Secret
+channel_create.label_repeat_password: Herhaal secret
+channel_create.submit_button: Opslaan

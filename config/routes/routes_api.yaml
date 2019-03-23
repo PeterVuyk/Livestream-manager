@@ -2,8 +2,3 @@ list_stream_schedules:
   path: /scheduler/list
   defaults: { _controller: App\Controller\Api\ApiSchedulerController:getStreamSchedule }
   methods: [GET]
-
-status_stream:
-  path: /livestream/status
-  defaults: { _controller: App\Controller\Api\ApiLivestreamController:getStatusLivestream }
-  methods: [GET]

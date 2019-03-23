@@ -61,7 +61,7 @@ class StreamScheduleRepository extends ServiceEntityRepository
             ->where('s.onetimeExecutionDate IS NOT NULL')
             ->andWhere('s.executionDay IS NULL')
             ->andWhere('s.executionTime IS NULL');
-        if ($channel !== 'admin') {
+        if ($channel !== 'Admin') {
             $queryBuilder->andWhere('s.channel = :channel')->setParameter('channel', $channel);
         }
         return $queryBuilder
@@ -78,7 +78,7 @@ class StreamScheduleRepository extends ServiceEntityRepository
             ->where('s.onetimeExecutionDate IS NULL')
             ->andWhere('s.executionDay IS NOT NULL')
             ->andWhere('s.executionTime IS NOT NULL');
-        if ($channel !== 'admin') {
+        if ($channel !== 'Admin') {
             $queryBuilder->andWhere('s.channel = :channel')->setParameter('channel', $channel);
         }
         return $queryBuilder->getQuery()->getResult();
@@ -107,5 +107,14 @@ class StreamScheduleRepository extends ServiceEntityRepository
     public function findRunningSchedule(): ?StreamSchedule
     {
         return $this->findOneBy(['isRunning' => true]);
+    }
+
+    /**
+     * @param string $channelName
+     * @return StreamSchedule|null|object
+     */
+    public function getStreamToExecuteByChannelName(string $channelName): ?StreamSchedule
+    {
+        return $this->findOneBy(['channel' => $channelName]);
     }
 }

@@ -67,7 +67,6 @@ class StreamScheduleDTO
 
     /**
      * @throws CouldNotCreateStreamScheduleDTOException
-     * StreamScheduleDTO constructor.
      * @param StreamSchedule $streamSchedule
      */
     private function __construct(StreamSchedule $streamSchedule)

@@ -1,37 +1,37 @@
 {% trans_default_domain 'navigation' %}
-{% for transition in workflow_transitions(camera)|slice(0, 1) %}
-<li class="nav-item">
-    <strong>
-        <a class="nav-link">
-            {{  "navigation.status.#{transition.froms|first}"|trans }}
-        </a>
-    </strong>
-</li>
-{% endfor %}
-{% if workflow_has_marked_place(camera, 'failure') %}
+{% if cameraStatus is defined and not null %}
     <li class="nav-item">
-        <a class="nav-link" href="{{ path('reset_stream') }}" data-method="POST">
-            <span class="fa fa-undo text-warning fa-lg"></span>
+        <strong>
+            <a class="nav-link">
+                {{  cameraStatus|trans }}
+            </a>
+        </strong>
+    </li>
+    {% if cameraStatus =='failure' %}
+        <li class="nav-item">
+            <a class="nav-link" href="{{ path('reset_stream') }}" data-method="POST">
+                <span class="fa fa-undo text-warning fa-lg"></span>
+            </a>
+        </li>
+    {% endif %}
+    <li class="nav-item">
+        {% if stateMachineCan(cameraStatus, 'to_stopping') %}
+        <a class="nav-link" href="#js-stop-stream-modal" data-toggle="modal">
+            <span class="text-danger fa fa-stop fa-lg"></span>
         </a>
+        {{ include('scheduler/list/modal/stopStreamModal.html.twig') }}
+        {% else %}
+            <a class="nav-link"><span class="text-muted fa fa-stop fa-lg"></span></a>
+        {% endif %}
+    </li>
+    <li class="nav-item">
+        {% if stateMachineCan(cameraStatus, 'to_starting') %}
+            <a class="nav-link" href="#js-start-stream-modal" data-toggle="modal">
+                <span class="text-success fa fa-play fa-lg"></span>
+            </a>
+            {{ include('scheduler/list/modal/startStreamModal.html.twig') }}
+        {% else %}
+                <a class="nav-link"><span class="text-muted fa fa-play fa-lg"></span></a>
+        {% endif %}
     </li>
 {% endif %}
-<li class="nav-item">
-    {% if workflow_can(camera, 'to_stopping') %}
-    <a class="nav-link" href="#js-stop-stream-modal" data-toggle="modal">
-        <span class="text-danger fa fa-stop fa-lg"></span>
-    </a>
-    {{ include('scheduler/list/modal/stopStreamModal.html.twig') }}
-    {% else %}
-        <a class="nav-link"><span class="text-muted fa fa-stop fa-lg"></span></a>
-    {% endif %}
-</li>
-<li class="nav-item">
-    {% if workflow_can(camera, 'to_starting') %}
-        <a class="nav-link" href="#js-start-stream-modal" data-toggle="modal">
-            <span class="text-success fa fa-play fa-lg"></span>
-        </a>
-        {{ include('scheduler/list/modal/startStreamModal.html.twig') }}
-    {% else %}
-            <a class="nav-link"><span class="text-muted fa fa-play fa-lg"></span></a>
-    {% endif %}
-</li>

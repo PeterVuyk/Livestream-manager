@@ -27,9 +27,3 @@ reset_stream:
   path: /stream/reset
   defaults: { _controller: App\Controller\LivestreamController:resetFromFailure }
   methods: [POST]
-
-camera_configuration_list:
-  path:
-    en: /configuration
-    nl: /configuratie
-  defaults: { _controller: App\Controller\CameraConfigurationController:configurationList }

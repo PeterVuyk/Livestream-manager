@@ -18,3 +18,7 @@ stop_stream.action.title_execute: 'Stop livestream'
 stop_stream.confirm.execute: 'Weet je zeker dat je de livestream wil stoppen?'
 stop_stream.action.execute: Stop
 stop_stream.action.cancel: Cancel
+channel.action.remove_title: 'Verwijder kanaal'
+channel_delete.confirm.delete: 'Weet je zeker dat je dit kanaal wil verwijderen?'
+channel_delete.action.cancel: 'Verwijder'
+channel_delete.action.delete: 'Cancel'

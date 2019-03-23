@@ -18,7 +18,7 @@ final class Version20190127081902 extends AbstractMigration
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
         $this->addSql('CREATE TABLE camera (camera VARCHAR(50) NOT NULL, state VARCHAR(50) DEFAULT NULL, UNIQUE INDEX camera (camera), PRIMARY KEY(camera)) DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci ENGINE = InnoDB');
-        $this->addSql('INSERT INTO `livestream`.`camera` (`camera`, `state`) VALUES (\'mainCamera\', \'inactive\');');
+        $this->addSql('INSERT INTO `camera` (`camera`, `state`) VALUES (\'mainCamera\', \'inactive\');');
     }
 
     /**

@@ -1,5 +1,5 @@
 {
-    "name": "petervuyk/livestream-server",
+    "name": "petervuyk/livestream-manager",
     "type": "project",
     "license": "MIT",
     "require": {
@@ -15,6 +15,7 @@
         "doctrine/doctrine-migrations-bundle": "^1.3",
         "doctrine/orm": "^2.6",
         "friendsofsymfony/user-bundle": "^2.1",
+        "guzzlehttp/guzzle": "^6.3",
         "nelmio/api-doc-bundle": "^3.3",
         "ramsey/uuid": "^3.8",
         "symfony/asset": "*",
@@ -23,14 +24,12 @@
         "symfony/form": "*",
         "symfony/framework-bundle": "*",
         "symfony/orm-pack": "^1.0",
-        "symfony/process": "4.2.*",
         "symfony/security-bundle": "*",
         "symfony/swiftmailer-bundle": "^3.2",
         "symfony/templating": "4.2.*",
         "symfony/translation": "*",
         "symfony/validator": "*",
         "symfony/webpack-encore-pack": "^1.0",
-        "symfony/workflow": "4.2.*",
         "symfony/yaml": "*",
         "twig/extensions": "^1.5"
     },

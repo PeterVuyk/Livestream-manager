@@ -30,3 +30,12 @@ services:
         arguments:
             $snsClient: '@aws_sns_client'
             $topicArn: '%env(AWS_SNS_TOPIC_ARN)%'
+
+    guzzle.broadcaster.client:
+        class: 'GuzzleHttp\Client'
+        arguments:
+            - timeout: 30
+
+    App\Service\Api\BroadcastApiService:
+        arguments:
+            $client: '@guzzle.broadcaster.client'

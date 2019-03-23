@@ -28,9 +28,32 @@ class ChannelRepository extends ServiceEntityRepository
     {
         try {
             $this->getEntityManager()->persist($channel);
-            $this->getEntityManager()->flush($channel);
+            $this->getEntityManager()->flush();
         } catch (ORMException $exception) {
             throw CouldNotModifyChannelException::forError($exception);
         }
+    }
+
+    /**
+     * @param Channel $channel
+     * @throws CouldNotModifyChannelException
+     */
+    public function remove(Channel $channel): void
+    {
+        try {
+            $this->getEntityManager()->remove($channel);
+            $this->getEntityManager()->flush();
+        } catch (ORMException $exception) {
+            throw CouldNotModifyChannelException::forError($exception);
+        }
+    }
+
+    /**
+     * @param string $channel
+     * @return Channel|null|object
+     */
+    public function findByName(string $channel): ?Channel
+    {
+        return $this->findOneBy(['channelName' => $channel]);
     }
 }

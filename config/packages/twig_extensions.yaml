@@ -13,3 +13,9 @@ services:
         public: false
         tags:
         - { name: 'twig.extension' }
+
+    App\Twig\LivestreamStateMachineExtension:
+        public: false
+        tags:
+            - { name: 'twig.extension' }
+

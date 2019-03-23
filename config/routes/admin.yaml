@@ -8,3 +8,12 @@ channel_create:
   defaults: { _controller: App\Controller\ChannelController:createChannel }
   methods: [GET|POST]
 
+channel_edit:
+  path: /channels/edit/{channelName}
+  defaults: { _controller: App\Controller\ChannelController:editChannel }
+  methods: [GET|POST]
+
+channel_remove:
+  path: /channels/remove/{channelName}
+  defaults: { _controller: App\Controller\ChannelController:removeChannel }
+  methods: [POST]

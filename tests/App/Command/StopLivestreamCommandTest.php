@@ -21,7 +21,6 @@ use Symfony\Component\HttpKernel\KernelInterface;
  * @coversDefaultClass \App\Command\StopLivestreamCommand
  * @covers ::<!public>
  * @covers ::__construct
- * @uses \App\Entity\Camera
  * @uses \App\Messaging\Library\Command\StopLivestreamCommand
  */
 class StopLivestreamCommandTest extends TestCase
@@ -32,12 +31,6 @@ class StopLivestreamCommandTest extends TestCase
     /** @var LoggerInterface|MockObject */
     private $logger;
 
-    /** @var LivestreamService|MockObject */
-    private $livestreamService;
-
-    /** @var StreamStateMachine|MockObject */
-    private $streamStateMachine;
-
     /** @var CommandTester */
     private $commandTester;
 
@@ -45,8 +38,6 @@ class StopLivestreamCommandTest extends TestCase
     {
         $this->messagingDispatcher = $this->createMock(MessagingDispatcher::class);
         $this->logger = $this->createMock(LoggerInterface::class);
-        $this->livestreamService= $this->createMock(LivestreamService::class);
-        $this->streamStateMachine = $this->createMock(StreamStateMachine::class);
 
         $containerMock = $this->createMock(ContainerInterface::class);
         $kernelMock = $this->createMock(KernelInterface::class);
@@ -56,9 +47,7 @@ class StopLivestreamCommandTest extends TestCase
 
         $stopLivestreamCommand = new StopLivestreamCommand(
             $this->messagingDispatcher,
-            $this->logger,
-            $this->livestreamService,
-            $this->streamStateMachine
+            $this->logger
         );
 
         $application = new Application($kernelMock);
@@ -73,10 +62,6 @@ class StopLivestreamCommandTest extends TestCase
      */
     public function testExecuteSuccess()
     {
-        $camera = new Camera();
-        $camera->setState('running');
-        $this->livestreamService->expects($this->once())->method('getMainCameraStatus')->willReturn($camera);
-        $this->streamStateMachine->expects($this->once())->method('can')->willReturn(true);
         $this->messagingDispatcher->expects($this->once())->method('sendMessage');
         $this->logger->expects($this->never())->method('error');
 
@@ -90,10 +75,6 @@ class StopLivestreamCommandTest extends TestCase
      */
     public function testExecuteDispatchFailed()
     {
-        $camera = new Camera();
-        $camera->setState('running');
-        $this->livestreamService->expects($this->once())->method('getMainCameraStatus')->willReturn($camera);
-        $this->streamStateMachine->expects($this->once())->method('can')->willReturn(true);
         $this->messagingDispatcher->expects($this->once())
             ->method('sendMessage')
             ->willThrowException(PublishMessageFailedException::forMessage('topic', []));

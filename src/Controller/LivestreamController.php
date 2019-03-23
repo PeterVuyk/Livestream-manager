@@ -3,14 +3,12 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Exception\Repository\CouldNotModifyCameraException;
+use App\Exception\Livestream\CouldNotApiCallBroadcastException;
 use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
 use App\Messaging\Library\Command\StartLivestreamCommand;
 use App\Messaging\Library\Command\StopLivestreamCommand;
-use App\Repository\CameraRepository;
-use App\Service\StreamProcessing\StreamStateMachine;
+use App\Service\Api\BroadcastApiService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
@@ -26,43 +24,36 @@ class LivestreamController extends Controller
     /** @var MessagingDispatcher */
     private $messagingDispatcher;
 
-    /** @var CameraRepository */
-    private $cameraRepository;
-
     /** @var LoggerInterface */
     private $logger;
 
     /** @var FlashBagInterface */
     private $flashBag;
 
-    /** @var StreamStateMachine */
-    private $streamStateMachine;
+    /** @var BroadcastApiService */
+    private $broadcastApiService;
 
     /**
-     * LivestreamController constructor.
      * @param MessagingDispatcher $messagingDispatcher
      * @param \Twig_Environment $twig
      * @param TokenStorageInterface $tokenStorage
-     * @param CameraRepository $cameraRepository
      * @param LoggerInterface $logger
      * @param FlashBagInterface $flashBag
-     * @param StreamStateMachine $streamStateMachine
+     * @param BroadcastApiService $broadcastApiService
      */
     public function __construct(
         MessagingDispatcher $messagingDispatcher,
         \Twig_Environment $twig,
         TokenStorageInterface $tokenStorage,
-        CameraRepository $cameraRepository,
         LoggerInterface $logger,
         FlashBagInterface $flashBag,
-        StreamStateMachine $streamStateMachine
+        BroadcastApiService $broadcastApiService
     ) {
         parent::__construct($twig, $tokenStorage);
         $this->messagingDispatcher = $messagingDispatcher;
-        $this->cameraRepository = $cameraRepository;
         $this->logger = $logger;
         $this->flashBag = $flashBag;
-        $this->streamStateMachine = $streamStateMachine;
+        $this->broadcastApiService = $broadcastApiService;
     }
 
     /**
@@ -71,10 +62,8 @@ class LivestreamController extends Controller
      */
     public function startStream(Request $request)
     {
-        /** @var User $user */
-        $user = $this->getUser();
         try {
-            $this->messagingDispatcher->sendMessage(StartLivestreamCommand::create($user->getChannel()));
+            $this->messagingDispatcher->sendMessage(StartLivestreamCommand::create($this->getUserChannel()));
             $this->flashBag->add(self::INFO_MESSAGE, 'flash.livestream.success.start_stream');
         } catch (PublishMessageFailedException $exception) {
             $this->flashBag->add(self::ERROR_MESSAGE, 'flash.livestream.error.start_stream');
@@ -89,10 +78,8 @@ class LivestreamController extends Controller
      */
     public function stopStream(Request $request)
     {
-        /** @var User $user */
-        $user = $this->getUser();
         try {
-            $this->messagingDispatcher->sendMessage(StopLivestreamCommand::create($user->getChannel()));
+            $this->messagingDispatcher->sendMessage(StopLivestreamCommand::create($this->getUserChannel()));
             $this->flashBag->add('info', 'flash.livestream.success.stop_stream');
         } catch (PublishMessageFailedException $exception) {
             $this->logger->error('Could not start livestream', ['exception' => $exception]);
@@ -106,8 +93,12 @@ class LivestreamController extends Controller
      */
     public function statusStream()
     {
-        $camera = $this->cameraRepository->getMainCamera();
-        return $this->render('components/livestream.html.twig', ['camera' => $camera]);
+        try {
+            $cameraStatus = $this->broadcastApiService->getStatusLivestream($this->getUserChannel());
+        } catch (CouldNotApiCallBroadcastException $exception) {
+            $this->logger->error('Could not get stream status', ['exception' => $exception]);
+        }
+        return $this->render('components/livestream.html.twig', ['cameraStatus' => $cameraStatus ?? '']);
     }
 
     /**
@@ -117,9 +108,8 @@ class LivestreamController extends Controller
     public function resetFromFailure(Request $request)
     {
         try {
-            $camera = $this->cameraRepository->getMainCamera();
-            $this->streamStateMachine->apply($camera, 'to_inactive');
-        } catch (CouldNotModifyCameraException $exception) {
+            $this->broadcastApiService->resetFromFailure($this->getUserChannel());
+        } catch (CouldNotApiCallBroadcastException $exception) {
             $this->logger->error('Could not reset failure status', ['exception' => $exception]);
             $this->flashBag->add('error', 'flash.livestream.error.unable_to_reset');
         }

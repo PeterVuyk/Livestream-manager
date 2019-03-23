@@ -37,7 +37,7 @@ class ChannelType extends AbstractType
         $items = ['Admin' => 'Admin'];
         /** @var Channel $channel */
         foreach ($this->channelRepository->findAll() as $channel) {
-            $items[$channel->getName()] = $channel->getName();
+            $items[$channel->getChannelName()] = $channel->getChannelName();
         }
         return $items;
     }

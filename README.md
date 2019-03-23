@@ -1,4 +1,4 @@
-# Livestream Server
+# Livestream Manager
 
 A livestream with user interface, Restful API and messaging. Broadcast live video content remotely to a given host.
 
@@ -63,7 +63,7 @@ livestream-yarn         node                             Up
 ```
 
 Next open the application, you can view the application via URL `localhost:8080`, see also the image below for an impression.
-![alt text](https://github.com/PeterVuyk/Livestream-server/blob/master/assets/images/example.png)
+![alt text](https://github.com/PeterVuyk/Livestream-manager/blob/master/assets/images/example.png)
 
 Ok, login with the sample account that was created by default (username: temporary, password: secret). Once you are logged in you can:
 

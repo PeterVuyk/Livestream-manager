@@ -4,11 +4,8 @@ declare(strict_types=1);
 namespace App\Tests\Command;
 
 use App\Command\StartLivestreamCommand;
-use App\Entity\Camera;
 use App\Exception\Messaging\PublishMessageFailedException;
 use App\Messaging\Dispatcher\MessagingDispatcher;
-use App\Service\LivestreamService;
-use App\Service\StreamProcessing\StreamStateMachine;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -21,19 +18,12 @@ use Symfony\Component\HttpKernel\KernelInterface;
  * @coversDefaultClass \App\Command\StartLivestreamCommand
  * @covers ::<!public>
  * @covers ::__construct
- * @uses \App\Entity\Camera
  * @uses \App\Messaging\Library\Command\StartLivestreamCommand
  */
 class StartLivestreamCommandTest extends TestCase
 {
     /** @var MessagingDispatcher|MockObject */
     private $messagingDispatcher;
-
-    /** @var LivestreamService|MockObject */
-    private $livestreamService;
-
-    /** @var StreamStateMachine|MockObject */
-    private $streamStateMachine;
 
     /** @var LoggerInterface|MockObject */
     private $logger;
@@ -44,8 +34,6 @@ class StartLivestreamCommandTest extends TestCase
     public function setUp()
     {
         $this->messagingDispatcher = $this->createMock(MessagingDispatcher::class);
-        $this->livestreamService = $this->createMock(LivestreamService::class);
-        $this->streamStateMachine = $this->createMock(StreamStateMachine::class);
         $this->logger = $this->createMock(LoggerInterface::class);
 
         $containerMock = $this->createMock(ContainerInterface::class);
@@ -56,9 +44,7 @@ class StartLivestreamCommandTest extends TestCase
 
         $startLivestreamCommand = new StartLivestreamCommand(
             $this->messagingDispatcher,
-            $this->logger,
-            $this->livestreamService,
-            $this->streamStateMachine
+            $this->logger
         );
 
         $application = new Application($kernelMock);
@@ -73,10 +59,6 @@ class StartLivestreamCommandTest extends TestCase
      */
     public function testExecuteSuccess()
     {
-        $camera = new Camera();
-        $camera->setState('inactive');
-        $this->livestreamService->expects($this->once())->method('getMainCameraStatus')->willReturn($camera);
-        $this->streamStateMachine->expects($this->once())->method('can')->willReturn(true);
         $this->messagingDispatcher->expects($this->once())->method('sendMessage');
         $this->logger->expects($this->never())->method('error');
 
@@ -90,10 +72,6 @@ class StartLivestreamCommandTest extends TestCase
      */
     public function testExecuteDispatchFailed()
     {
-        $camera = new Camera();
-        $camera->setState('inactive');
-        $this->livestreamService->expects($this->once())->method('getMainCameraStatus')->willReturn($camera);
-        $this->streamStateMachine->expects($this->once())->method('can')->willReturn(true);
         $this->messagingDispatcher->expects($this->atLeastOnce())
             ->method('sendMessage')
             ->willThrowException(PublishMessageFailedException::forMessage('topic', []));

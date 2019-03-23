@@ -1,6 +1,15 @@
 channels_list.page_title: 'Channels'
-channel_create.label_channel: 'Name:'
+channel_create.label_channel: 'Channel name:'
 channel.new.title: 'Create channel'
 channel.action.cancel: 'Cancel'
-channel_list.column_action: 'Name'
+channel_list.column.channel_name: 'Channel name'
+channel_list.column.username: 'Username'
+channel_list.column.actions: 'Actions'
+channel.action.edit: 'Edit'
 button.action.new_channel: 'Add channel'
+channel_create.label_host: Host
+channel_list.column.host: Host
+channel_create.label_username: Username
+channel_create.label_secret: Secret
+channel_create.label_repeat_password: Repeat secret
+channel_create.submit_button: 'Save'

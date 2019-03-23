@@ -9,13 +9,27 @@
     <table class="table">
         <thead>
         <tr>
-            <th scope="col">{{ 'channel_list.column_action'|trans }}</th>
+            <th scope="col">{{ 'channel_list.column.channel_name'|trans }}</th>
+            <th scope="col">{{ 'channel_list.column.username'|trans }}</th>
+            <th scope="col">{{ 'channel_list.column.host'|trans }}</th>
+            <th scope="col">{{ 'channel_list.column.actions'|trans }}</th>
         </tr>
         </thead>
         <tbody>
         {% for channel in channels %}
             <tr>
-                <td>{{ channel.name }}</td>
+                <td>{{ channel.channelName }}</td>
+                <td>{{ channel.userName }}</td>
+                <td>{{ channel.host }}</td>
+                <td>
+                    <a href="{{ path('channel_edit', {'channelName': channel.channelName}) }}" >
+                        <span class="text-info fa fa-edit fa-lg"></span> <span class="sr-only">{{ "channel.action.edit"|trans }}</span>
+                    </a>
+                    <a href="#js-delete-channel-modal-{{ channel.channelName }}" data-toggle="modal">
+                        <span class="text-danger fa fa-trash fa-lg"></span>
+                    </a>
+                    {{ include('channel/modal/deleteModal.html.twig', {'path': 'channel_remove'}) }}
+                </td>
             </tr>
         {% endfor %}
         </tbody>

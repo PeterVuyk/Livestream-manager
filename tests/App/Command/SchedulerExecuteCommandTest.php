@@ -5,9 +5,9 @@ namespace App\Tests\Command;
 
 use App\Command\SchedulerExecuteCommand;
 use App\Entity\StreamSchedule;
-use App\Exception\StreamSchedule\ConflictingScheduledStreamsException;
 use App\Exception\Messaging\PublishMessageFailedException;
-use App\Service\LivestreamService;
+use App\Messaging\Dispatcher\MessagingDispatcher;
+use App\Service\StreamScheduleService;
 use PHPUnit\Framework\MockObject\MockObject;
 use PHPUnit\Framework\TestCase;
 use Psr\Log\LoggerInterface;
@@ -21,22 +21,28 @@ use Symfony\Component\HttpKernel\KernelInterface;
  * @covers ::<!public>
  * @covers ::__construct
  * @uses \App\Entity\StreamSchedule
+ * @uses \App\Messaging\Library\Command\StartLivestreamCommand
+ * @uses \App\Messaging\Library\Command\StopLivestreamCommand
  */
 class SchedulerExecuteCommandTest extends TestCase
 {
-    /** @var LivestreamService|MockObject */
-    private $livestreamServiceMock;
-
     /** @var LoggerInterface|MockObject */
     private $loggerMock;
+
+    /** @var StreamScheduleService|MockObject */
+    private $streamScheduleServiceMock;
+
+    /** @var MessagingDispatcher|MockObject */
+    private $messagingDispatcherMock;
 
     /** @var CommandTester */
     private $commandTester;
 
     public function setUp()
     {
-        $this->livestreamServiceMock = $this->createMock(LivestreamService::class);
         $this->loggerMock = $this->createMock(LoggerInterface::class);
+        $this->streamScheduleServiceMock = $this->createMock(StreamScheduleService::class);
+        $this->messagingDispatcherMock = $this->createMock(MessagingDispatcher::class);
 
         $containerMock = $this->createMock(ContainerInterface::class);
         $kernelMock = $this->createMock(KernelInterface::class);
@@ -46,7 +52,8 @@ class SchedulerExecuteCommandTest extends TestCase
 
         $schedulerExecuteCommand = new SchedulerExecuteCommand(
             $this->loggerMock,
-            $this->livestreamServiceMock
+            $this->streamScheduleServiceMock,
+            $this->messagingDispatcherMock
         );
 
         $application = new Application($kernelMock);
@@ -64,10 +71,11 @@ class SchedulerExecuteCommandTest extends TestCase
         $streamSchedule = new StreamSchedule();
         $streamSchedule->setExecutionTime(new \DateTime('- 1 minutes'));
         $streamSchedule->setOnetimeExecutionDate(new \DateTime('- 1 minutes'));
-        $this->livestreamServiceMock->expects($this->once())
-            ->method('getStreamToExecute')
-            ->willReturn($streamSchedule);
-        $this->livestreamServiceMock->expects($this->once())->method('sendLivestreamCommand');
+        $streamSchedule->setChannel('name');
+        $this->streamScheduleServiceMock->expects($this->once())
+            ->method('getStreamsToExecute')
+            ->willReturn([$streamSchedule]);
+        $this->messagingDispatcherMock->expects($this->once())->method('sendMessage');
         $this->loggerMock->expects($this->never())->method('error');
 
         $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
@@ -82,11 +90,12 @@ class SchedulerExecuteCommandTest extends TestCase
         $streamSchedule->setIsRunning(true);
         $streamSchedule->setStreamDuration(5);
         $streamSchedule->setLastExecution(new \DateTime('- 10 minutes'));
-        $this->livestreamServiceMock->expects($this->once())
-            ->method('getStreamToExecute')
-            ->willReturn($streamSchedule);
-        $this->livestreamServiceMock->expects($this->once())
-            ->method('sendLivestreamCommand')
+        $streamSchedule->setChannel('name');
+        $this->streamScheduleServiceMock->expects($this->once())
+            ->method('getStreamsToExecute')
+            ->willReturn([$streamSchedule]);
+        $this->messagingDispatcherMock->expects($this->once())
+            ->method('sendMessage')
             ->willThrowException(PublishMessageFailedException::forMessage('message', ['payload']));
         $this->loggerMock->expects($this->atLeastOnce())->method('error');
 
@@ -98,23 +107,10 @@ class SchedulerExecuteCommandTest extends TestCase
      */
     public function testExecuteNothingToExecute()
     {
-        $this->livestreamServiceMock->expects($this->once())
-            ->method('getStreamToExecute')
-            ->willReturn(null);
+        $this->streamScheduleServiceMock->expects($this->once())
+            ->method('getStreamsToExecute')
+            ->willReturn([]);
         $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
         $this->addToAssertionCount(1);
-    }
-
-    /**
-     * @covers ::execute
-     */
-    public function testExecuteConflictingStreams()
-    {
-        $this->livestreamServiceMock->expects($this->once())
-            ->method('getStreamToExecute')
-            ->willThrowException(ConflictingScheduledStreamsException::multipleSchedules([new StreamSchedule()]));
-        $this->loggerMock->expects($this->once())->method('warning');
-
-        $this->commandTester->execute([SchedulerExecuteCommand::COMMAND_SCHEDULER_EXECUTE]);
     }
 }

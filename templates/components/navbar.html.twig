@@ -5,14 +5,11 @@
             <li class="nav-item {% if active_page is defined and active_page == 'schedule' %}active{% endif %}">
                 <a class="nav-link" href="{{ path('scheduler_list') }}">{{ 'navigation.schedule'|trans }}</a>
             </li>
-            {% if app.user is not null and app.user.superAdmin == true %}
+            {% if is_granted('ROLE_SUPER_ADMIN') %}
                 <li class="nav-item {% if active_page is defined and active_page == 'channels' %}active{% endif %}">
                     <a class="nav-link" href="{{ path('channel_list') }}">{{ 'navigation.channel'|trans }}</a>
                 </li>
             {% endif %}
-            <li class="nav-item {% if active_page is defined and active_page == 'camera_configuration' %}active{% endif %}">
-                <a class="nav-link" href="{{ path('camera_configuration_list') }}">{{ 'navigation.camera_configuration'|trans }}</a>
-            </li>
             <li class="nav-item dropdown {% if active_page is defined and active_page == 'users' %}active{% endif %}">
                 <a class="nav-link dropdown-toggle" href="#" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                     {{ 'navigation.users'|trans }}<span class="caret"></span>
@@ -32,7 +29,9 @@
         </ul>
         <ul class="navbar-nav pull-right">
             {% if app.user is not null %}
-                {{ render(controller('App\\Controller\\LivestreamController::statusStream')) }}
+                {% if app.user.superAdmin == false %}
+                    {{ render(controller('App\\Controller\\LivestreamController::statusStream')) }}
+                {% endif %}
                 <li class="nav-item dropdown">
                     <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">
                         <i class="fa fa-user"></i>

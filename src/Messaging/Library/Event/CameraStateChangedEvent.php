@@ -15,6 +15,7 @@ class CameraStateChangedEvent extends Event
     const EVENT_TYPE = 'orderStateChanged';
     const CAMERA_STATE = 'cameraState';
     const PREVIOUS_CAMERA_STATE = 'previousCameraState';
+    const CHANNEL = 'channel';
 
     /** @var string */
     private $cameraState;
@@ -27,6 +28,9 @@ class CameraStateChangedEvent extends Event
 
     /** @var \DateTimeInterface */
     private $messageDate;
+
+    /** @var string */
+    private $channel;
 
     /**
      * @param array $payload
@@ -41,21 +45,24 @@ class CameraStateChangedEvent extends Event
         $self->resourceId = $payload[self::RESOURCE_ID];
         $self->cameraState = $payload[self::CAMERA_STATE];
         $self->previousCameraState = $payload[self::PREVIOUS_CAMERA_STATE];
+        $self->channel = $payload[self::CHANNEL];
         return $self;
     }
 
     /**
      * @param string $previousState
      * @param string $newState
+     * @param string $channel
      * @return CameraStateChangedEvent
      */
-    public static function create(string $previousState, string $newState): MessageInterface
+    public static function create(string $previousState, string $newState, string $channel): MessageInterface
     {
         $self = new self();
         $self->resourceId = (string)Uuid::uuid4();
         $self->messageDate = new \DateTimeImmutable();
         $self->previousCameraState = $previousState;
         $self->cameraState = $newState;
+        $self->channel = $channel;
 
         return $self;
     }
@@ -101,6 +108,14 @@ class CameraStateChangedEvent extends Event
     }
 
     /**
+     * @return string
+     */
+    public function getChannel(): string
+    {
+        return $this->channel;
+    }
+
+    /**
      * @return array
      */
     public function getPayload(): array
@@ -112,6 +127,7 @@ class CameraStateChangedEvent extends Event
             self::MESSAGE_DATE => $this->getMessageDate()->format('Y-m-d H:i:s'),
             self::CAMERA_STATE => $this->getCameraState(),
             self::PREVIOUS_CAMERA_STATE => $this->getPreviousCameraState(),
+            self::CHANNEL => $this->getChannel(),
         ];
     }
 
@@ -128,6 +144,7 @@ class CameraStateChangedEvent extends Event
             Assert::keyExists($payload, self::MESSAGE_DATE, 'message date from payload is missing');
             Assert::keyExists($payload, self::CAMERA_STATE, 'camera state from payload is missing');
             Assert::keyExists($payload, self::PREVIOUS_CAMERA_STATE, 'previous camera state is missing');
+            Assert::keyExists($payload, self::CHANNEL, 'channel is missing');
         } catch (\InvalidArgumentException $exception) {
             throw UnsupportedMessageException::validationFailed($payload, $exception);
         }

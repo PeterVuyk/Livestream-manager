@@ -93,6 +93,7 @@ class CameraStateChangedEventTest extends TestCase
             CameraStateChangedEvent::USED_MESSAGE_ACTION_KEY => CameraStateChangedEvent::USED_MESSAGE_ACTION,
             CameraStateChangedEvent::CAMERA_STATE => 'stopping',
             CameraStateChangedEvent::PREVIOUS_CAMERA_STATE => 'running',
+            CameraStateChangedEvent::CHANNEL => 'name',
         ];
         $message = CameraStateChangedEvent::createFromPayload($payload);
 
@@ -112,6 +113,7 @@ class CameraStateChangedEventTest extends TestCase
             CameraStateChangedEvent::USED_MESSAGE_ACTION_KEY => CameraStateChangedEvent::USED_MESSAGE_ACTION,
             CameraStateChangedEvent::CAMERA_STATE => 'stopping',
             CameraStateChangedEvent::PREVIOUS_CAMERA_STATE => 'running',
+            CameraStateChangedEvent::CHANNEL => 'name',
         ];
         $result = CameraStateChangedEvent::createFromPayload($payload);
 
@@ -124,7 +126,7 @@ class CameraStateChangedEventTest extends TestCase
      */
     public function testCreate()
     {
-        $message = CameraStateChangedEvent::create('prevState', 'newState');
+        $message = CameraStateChangedEvent::create('prevState', 'newState', 'name');
         $this->assertInstanceOf(MessageInterface::class, $message);
     }
 }

@@ -3,13 +3,16 @@ declare(strict_types=1);
 
 namespace App\Command;
 
-use App\Entity\StreamSchedule;
-use App\Exception\StreamSchedule\ConflictingScheduledStreamsException;
-use App\Service\LivestreamService;
+use App\Exception\Messaging\PublishMessageFailedException;
+use App\Messaging\Dispatcher\MessagingDispatcher;
+use App\Service\StreamScheduleService;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
+use App\Messaging\Library\Command\StopLivestreamCommand as MessageStopLivestreamCommand;
+use App\Messaging\Library\Command\StartLivestreamCommand as MessageStartLivestreamCommand;
+
 
 class SchedulerExecuteCommand extends Command
 {
@@ -21,20 +24,26 @@ class SchedulerExecuteCommand extends Command
     /** @var LoggerInterface */
     private $logger;
 
-    /** @var LivestreamService */
-    private $livestreamService;
+    /** @var StreamScheduleService */
+    private $streamScheduleService;
+
+    /** @var MessagingDispatcher */
+    private $messagingDispatcher;
 
     /**
      * SchedulerExecuteCommand constructor.
      * @param LoggerInterface $logger
-     * @param LivestreamService $livestreamService
+     * @param StreamScheduleService $streamScheduleService
+     * @param MessagingDispatcher $messagingDispatcher
      */
     public function __construct(
         LoggerInterface $logger,
-        LivestreamService $livestreamService
+        StreamScheduleService $streamScheduleService,
+        MessagingDispatcher $messagingDispatcher
     ) {
         $this->logger = $logger;
-        $this->livestreamService = $livestreamService;
+        $this->streamScheduleService = $streamScheduleService;
+        $this->messagingDispatcher = $messagingDispatcher;
         parent::__construct();
     }
 
@@ -54,26 +63,29 @@ class SchedulerExecuteCommand extends Command
     {
         $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution started'));
 
-        try {
-            $streamSchedule = $this->livestreamService->getStreamToExecute();
-        } catch (ConflictingScheduledStreamsException $exception) {
-            $this->logger->warning('conflicting schedules, could not execute', ['exception' => $exception]);
-            $output->writeln(sprintf(self::ERROR_MESSAGE, 'conflicting schedules, could not execute'));
-            return;
-        }
-
-        if (!$streamSchedule instanceof StreamSchedule) {
+        $streamSchedules = $this->streamScheduleService->getStreamsToExecute();
+        if (empty($streamSchedules)) {
             $output->writeln(sprintf(self::INFO_MESSAGE, 'No schedules to be executed'));
             return;
         }
 
-        try {
-            $this->livestreamService->sendLivestreamCommand($streamSchedule);
-        } catch (\Exception $exception) {
-            $this->logger->error('Could not publish message', ['exception' => $exception]);
-            $output->writeln(sprintf(self::ERROR_MESSAGE, 'Could not publish message'));
+        foreach ($streamSchedules as $streamSchedule) {
+            try {
+                if ($streamSchedule->streamTobeStarted()) {
+                    $this->messagingDispatcher->sendMessage(
+                        MessageStartLivestreamCommand::create($streamSchedule->getChannel())
+                    );
+                }
+                if ($streamSchedule->streamToBeStopped()) {
+                    $this->messagingDispatcher->sendMessage(
+                        MessageStopLivestreamCommand::create($streamSchedule->getChannel())
+                    );
+                }
+            } catch (PublishMessageFailedException $exception) {
+                $this->logger->error('Could not publish message', ['exception' => $exception]);
+                $output->writeln(sprintf(self::ERROR_MESSAGE, 'Could not publish message'));
+            }
         }
-
         $output->writeln(sprintf(self::INFO_MESSAGE, 'Scheduler execution command send'));
     }
 }

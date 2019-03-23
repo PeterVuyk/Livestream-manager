@@ -326,14 +326,14 @@
     "symfony/polyfill-intl-icu": {
         "version": "v1.10.0"
     },
+    "symfony/polyfill-intl-idn": {
+        "version": "v1.11.0"
+    },
     "symfony/polyfill-mbstring": {
         "version": "v1.10.0"
     },
     "symfony/polyfill-php72": {
         "version": "v1.10.0"
-    },
-    "symfony/process": {
-        "version": "v4.2.2"
     },
     "symfony/profiler-pack": {
         "version": "v1.0.3"
@@ -432,15 +432,6 @@
             "branch": "master",
             "version": "1.0",
             "ref": "e18b0c550c3ee79142dc314b3e38193caafe4bb5"
-        }
-    },
-    "symfony/workflow": {
-        "version": "3.3",
-        "recipe": {
-            "repo": "github.com/symfony/recipes",
-            "branch": "master",
-            "version": "3.3",
-            "ref": "7c8798612bf94fbe4cb75056a4cd7ea3a9183698"
         }
     },
     "symfony/yaml": {

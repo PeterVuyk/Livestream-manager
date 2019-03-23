@@ -28,6 +28,6 @@ final class Version20181224133836 extends AbstractMigration
     public function down(Schema $schema) : void
     {
         $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'mysql', 'Migration can only be executed safely on \'mysql\'.');
-        $this->addSql('DELETE FROM `livestream`.`app_users` WHERE `username`=\'temporary\';');
+        $this->addSql('DELETE FROM `app_users` WHERE `username`=\'temporary\';');
     }
 }
